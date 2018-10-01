@@ -16,11 +16,15 @@ public abstract class Entity {
 		return position;
 	}
 	
+	public boolean isImpassable() {
+		return impassable;
+	}
+	
 	public void setPosition(Position p) {
 		position = p;
 	}
 	
-	public boolean isImpassable() {
-		return impassable;
+	public void setImpassable(boolean impassable) {
+		this.impassable = impassable;
 	}
 }
