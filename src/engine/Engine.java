@@ -1,4 +1,4 @@
-package GameEngine;
+package engine;
 
 public class Engine {
 }
