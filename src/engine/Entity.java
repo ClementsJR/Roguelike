@@ -3,7 +3,8 @@ package engine;
 public abstract class Entity {
 	protected boolean impassable;
 	
-	public Entity() {
+	public Entity(boolean impassable) {
+		this.impassable = impassable;
 	}
 	
 	public boolean isImpassable() {
