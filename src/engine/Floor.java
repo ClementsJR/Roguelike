@@ -1,20 +1,21 @@
 package engine;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Floor {
-	private int seed;
+	private long seed;
 	private MapGenAlgorithm algorithm;
 	
 	private int numRows, numCols;
 	private Tile[][] map;
-	private ArrayList<Entity> mobileEntities;
+	private ArrayList<MobileEntity> mobileEntities;
 	
-	public Floor(int seed, MapGenAlgorithm algorithm) {
+	public Floor(long seed, MapGenAlgorithm algorithm) {
 		this.seed = seed;
 		this.algorithm = algorithm;
 		
-		mobileEntities = new ArrayList<Entity>();
+		mobileEntities = new ArrayList<MobileEntity>();
 		
 		instantiateMap();
 	}
@@ -25,14 +26,14 @@ public class Floor {
 		map = new Tile[numRows][numCols];
 		
 		for(int row = 0; row < numRows; row++) {
-			for(int col = 0; col < numCol; col++) {
+			for(int col = 0; col < numCols; col++) {
 				map[row][col] = new Tile();
 			}
 		}
 	}
 	
 	public void generateFloorMap() {
-		switch(algorith) {
+		switch(algorithm) {
 		case BSP:
 			generateBSPMap();
 			break;

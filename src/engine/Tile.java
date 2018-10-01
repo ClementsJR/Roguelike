@@ -3,6 +3,7 @@ package engine;
 import java.util.ArrayList;
 
 public class Tile {
+	private boolean blocked;
 	private ArrayList<Entity> occupants;
 	
 	public Tile() {
@@ -11,6 +12,10 @@ public class Tile {
 	
 	public ArrayList<Entity> getOccupants() {
 		return occupants;
+	}
+	
+	public boolean isBlocked() {
+		return blocked;
 	}
 	
 	public void addOccupant(Entity newOccupant) {
