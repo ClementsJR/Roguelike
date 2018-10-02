@@ -15,7 +15,7 @@ public class Floor {
 		this.seed = seed;
 		this.algorithm = algorithm;
 		
-		mobileEntities = new ArrayList<MobileEntity>();
+		livingEntities = new ArrayList<LivingEntity>();
 		
 		instantiateMapBase();
 		generateMap();
