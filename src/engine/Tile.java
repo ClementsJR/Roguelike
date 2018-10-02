@@ -19,6 +19,10 @@ public class Tile {
 		return blocked;
 	}
 	
+	public Entity getBaseEntity() {
+		return baseEntity;
+	}
+	
 	public void addOccupant(Entity newOccupant) {
 		occupants.add(newOccupant);
 	}

@@ -24,11 +24,14 @@ public class MainMenuController {
 	
 	@FXML
 	public void newGame(MouseEvent event) {
-        try {FXMLLoader fxmlLoader = new FXMLLoader();
+        try {
+        	FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("GameScreen.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), Main.DEFAULT_WINDOW_WIDTH, Main.DEFAULT_WINDOW_HEIGHT);
+            
             Stage stage = new Stage();
-            stage.setTitle("New Window");
+            stage.setTitle("Roguelike");
+			stage.setResizable(false);
             stage.setScene(scene);
             stage.show();
             

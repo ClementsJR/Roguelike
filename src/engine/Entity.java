@@ -20,4 +20,8 @@ public abstract class Entity {
 	public void setImpassable(boolean impassable) {
 		this.impassable = impassable;
 	}
+	
+	public Image getSprite() {
+		return sprite;
+	}
 }

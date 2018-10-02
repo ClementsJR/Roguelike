@@ -9,8 +9,4 @@ public class Wall extends Entity {
 		impassable = true;
 		sprite = new Image(SPRITE_URL);
 	}
-	
-	public Image getSprite() {
-		return sprite;
-	}
 }

@@ -17,10 +17,11 @@ public class Floor {
 		
 		mobileEntities = new ArrayList<MobileEntity>();
 		
-		instantiateMap();
+		instantiateMapBase();
+		generateMap();
 	}
 	
-	private void instantiateMap() {
+	private void instantiateMapBase() {
 		numRows = Engine.DEFAULT_NUM_ROWS;
 		numCols = Engine.DEFAULT_NUM_COLS;
 		map = new Tile[numRows][numCols];
@@ -32,7 +33,19 @@ public class Floor {
 		}
 	}
 	
-	public void generateFloorMap() {
+	public int getNumRows() {
+		return numRows;
+	}
+	
+	public int getNumCols() {
+		return numCols;
+	}
+	
+	public Tile getTileAt(int row, int col) {
+		return map[row][col];
+	}
+	
+	public void generateMap() {
 		switch(algorithm) {
 		case BSP:
 			generateBSPMap();
@@ -52,6 +65,9 @@ public class Floor {
 	}
 	
 	private void generateTestRoom() {
+		numRows = 10;
+		numCols = 10;
+		
 		for(int row = 0; row < numRows; row++) {
 			for(int col = 0; col < numCols; col++) {
 				map[row][col].setBaseEntity(new Wall());
