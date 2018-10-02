@@ -1,10 +1,12 @@
 package engine;
 
+import javafx.scene.image.Image;
+
 public abstract class Entity {
 	protected boolean impassable;
+	protected Image sprite;
 	
 	public Entity() {
-		impassable = false;
 	}
 	
 	public Entity(boolean impassable) {

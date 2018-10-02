@@ -9,10 +9,19 @@ public class Engine {
 	private static final int TOTAL_NUM_FLOORS = 30;
 	
 	private ArrayList<Floor> floors;
+	private int currentFloorIdx;
+	
 	private PlayerCharacter player;
 	
 	public Engine() {
 		floors = new ArrayList<Floor>();
-		//player = new Player;
+		
+		Floor testFloor = new Floor(0, Floor.MapGenAlgorithm.TEST_ROOM);
+		floors.add(testFloor);
+		currentFloorIdx = 0;
+	}
+	
+	public Floor getCurrentFloor() {
+		return floors.get(currentFloorIdx);
 	}
 }

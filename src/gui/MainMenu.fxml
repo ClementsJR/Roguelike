@@ -5,14 +5,12 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1" fx:controller="gui.MainMenuController">
+<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainMenuController">
    <center>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="New Game" />
-            <Button disable="true" mnemonicParsing="false" text="Load Game" />
-            <Button mnemonicParsing="false" text="Options" />
+            <Button fx:id="newGameBtn" mnemonicParsing="false" text="New Game" />
+            <Button fx:id="loadGameBtn" disable="true" mnemonicParsing="false" text="Load Game" />
          </children>
       </VBox>
    </center>

@@ -39,6 +39,9 @@ public class Floor {
 			break;
 		case CELLULAR_AUTOMATA:
 			generateCAMap();
+			break;
+		case TEST_ROOM:
+			generateTestRoom();
 		}
 	}
 	
@@ -48,7 +51,15 @@ public class Floor {
 	private void generateCAMap() {
 	}
 	
+	private void generateTestRoom() {
+		for(int row = 0; row < numRows; row++) {
+			for(int col = 0; col < numCols; col++) {
+				map[row][col].setBaseEntity(new Wall());
+			}
+		}
+	}
+	
 	public enum MapGenAlgorithm {
-		BSP, CELLULAR_AUTOMATA;
+		BSP, CELLULAR_AUTOMATA, TEST_ROOM;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Tile {
 	private boolean blocked;
+	private Entity baseEntity;
 	private ArrayList<Entity> occupants;
 	
 	public Tile() {
@@ -20,5 +21,9 @@ public class Tile {
 	
 	public void addOccupant(Entity newOccupant) {
 		occupants.add(newOccupant);
+	}
+	
+	public void setBaseEntity(Entity base) {
+		baseEntity = base;
 	}
 }
