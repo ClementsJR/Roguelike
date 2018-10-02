@@ -9,7 +9,7 @@ public class Floor {
 	
 	private int numRows, numCols;
 	private Tile[][] map;
-	private ArrayList<MobileEntity> mobileEntities;
+	private ArrayList<LivingEntity> livingEntities;
 	
 	public Floor(long seed, MapGenAlgorithm algorithm) {
 		this.seed = seed;
