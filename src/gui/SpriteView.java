@@ -12,12 +12,15 @@ import javafx.scene.layout.Pane;
 public class SpriteView extends Pane {
 	public static final int STANDARD_SPRITE_DIMENSION = 32;
 	
+	private GameScreenController controller;
+	
 	private Tile tile;
 	private ArrayList<ImageView> images;
 	
-	public SpriteView(Tile tile) {
+	public SpriteView(Tile tile, GameScreenController controller) {
 		this.setPrefSize(STANDARD_SPRITE_DIMENSION, STANDARD_SPRITE_DIMENSION);
 		this.setOnMouseClicked((event) -> handleClick(event));
+		this.controller = controller;
 		
 		setTile(tile);
 	}
@@ -31,7 +34,7 @@ public class SpriteView extends Pane {
 	}
 	
 	private void handleClick(MouseEvent event) {
-		System.out.println(this);
+		controller.tileClicked(this);
 	}
 	
 	private void setupImageViews() {

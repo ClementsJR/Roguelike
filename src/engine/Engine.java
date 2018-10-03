@@ -24,7 +24,19 @@ public class Engine {
 		testFloor.getTileAt(3, 3).addOccupant(player);
 	}
 	
-	public Floor getCurrentFloor() {
-		return floors.get(currentFloorIdx);
+	public Tile getTileAt(int row, int col) {
+		return floors.get(currentFloorIdx).getTileAt(row, col);
+	}
+
+	public int getNumRows() {
+		return floors.get(currentFloorIdx).getNumRows();
+	}
+
+	public int getNumCols() {
+		return floors.get(currentFloorIdx).getNumCols();
+	}
+	
+	public void tileClicked(int row, int col) {
+		System.out.println("Row: " + row + "\tCol: " + col);
 	}
 }
