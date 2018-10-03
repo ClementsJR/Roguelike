@@ -23,10 +23,10 @@ public class Engine {
 		currentFloorIdx = 0;
 		
 		player = new PlayerCharacter();
+		playerLocation = new Tile();
 		
-		//These lines are just for testing purposes.
-		playerLocation = testFloor.getTileAt(3, 3);
-		playerLocation.addOccupant(player);
+		//Puts the player on the map. The location (4,4) is just for testing purposes.
+		movePlayerTo(4,4);
 		
 	}
 	
@@ -43,6 +43,20 @@ public class Engine {
 	}
 	
 	public void tileClicked(int row, int col) {
+		if(isValidMove(row, col)) {
+			movePlayerTo(row, col);
+		}
+	}
+	
+	private boolean isValidMove(int row, int col) {
+		
+		//TODO:
+		//Test if the location is adjacent to the player and if there is anything in the way.
+		
+		return true;
+	}
+	
+	private void movePlayerTo(int row, int col) {
 		playerLocation.getOccupants().remove(player);
 		playerLocation = floors.get(currentFloorIdx).getTileAt(row, col);
 		playerLocation.addOccupant(player);
