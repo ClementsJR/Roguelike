@@ -5,16 +5,16 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainMenuController">
+<BorderPane stylesheets="@application.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainMenuController">
    <center>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" stylesheets="@application.css" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="newGameBtn" mnemonicParsing="false" text="New Game" />
-            <Button fx:id="loadGameBtn" disable="true" mnemonicParsing="false" text="Load Game" />
+            <Button fx:id="newGameBtn" accessibleText="Start New Game" mnemonicParsing="false" styleClass="mainMenuButton" stylesheets="@application.css" text="New Game" textFill="WHITE" />
+            <Button fx:id="loadGameBtn" accessibleText="Load a saved game" disable="true" mnemonicParsing="false" styleClass="mainMenuButton" stylesheets="@application.css" text="Load Game" textFill="WHITE" />
          </children>
       </VBox>
    </center>
    <top>
-      <Label text="Code Addicts - Roguelike" BorderPane.alignment="CENTER" />
+      <Label stylesheets="@application.css" text="Code Addicts - Roguelike" BorderPane.alignment="CENTER" />
    </top>
 </BorderPane>
