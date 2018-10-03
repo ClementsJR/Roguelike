@@ -19,6 +19,9 @@ public class Engine {
 		Floor testFloor = new Floor(0, Floor.MapGenAlgorithm.TEST_ROOM);
 		floors.add(testFloor);
 		currentFloorIdx = 0;
+		
+		player = new PlayerCharacter();
+		testFloor.getTileAt(3, 3).addOccupant(player);
 	}
 	
 	public Floor getCurrentFloor() {

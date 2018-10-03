@@ -1,5 +1,7 @@
 package gui;
 
+import java.util.ArrayList;
+
 import engine.Entity;
 import engine.Tile;
 import javafx.scene.image.Image;
@@ -11,31 +13,46 @@ public class SpriteView extends Pane {
 	public static final int STANDARD_SPRITE_DIMENSION = 32;
 	
 	private Tile tile;
-	private ImageView img;
+	private ArrayList<ImageView> images;
 	
 	public SpriteView(Tile tile) {
 		this.setPrefSize(STANDARD_SPRITE_DIMENSION, STANDARD_SPRITE_DIMENSION);
 		this.setOnMouseClicked((event) -> handleClick(event));
 		
-		this.tile = tile;
+		setTile(tile);
+	}
+	
+	public void setTile(Tile newTile) {
+		tile = newTile;
 		
-		img = new ImageView();
-		setupImageView();
-		this.getChildren().add(img);
+		images = new ArrayList<ImageView>();
+		setupImageViews();
+		drawImageViews();
 	}
 	
 	private void handleClick(MouseEvent event) {
 		System.out.println(this);
 	}
 	
-	private void setupImageView() {
+	private void setupImageViews() {
+		images.clear();
+		
 		Entity baseEntity = tile.getBaseEntity();
 		Image sprite = baseEntity.getSprite();
-		img.setImage(sprite);
+		images.add(new ImageView(sprite));
+		
+		ArrayList<Entity> occupants = tile.getOccupants();
+		for(Entity occupant : occupants) {
+			sprite = occupant.getSprite();
+			images.add(new ImageView(sprite));
+		}
 	}
 	
-	public void setTile(Tile newTile) {
-		tile = newTile;
-		setupImageView();
+	private void drawImageViews() {
+		this.getChildren().clear();
+		
+		for(ImageView img : images) {
+			this.getChildren().add(img);
+		}
 	}
 }
