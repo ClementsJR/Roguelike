@@ -27,8 +27,8 @@ public class SpriteView extends Pane {
 	
 	public void setTile(Tile newTile) {
 		tile = newTile;
-		
 		images = new ArrayList<ImageView>();
+		
 		setupImageViews();
 		drawImageViews();
 	}

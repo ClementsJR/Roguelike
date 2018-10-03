@@ -18,6 +18,8 @@ public class GameScreenController {
 	}
 	
 	public void drawFloor() {
+		mapGrid.getChildren().clear();
+		
 		int totalRows = game.getNumRows();
 		int totalCols = game.getNumCols();
 		
@@ -40,5 +42,6 @@ public class GameScreenController {
 		int col = index % numCols;
 		
 		game.tileClicked(row, col);
+		drawFloor();
 	}
 }

@@ -12,16 +12,22 @@ public class Engine {
 	private int currentFloorIdx;
 	
 	private PlayerCharacter player;
+	private Tile playerLocation;
 	
 	public Engine() {
 		floors = new ArrayList<Floor>();
 		
+		//The test floor is just for testing purposes. duh.
 		Floor testFloor = new Floor(0, Floor.MapGenAlgorithm.TEST_ROOM);
 		floors.add(testFloor);
 		currentFloorIdx = 0;
 		
 		player = new PlayerCharacter();
-		testFloor.getTileAt(3, 3).addOccupant(player);
+		
+		//These lines are just for testing purposes.
+		playerLocation = testFloor.getTileAt(3, 3);
+		playerLocation.addOccupant(player);
+		
 	}
 	
 	public Tile getTileAt(int row, int col) {
@@ -37,6 +43,8 @@ public class Engine {
 	}
 	
 	public void tileClicked(int row, int col) {
-		System.out.println("Row: " + row + "\tCol: " + col);
+		playerLocation.getOccupants().remove(player);
+		playerLocation = floors.get(currentFloorIdx).getTileAt(row, col);
+		playerLocation.addOccupant(player);
 	}
 }
