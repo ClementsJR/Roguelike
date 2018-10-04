@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameScreenController">
-   <children>
-      <BorderPane minHeight="32.0" minWidth="32.0">
-         <center>
-            <TilePane fx:id="mapGrid" prefTileHeight="32.0" prefTileWidth="32.0" BorderPane.alignment="CENTER" />
-         </center>
-      </BorderPane>
-   </children>
-</AnchorPane>
+
+<BorderPane id="gameBorderPane" stylesheets="@gameStyles.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameScreenController">
+   <center>
+      <VBox alignment="CENTER" fillWidth="false" BorderPane.alignment="CENTER">
+         <children>
+            <TilePane fx:id="mapGrid" alignment="CENTER" prefTileHeight="32.0" prefTileWidth="32.0" />
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

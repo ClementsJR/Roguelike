@@ -8,31 +8,54 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 
 public class GameScreenController {
+	private Engine game;
+	
 	@FXML
 	TilePane mapGrid;
-	
-	Engine game;
 	
 	@FXML
 	public void initialize() {
 		game = new Engine();
-		
-		Floor floor = game.getCurrentFloor();
-		drawFloor(floor);
+		drawFloor();
 	}
 	
-	public void drawFloor(Floor floor) {
-		int totalRows = floor.getNumRows();
-		int totalCols = floor.getNumCols();
+	public void drawFloor() {
+		mapGrid.getChildren().clear();
+		
+		int totalRows = game.getNumRows();
+		int totalCols = game.getNumCols();
 		
 		mapGrid.setPrefColumns(totalCols);
 		mapGrid.setPrefRows(totalRows);
 		
 		for(int row = 0; row < totalRows; row++) {
 			for(int col = 0; col < totalCols; col++) {
-				Image sprite = floor.getTileAt(row, col).getBaseEntity().getSprite();
-				mapGrid.getChildren().add(new ImageView(sprite));
+				SpriteView spriteView = new SpriteView(game.getTileAt(row,  col), this);
+				mapGrid.getChildren().add(spriteView);
 			}
 		}
+		
+		int centerRow = totalRows/2;
+		int centerCol = totalCols/2;
+		
+		int playerRow = game.getPlayerRow();
+		int playerCol = game.getPlayerCol();
+		
+		int rowOffset = (centerRow - playerRow) * SpriteView.STANDARD_SPRITE_DIMENSION;
+		int colOffset = (centerCol - playerCol) * SpriteView.STANDARD_SPRITE_DIMENSION;
+		
+		mapGrid.setTranslateY(rowOffset);
+		mapGrid.setTranslateX(colOffset);
+	}
+	
+	public void tileClicked(SpriteView spriteView) {
+		int index = mapGrid.getChildren().indexOf(spriteView);
+		int numCols = game.getNumCols();
+		
+		int row = index / numCols;
+		int col = index % numCols;
+		
+		game.tileClicked(row, col);
+		drawFloor();
 	}
 }

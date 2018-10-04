@@ -15,7 +15,7 @@ public class Floor {
 		this.seed = seed;
 		this.algorithm = algorithm;
 		
-		mobileEntities = new ArrayList<MobileEntity>();
+		livingEntities = new ArrayList<LivingEntity>();
 		
 		instantiateMapBase();
 		generateMap();
@@ -65,8 +65,8 @@ public class Floor {
 	}
 	
 	private void generateTestRoom() {
-		numRows = 10;
-		numCols = 10;
+		numRows = 150;
+		numCols = 32;
 		
 		for(int row = 0; row < numRows; row++) {
 			for(int col = 0; col < numCols; col++) {
