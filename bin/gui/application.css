@@ -1,8 +1,23 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 
 .mainMenuButton {
-	-fx-min-width: 200px;
+	-fx-min-width: 300px;
 	-fx-min-height: 50px;
 	
 	-fx-background-color: #333;
+}
+
+.mainMenuButton:hover {
+	-fx-background-color: #336;
+}
+
+#mainMenuBorderPane {
+	-fx-background-color: #fff;
+}
+
+#mainMenuTitleLabel {
+}
+
+#mainMenuVBox {
+	-fx-background-color: rgba(50, 50, 50, 0.25);
 }
