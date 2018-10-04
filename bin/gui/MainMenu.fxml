@@ -8,23 +8,26 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane id="mainMenuBorderPane" prefHeight="576.0" prefWidth="1024.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainMenuController">
+<BorderPane id="mmBorderPane" prefHeight="576.0" prefWidth="1024.0" stylesheets="@mainMenuStyles.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainMenuController">
    <center>
-      <VBox id="mainMenuVBox" alignment="CENTER" fillWidth="false" maxWidth="400.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" stylesheets="@application.css" BorderPane.alignment="CENTER">
+      <VBox id="mmVBox" alignment="CENTER" fillWidth="false" maxWidth="400.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" stylesheets="@mainMenuStyles.css" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="newGameBtn" accessibleText="Start New Game" mnemonicParsing="false" styleClass="mainMenuButton" stylesheets="@application.css" text="New Game" textAlignment="CENTER" textFill="WHITE">
+            <Button fx:id="newGameBtn" accessibleText="Start New Game" mnemonicParsing="false" styleClass="mmButton" stylesheets="@mainMenuStyles.css" text="New Game" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font></Button>
-            <Button fx:id="loadGameBtn" accessibleText="Load a saved game" disable="true" mnemonicParsing="false" styleClass="mainMenuButton" stylesheets="@application.css" text="Load Game" textAlignment="CENTER" textFill="WHITE">
+            <Button fx:id="loadGameBtn" accessibleText="Load a saved game" disable="true" mnemonicParsing="false" styleClass="mmButton" stylesheets="@mainMenuStyles.css" text="Load Game" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font></Button>
          </children>
+         <effect>
+            <DropShadow color="#646464" />
+         </effect>
       </VBox>
    </center>
    <top>
-      <Label id="mainMenuTitleLabel" stylesheets="@application.css" text="Roguelike" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
+      <Label id="mmTitleLabel" stylesheets="@mainMenuStyles.css" text="Roguelike" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
          <font>
             <Font size="48.0" />
          </font>
