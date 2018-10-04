@@ -3,16 +3,15 @@ package gui;
 import engine.*;
 
 import javafx.fxml.FXML;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 
 public class GameScreenController {
-	@FXML
-	TilePane mapGrid;
-	
 	private Engine game;
 	
-	private static ImageView wallView = new ImageView();
+	@FXML
+	TilePane mapGrid;
 	
 	@FXML
 	public void initialize() {

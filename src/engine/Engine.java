@@ -27,7 +27,7 @@ public class Engine {
 		playerTile = new Tile();
 		
 		//Puts the player on the map. The location (4,4) is just for testing purposes.
-		movePlayerTo(4,4);
+		movePlayerTo(1,1);
 		
 	}
 	

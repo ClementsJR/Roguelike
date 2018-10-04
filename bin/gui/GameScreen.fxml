@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<BorderPane id="gameBorderPane" prefHeight="576.0" prefWidth="1024.0" stylesheets="@gameStyles.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameScreenController">
+<BorderPane id="gameBorderPane" stylesheets="@gameStyles.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameScreenController">
    <center>
       <VBox alignment="CENTER" fillWidth="false" BorderPane.alignment="CENTER">
          <children>
