@@ -3,6 +3,7 @@ package gui;
 import engine.*;
 
 import javafx.fxml.FXML;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 
 public class GameScreenController {
@@ -10,6 +11,8 @@ public class GameScreenController {
 	TilePane mapGrid;
 	
 	private Engine game;
+	
+	private static ImageView wallView = new ImageView();
 	
 	@FXML
 	public void initialize() {
@@ -32,6 +35,18 @@ public class GameScreenController {
 				mapGrid.getChildren().add(spriteView);
 			}
 		}
+		
+		int centerRow = totalRows/2;
+		int centerCol = totalCols/2;
+		
+		int playerRow = game.getPlayerRow();
+		int playerCol = game.getPlayerCol();
+		
+		int rowOffset = (centerRow - playerRow) * SpriteView.STANDARD_SPRITE_DIMENSION;
+		int colOffset = (centerCol - playerCol) * SpriteView.STANDARD_SPRITE_DIMENSION;
+		
+		mapGrid.setTranslateY(rowOffset);
+		mapGrid.setTranslateX(colOffset);
 	}
 	
 	public void tileClicked(SpriteView spriteView) {

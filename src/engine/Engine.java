@@ -12,7 +12,8 @@ public class Engine {
 	private int currentFloorIdx;
 	
 	private PlayerCharacter player;
-	private Tile playerLocation;
+	private Tile playerTile;
+	private int playerRow = 0, playerCol = 0;
 	
 	public Engine() {
 		floors = new ArrayList<Floor>();
@@ -23,7 +24,7 @@ public class Engine {
 		currentFloorIdx = 0;
 		
 		player = new PlayerCharacter();
-		playerLocation = new Tile();
+		playerTile = new Tile();
 		
 		//Puts the player on the map. The location (4,4) is just for testing purposes.
 		movePlayerTo(4,4);
@@ -42,6 +43,14 @@ public class Engine {
 		return floors.get(currentFloorIdx).getNumCols();
 	}
 	
+	public int getPlayerRow() {
+		return playerRow;
+	}
+	
+	public int getPlayerCol() {
+		return playerCol;
+	}
+	
 	public void tileClicked(int row, int col) {
 		if(isValidMove(row, col)) {
 			movePlayerTo(row, col);
@@ -57,8 +66,11 @@ public class Engine {
 	}
 	
 	private void movePlayerTo(int row, int col) {
-		playerLocation.getOccupants().remove(player);
-		playerLocation = floors.get(currentFloorIdx).getTileAt(row, col);
-		playerLocation.addOccupant(player);
+		playerTile.getOccupants().remove(player);
+		playerTile = floors.get(currentFloorIdx).getTileAt(row, col);
+		playerTile.addOccupant(player);
+		
+		playerRow = row;
+		playerCol = col;
 	}
 }
