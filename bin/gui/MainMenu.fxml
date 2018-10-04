@@ -10,7 +10,7 @@
 
 <BorderPane id="mainMenuBorderPane" prefHeight="576.0" prefWidth="1024.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainMenuController">
    <center>
-      <VBox id="mainMenuVBox" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" stylesheets="@application.css" BorderPane.alignment="CENTER">
+      <VBox id="mainMenuVBox" alignment="CENTER" fillWidth="false" maxWidth="400.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" stylesheets="@application.css" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="newGameBtn" accessibleText="Start New Game" mnemonicParsing="false" styleClass="mainMenuButton" stylesheets="@application.css" text="New Game" textAlignment="CENTER" textFill="WHITE">
                <font>
@@ -24,7 +24,7 @@
       </VBox>
    </center>
    <top>
-      <Label id="mainMenuTitleLabel" stylesheets="@application.css" text="Roguelike" textAlignment="CENTER" BorderPane.alignment="CENTER">
+      <Label id="mainMenuTitleLabel" stylesheets="@application.css" text="Roguelike" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
          <font>
             <Font size="48.0" />
          </font>
@@ -32,7 +32,7 @@
             <Insets bottom="50.0" />
          </BorderPane.margin>
          <effect>
-            <DropShadow />
+            <DropShadow color="#0000d2" height="50.0" radius="24.5" spread="0.25" width="50.0" />
          </effect></Label>
    </top>
    <padding>

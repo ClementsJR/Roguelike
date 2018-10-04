@@ -12,12 +12,13 @@
 }
 
 #mainMenuBorderPane {
-	-fx-background-color: #fff;
+	-fx-background-image: url("../assets/img/Underdark_Entrance.jpg");
+	/*TODO: Maybe get background art we're actually allowed to use.*/
 }
 
 #mainMenuTitleLabel {
 }
 
 #mainMenuVBox {
-	-fx-background-color: rgba(50, 50, 50, 0.25);
+	-fx-background-color: rgba(250, 250, 250, 0.25);
 }
