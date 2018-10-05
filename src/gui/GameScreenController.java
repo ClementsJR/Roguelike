@@ -26,11 +26,11 @@ public class GameScreenController {
 		int totalCols = game.getNumCols();
 		
 		mapGrid.setPrefColumns(totalCols);
-		mapGrid.setPrefRows(totalRows);
 		
 		for(int row = 0; row < totalRows; row++) {
 			for(int col = 0; col < totalCols; col++) {
-				SpriteView spriteView = new SpriteView(game.getTileAt(row,  col), this);
+				Position position = new Position(row, col);
+				SpriteView spriteView = new SpriteView(game.getTileAt(position), this);
 				
 				mapGrid.getChildren().add(spriteView);
 				
@@ -38,6 +38,15 @@ public class GameScreenController {
 		}
 		
 		centerMapGrid();
+	}
+	
+	public void tileClicked(SpriteView spriteView) {
+		int index = mapGrid.getChildren().indexOf(spriteView);
+		
+		Position clicked = getPositionOf(index);
+		
+		game.tileClicked(clicked);
+		updateFloor();
 	}
 	
 	private void updateFloor() {
@@ -48,17 +57,14 @@ public class GameScreenController {
 			
 			switch(event.getEventType()) {
 			case MOVES_TO:
-				int sourceRow = event.getSourceRow();
-				int sourceCol = event.getSourceCol();
-
-				int targetRow = event.getTargetRow();
-				int targetCol = event.getTargetCol();
+				Position source = event.getSource();
+				Position target = event.getTarget();
 				
-				int sourceSpriteViewIndex = getIndex(sourceRow, sourceCol);
-				int targetSpriteViewIndex = getIndex(targetRow, targetCol);
+				int sourceSpriteViewIndex = getIndexOf(source);
+				int targetSpriteViewIndex = getIndexOf(target);
 				
-				((SpriteView) mapGrid.getChildren().get(sourceSpriteViewIndex)).setTile(game.getTileAt(sourceRow, sourceCol));
-				((SpriteView) mapGrid.getChildren().get(targetSpriteViewIndex)).setTile(game.getTileAt(targetRow, targetCol));
+				((SpriteView) mapGrid.getChildren().get(sourceSpriteViewIndex)).setTile(game.getTileAt(source));
+				((SpriteView) mapGrid.getChildren().get(targetSpriteViewIndex)).setTile(game.getTileAt(target));
 				
 				break;
 			default:
@@ -67,29 +73,27 @@ public class GameScreenController {
 		}
 	}
 	
-	private int getIndex(int row, int col) {
-		return (row * game.getNumRows()) + col;
+	private int getIndexOf(Position position) {
+		return (position.getRow() * game.getNumRows()) + position.getCol();
+	}
+	
+	private Position getPositionOf(int index) {
+		int numCols = game.getNumCols();
+		
+		int row = index / numCols;
+		int col = index % numCols;
+		
+		return new Position(row, col);
 	}
 	
 	private void centerMapGrid() {
-		int playerRow = game.getPlayerRow();
-		int playerCol = game.getPlayerCol();
+		int playerRow = game.getPlayerPosition().getRow();
+		int playerCol = game.getPlayerPosition().getCol();
 		
 		int rowOffset = (Main.DEFAULT_WINDOW_HEIGHT / 2) - ((playerRow + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
 		int colOffset = (Main.DEFAULT_WINDOW_WIDTH / 2) - ((playerCol + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
 		
 		mapGrid.setTranslateY(rowOffset);
 		mapGrid.setTranslateX(colOffset);
-	}
-	
-	public void tileClicked(SpriteView spriteView) {
-		int index = mapGrid.getChildren().indexOf(spriteView);
-		int numCols = game.getNumCols();
-		
-		int row = index / numCols;
-		int col = index % numCols;
-		
-		game.tileClicked(row, col);
-		updateFloor();
 	}
 }

@@ -1,44 +1,44 @@
 package engine;
 
 public class Position {
-	private int x, y;
+	private int row, col;
 	
-	public final int PLAYER_INVENTORY = -1;
-	public final int OUT_OF_GAME = -2;
+	public static final int PLAYER_INVENTORY = -1;
+	public static final int OUT_OF_GAME = -2;
 	
 	public Position() {
-		x = 0;
-		y = 0;
+		row = OUT_OF_GAME;
+		col = OUT_OF_GAME;
 	}
 	
-	public Position(int x, int y) {
-		this.x = x;
-		this.y = y;
+	public Position(int row, int col) {
+		this.row = row;
+		this.col = col;
 	}
 	
-	public int getX() {
-		return x;
+	public int getRow() {
+		return row;
 	}
 	
-	public int getY() {
-		return y;
+	public int getCol() {
+		return col;
 	}
 	
-	public void setX(int x) {
-		this.x = x;
+	public boolean isInInventory() {
+		return row == PLAYER_INVENTORY;
 	}
 	
-	public void setY(int y) {
-		this.y = y;
+	public boolean isOutOfGame() {
+		return row == OUT_OF_GAME;
 	}
 	
-	public void setXY(int x, int y) {
-		this.x = x;
-		this.y = y;
+	public void setTo(int row, int col) {
+		this.row = row;
+		this.col = col;
 	}
 	
-	public void setXY(Position p) {
-		x = p.getX();
-		y = p.getY();
+	public void setTo(Position p) {
+		row = p.getRow();
+		col = p.getCol();
 	}
 }

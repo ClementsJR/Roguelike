@@ -41,7 +41,10 @@ public class Floor {
 		return numCols;
 	}
 	
-	public Tile getTileAt(int row, int col) {
+	public Tile getTileAt(Position target) {
+		int row = target.getRow();
+		int col = target.getCol();
+		
 		return map[row][col];
 	}
 	
@@ -65,8 +68,8 @@ public class Floor {
 	}
 	
 	private void generateTestRoom() {
-		numRows = 33;
-		numCols = 33;
+		numRows = 100;
+		numCols = 100;
 		
 		for(int row = 0; row < numRows; row++) {
 			for(int col = 0; col < numCols; col++) {

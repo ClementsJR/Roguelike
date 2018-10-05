@@ -16,7 +16,7 @@ public class Engine {
 	
 	private PlayerCharacter player;
 	private Tile playerTile;
-	private int playerRow = 0, playerCol = 0;
+	private Position playerPosition;
 	
 	private LinkedList<GameEvent> eventQueue;
 	
@@ -30,17 +30,18 @@ public class Engine {
 		
 		player = new PlayerCharacter();
 		playerTile = new Tile();
+		playerPosition = new Position(1, 1);
 		
 		eventQueue = new LinkedList<GameEvent>();
 		
 		//Puts the player on the map. The location (4,4) is just for testing purposes.
-		movePlayerTo(1,1);
+		movePlayerTo(playerPosition);
 		
 		eventQueue.clear();
 	}
 	
-	public Tile getTileAt(int row, int col) {
-		return floors.get(currentFloorIdx).getTileAt(row, col);
+	public Tile getTileAt( Position position ) {
+		return floors.get(currentFloorIdx).getTileAt(position);
 	}
 
 	public int getNumRows() {
@@ -51,25 +52,21 @@ public class Engine {
 		return floors.get(currentFloorIdx).getNumCols();
 	}
 	
-	public int getPlayerRow() {
-		return playerRow;
-	}
-	
-	public int getPlayerCol() {
-		return playerCol;
+	public Position getPlayerPosition() {
+		return playerPosition;
 	}
 	
 	public LinkedList<GameEvent> getEventQueue() {
 		return eventQueue;
 	}
 	
-	public void tileClicked(int row, int col) {
-		if(isValidMove(row, col)) {
-			movePlayerTo(row, col);
+	public void tileClicked(Position clickedPosition) {
+		if(isValidMove(clickedPosition)) {
+			movePlayerTo(clickedPosition);
 		}
 	}
 	
-	private boolean isValidMove(int row, int col) {
+	private boolean isValidMove(Position targetPosition) {
 		
 		//TODO:
 		//Test if the location is adjacent to the player and if there is anything in the way.
@@ -77,17 +74,14 @@ public class Engine {
 		return true;
 	}
 	
-	private void movePlayerTo(int row, int col) {
-		GameEvent moveRecord = new GameEvent(player, EventType.MOVES_TO);
-		moveRecord.setSource(playerRow, playerCol);
-		moveRecord.setTarget(row, col);
+	private void movePlayerTo(Position target) {
+		GameEvent moveRecord = new GameEvent(player, playerPosition, EventType.MOVES_TO, target);
 		eventQueue.add(moveRecord);
 		
 		playerTile.getOccupants().remove(player);
-		playerTile = floors.get(currentFloorIdx).getTileAt(row, col);
+		playerTile = floors.get(currentFloorIdx).getTileAt(target);
 		playerTile.addOccupant(player);
 		
-		playerRow = row;
-		playerCol = col;
+		playerPosition = target;
 	}
 }
