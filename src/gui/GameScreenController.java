@@ -1,12 +1,10 @@
 package gui;
 
+import java.util.LinkedList;
+
 import engine.*;
 
 import javafx.fxml.FXML;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.TilePane;
 
 public class GameScreenController {
@@ -39,14 +37,43 @@ public class GameScreenController {
 			}
 		}
 		
-		int centerRow = totalRows/2;
-		int centerCol = totalCols/2;
+		centerMapGrid();
+	}
+	
+	private void updateFloor() {
+		LinkedList<GameEvent> eventQueue = game.getEventQueue();
 		
+		while(!eventQueue.isEmpty()) {
+			GameEvent event = eventQueue.remove();
+			
+			switch(event.getEventType()) {
+			case MOVES_TO:
+				int sourceRow = event.getSourceRow();
+				int sourceCol = event.getSourceCol();
+
+				int targetRow = event.getTargetRow();
+				int targetCol = event.getTargetCol();
+				
+				int sourceSpriteViewIndex = getIndex(sourceRow, sourceCol);
+				int targetSpriteViewIndex = getIndex(targetRow, targetCol);
+				
+				((SpriteView) mapGrid.getChildren().get(sourceSpriteViewIndex)).setTile(game.getTileAt(sourceRow, sourceCol));
+				((SpriteView) mapGrid.getChildren().get(targetSpriteViewIndex)).setTile(game.getTileAt(targetRow, targetCol));
+				
+				break;
+			default:
+				//do nothing yet.
+			}
+		}
+	}
+	
+	private int getIndex(int row, int col) {
+		return (row * game.getNumRows()) + col;
+	}
+	
+	private void centerMapGrid() {
 		int playerRow = game.getPlayerRow();
 		int playerCol = game.getPlayerCol();
-		
-		//int rowOffset = (centerRow - playerRow) * SpriteView.STANDARD_SPRITE_DIMENSION;// + (Main.DEFAULT_WINDOW_HEIGHT / 2);
-		//int colOffset = (centerCol - playerCol) * SpriteView.STANDARD_SPRITE_DIMENSION;// + (Main.DEFAULT_WINDOW_WIDTH / 2);
 		
 		int rowOffset = (Main.DEFAULT_WINDOW_HEIGHT / 2) - ((playerRow + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
 		int colOffset = (Main.DEFAULT_WINDOW_WIDTH / 2) - ((playerCol + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
@@ -63,6 +90,6 @@ public class GameScreenController {
 		int col = index % numCols;
 		
 		game.tileClicked(row, col);
-		drawFloor();
+		updateFloor();
 	}
 }

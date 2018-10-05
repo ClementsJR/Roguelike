@@ -1,12 +1,15 @@
 package engine;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+
+import engine.GameEvent.EventType;
 
 public class Engine {
 	public static final int DEFAULT_NUM_ROWS = 150;
 	public static final int DEFAULT_NUM_COLS = 150;
 	
-	private static final int TOTAL_NUM_FLOORS = 30;
+	private static final int MAX_NUM_FLOORS = 30;
 	
 	private ArrayList<Floor> floors;
 	private int currentFloorIdx;
@@ -14,6 +17,8 @@ public class Engine {
 	private PlayerCharacter player;
 	private Tile playerTile;
 	private int playerRow = 0, playerCol = 0;
+	
+	private LinkedList<GameEvent> eventQueue;
 	
 	public Engine() {
 		floors = new ArrayList<Floor>();
@@ -26,9 +31,12 @@ public class Engine {
 		player = new PlayerCharacter();
 		playerTile = new Tile();
 		
+		eventQueue = new LinkedList<GameEvent>();
+		
 		//Puts the player on the map. The location (4,4) is just for testing purposes.
 		movePlayerTo(1,1);
 		
+		eventQueue.clear();
 	}
 	
 	public Tile getTileAt(int row, int col) {
@@ -51,6 +59,10 @@ public class Engine {
 		return playerCol;
 	}
 	
+	public LinkedList<GameEvent> getEventQueue() {
+		return eventQueue;
+	}
+	
 	public void tileClicked(int row, int col) {
 		if(isValidMove(row, col)) {
 			movePlayerTo(row, col);
@@ -66,6 +78,11 @@ public class Engine {
 	}
 	
 	private void movePlayerTo(int row, int col) {
+		GameEvent moveRecord = new GameEvent(player, EventType.MOVES_TO);
+		moveRecord.setSource(playerRow, playerCol);
+		moveRecord.setTarget(row, col);
+		eventQueue.add(moveRecord);
+		
 		playerTile.getOccupants().remove(player);
 		playerTile = floors.get(currentFloorIdx).getTileAt(row, col);
 		playerTile.addOccupant(player);
