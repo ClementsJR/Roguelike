@@ -71,6 +71,8 @@ public class GameScreenController {
 				//do nothing yet.
 			}
 		}
+		
+		centerMapGrid();
 	}
 	
 	private int getIndexOf(Position position) {
