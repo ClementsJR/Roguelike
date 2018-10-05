@@ -5,6 +5,8 @@ import engine.*;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.TilePane;
 
 public class GameScreenController {
@@ -31,7 +33,9 @@ public class GameScreenController {
 		for(int row = 0; row < totalRows; row++) {
 			for(int col = 0; col < totalCols; col++) {
 				SpriteView spriteView = new SpriteView(game.getTileAt(row,  col), this);
+				
 				mapGrid.getChildren().add(spriteView);
+				
 			}
 		}
 		
@@ -41,8 +45,11 @@ public class GameScreenController {
 		int playerRow = game.getPlayerRow();
 		int playerCol = game.getPlayerCol();
 		
-		int rowOffset = (centerRow - playerRow) * SpriteView.STANDARD_SPRITE_DIMENSION;
-		int colOffset = (centerCol - playerCol) * SpriteView.STANDARD_SPRITE_DIMENSION;
+		//int rowOffset = (centerRow - playerRow) * SpriteView.STANDARD_SPRITE_DIMENSION;// + (Main.DEFAULT_WINDOW_HEIGHT / 2);
+		//int colOffset = (centerCol - playerCol) * SpriteView.STANDARD_SPRITE_DIMENSION;// + (Main.DEFAULT_WINDOW_WIDTH / 2);
+		
+		int rowOffset = (Main.DEFAULT_WINDOW_HEIGHT / 2) - ((playerRow + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
+		int colOffset = (Main.DEFAULT_WINDOW_WIDTH / 2) - ((playerCol + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
 		
 		mapGrid.setTranslateY(rowOffset);
 		mapGrid.setTranslateX(colOffset);
