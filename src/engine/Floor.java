@@ -65,7 +65,7 @@ public class Floor {
 	}
 	
 	private void generateTestRoom() {
-		numRows = 15;
+		numRows = 33;
 		numCols = 33;
 		
 		for(int row = 0; row < numRows; row++) {
