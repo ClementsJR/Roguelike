@@ -5,16 +5,25 @@ import java.util.LinkedList;
 import engine.*;
 
 import javafx.fxml.FXML;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 
 public class GameScreenController {
 	private Engine game;
 	
 	@FXML
+	ImageView loadingAnimation;
+	
+	@FXML
 	TilePane mapGrid;
 	
 	@FXML
 	public void initialize() {
+		//mapGrid.setVisible(false);
+		
+		//loadingAnimation.setTranslateX(-mapGrid.getLayoutX());
+		//loadingAnimation.setTranslateY(-mapGrid.getLayoutY());
+		
 		game = new Engine();
 		drawFloor();
 	}
