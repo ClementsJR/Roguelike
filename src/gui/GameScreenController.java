@@ -19,13 +19,31 @@ public class GameScreenController {
 	
 	@FXML
 	public void initialize() {
-		//mapGrid.setVisible(false);
+		System.out.println("Just about to initialize the game.");
 		
-		//loadingAnimation.setTranslateX(-mapGrid.getLayoutX());
-		//loadingAnimation.setTranslateY(-mapGrid.getLayoutY());
+		mapGrid.setVisible(false);
 		
-		game = new Engine();
+		/*game = new Engine();
+		
+		System.out.println("Just instantiated the engine.");
+		
 		drawFloor();
+		
+		System.out.println("Just drew the floor");
+		
+		loadingAnimation.setVisible(false);
+		mapGrid.setVisible(true);*/
+	}
+	
+	public void setupGame() {
+		game = new Engine();
+		System.out.println("Just instantiated the engine.");
+		
+		drawFloor();
+		System.out.println("Just drew the floor");
+		
+		loadingAnimation.setVisible(false);
+		mapGrid.setVisible(true);
 	}
 	
 	public void drawFloor() {

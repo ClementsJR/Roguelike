@@ -44,9 +44,13 @@ public class MainMenuController {
 	
 	public void newGame(MouseEvent event) {
         try {
+        	System.out.println("Just clicked.");
+        	
         	FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("GameScreen.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), Main.DEFAULT_WINDOW_WIDTH, Main.DEFAULT_WINDOW_HEIGHT);
+            
+            System.out.println("Just instantiated the scene.");
             
             Stage stage = new Stage();
             stage.setTitle("Roguelike");
@@ -54,7 +58,13 @@ public class MainMenuController {
             stage.setScene(scene);
             stage.show();
             
+            System.out.println("Just showed the stage.");
+            
             ((Node)(event.getSource())).getScene().getWindow().hide();
+            
+            System.out.println("Just hid the main menu.");
+            
+            ((GameScreenController) fxmlLoader.getController()).setupGame();
         }
         catch (IOException e) {
             e.printStackTrace();
