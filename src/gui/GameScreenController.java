@@ -3,7 +3,7 @@ package gui;
 import java.util.LinkedList;
 
 import engine.*;
-
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
@@ -19,31 +19,23 @@ public class GameScreenController {
 	
 	@FXML
 	public void initialize() {
-		System.out.println("Just about to initialize the game.");
-		
+		startLoadingAnimation();
+	}
+	
+	private void startLoadingAnimation() {
 		mapGrid.setVisible(false);
-		
-		/*game = new Engine();
-		
-		System.out.println("Just instantiated the engine.");
-		
-		drawFloor();
-		
-		System.out.println("Just drew the floor");
-		
+		loadingAnimation.setVisible(true);
+	}
+	
+	public void endLoadingAnimation() {
 		loadingAnimation.setVisible(false);
-		mapGrid.setVisible(true);*/
+		mapGrid.setVisible(true);
 	}
 	
 	public void setupGame() {
 		game = new Engine();
-		System.out.println("Just instantiated the engine.");
-		
 		drawFloor();
-		System.out.println("Just drew the floor");
-		
-		loadingAnimation.setVisible(false);
-		mapGrid.setVisible(true);
+		endLoadingAnimation();
 	}
 	
 	public void drawFloor() {
