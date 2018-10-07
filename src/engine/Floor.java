@@ -82,8 +82,6 @@ public class Floor {
 		}
 	}
 	
-	//TODO: Implement enemy generation here
-	
 	public enum MapGenAlgorithm {
 		BSP, CELLULAR_AUTOMATA, TEST_ROOM;
 	}

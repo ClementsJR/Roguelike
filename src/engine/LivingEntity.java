@@ -7,7 +7,6 @@ public abstract class LivingEntity extends Entity {
 	protected int currentHealth;
 	
 	protected ArrayList<StatusEffect> activeStatusEffects;
-	protected ArrayList<CurrentBehavior> entityCurrentBehavior;
 	
 	public LivingEntity() {
 		super(true);
@@ -15,9 +14,5 @@ public abstract class LivingEntity extends Entity {
 	
 	public enum StatusEffect {
 		POISONED, PARALYZED, CONFUSED, CHARMED, FRIGHTENED, BOUND, RABID;
-	}
-	
-	public enum CurrentBehavior {
-		PURSUING, PATROLLING, FLEEING, HOLDINGPOSITION;
 	}
 }
