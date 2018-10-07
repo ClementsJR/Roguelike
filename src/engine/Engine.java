@@ -34,7 +34,7 @@ public class Engine {
 		
 		eventQueue = new LinkedList<GameEvent>();
 		
-		//Puts the player on the map. The location (4,4) is just for testing purposes.
+		//Puts the player on the map. The location (1,1) is just for testing purposes.
 		movePlayerTo(playerPosition);
 		
 		eventQueue.clear();
