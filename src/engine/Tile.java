@@ -27,6 +27,10 @@ public class Tile {
 		occupants.add(newOccupant);
 	}
 	
+	public void removeOccupant(Entity entity) {
+		occupants.remove(entity);
+	}
+	
 	public void setBaseEntity(Entity base) {
 		baseEntity = base;
 	}

@@ -63,6 +63,7 @@ public class Engine {
 	public void tileClicked(Position clickedPosition) {
 		if(isValidMove(clickedPosition)) {
 			movePlayerTo(clickedPosition);
+			
 		}
 	}
 	
@@ -78,7 +79,7 @@ public class Engine {
 		GameEvent moveRecord = new GameEvent(player, playerPosition, EventType.MOVES_TO, target);
 		eventQueue.add(moveRecord);
 		
-		playerTile.getOccupants().remove(player);
+		playerTile.removeOccupant(player);
 		playerTile = floors.get(currentFloorIdx).getTileAt(target);
 		playerTile.addOccupant(player);
 		
