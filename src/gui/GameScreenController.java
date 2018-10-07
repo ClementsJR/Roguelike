@@ -42,7 +42,7 @@ public class GameScreenController {
 		drawFloor();
 		System.out.println("Just drew the floor");
 		
-		loadingAnimation.setVisible(false);
+		//loadingAnimation.setVisible(false);
 		mapGrid.setVisible(true);
 	}
 	

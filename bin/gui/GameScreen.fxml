@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Group?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
@@ -7,11 +8,15 @@
 
 <Pane styleClass="gameBackgroundPane" stylesheets="@gameStyles.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameScreenController">
    <children>
-      <ImageView fx:id="loadingAnimation" pickOnBounds="false" preserveRatio="true">
-         <image>
-            <Image url="@../assets/img/Book.gif" />
-         </image>
-      </ImageView>
       <TilePane fx:id="mapGrid" alignment="CENTER" prefTileHeight="32.0" prefTileWidth="32.0" />
+      <Group>
+         <children>
+            <ImageView fx:id="loadingAnimation" pickOnBounds="false" preserveRatio="true">
+               <image>
+                  <Image url="@../assets/img/Book.gif" />
+               </image>
+            </ImageView>
+         </children>
+      </Group>
    </children>
 </Pane>
