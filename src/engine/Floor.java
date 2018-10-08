@@ -142,6 +142,8 @@ public class Floor {
 					leftChild.createRooms();
 				if (rightChild != null)
 					rightChild.createRooms();
+				if (leftChild != null && rightChild != null)
+					createHall(leftChild.getRoom(), rightChild.getRoom());
 			}
 			else {
 				Position roomSize;
@@ -161,9 +163,104 @@ public class Floor {
 				}
 			}
 		}
+		
+		public void createHall(Rectangle l, Rectangle r) {
+			ArrayList <Rectangle> halls = new ArrayList <Rectangle> ();
+			
+			Position pos1 = new Position(getrandbetween(l.y + 1, l.y + l.height - 2), getrandbetween(l.x + 1, l.x + l.width - 2));
+			Position pos2 = new Position(getrandbetween(r.y + 1, r.y + r.height - 2), getrandbetween(r.x + 1, r.x + r.width - 2));
+			
+			int w = pos2.getCol() - pos1.getCol();
+			int h = pos2.getRow() - pos1.getRow();
+			
+			if (w < 0) {
+				if (h < 0) {
+					if (randnum.nextDouble() < 0.5) {
+						halls.add(new Rectangle(pos2.getCol(), pos1.getRow(), Math.abs(w), 1));
+						halls.add(new Rectangle(pos2.getCol(), pos2.getRow(), 1, Math.abs(h)));
+					}
+					else {
+						halls.add(new Rectangle(pos2.getCol(), pos1.getRow(), Math.abs(w), 1));
+						halls.add(new Rectangle(pos1.getCol(), pos2.getRow(), 1, Math.abs(h)));
+					}
+				}
+				else if (h > 0) {
+					if (randnum.nextDouble() < 0.5) {
+						halls.add(new Rectangle(pos2.getCol(), pos1.getRow(), Math.abs(w), 1));
+						halls.add(new Rectangle(pos2.getCol(), pos1.getRow(), 1, Math.abs(h)));
+					}
+					else {
+						halls.add(new Rectangle(pos2.getCol(), pos2.getRow(), Math.abs(w), 1));
+						halls.add(new Rectangle(pos1.getCol(), pos1.getRow(), 1, Math.abs(h)));
+					}
+				}
+				else 
+					halls.add(new Rectangle(pos2.getCol(), pos2.getRow(), Math.abs(w), 1));
+			}
+			else if (w > 0) {
+				if (h < 0) {
+					if (randnum.nextDouble() < 0.5) {
+						halls.add(new Rectangle(pos1.getCol(), pos2.getRow(), Math.abs(w), 1));
+						halls.add(new Rectangle(pos1.getCol(), pos2.getRow(), 1, Math.abs(h)));
+						}
+					else {
+						halls.add(new Rectangle(pos1.getCol(), pos1.getRow(), Math.abs(w), 1));
+						halls.add(new Rectangle(pos2.getCol(), pos2.getRow(), 1, Math.abs(h)));
+					}
+				}
+				else if (h > 0) {
+					if (randnum.nextDouble() < 0.5) {
+						halls.add(new Rectangle(pos1.getCol(), pos1.getRow(), Math.abs(w), 1));
+						halls.add(new Rectangle(pos2.getCol(), pos1.getRow(), 1, Math.abs(h)));
+					}
+					else {
+						halls.add(new Rectangle(pos1.getCol(), pos1.getRow(), Math.abs(w), 1));
+						halls.add(new Rectangle(pos2.getCol(), pos1.getRow(), 1, Math.abs(h)));
+					}
+				}
+			else 
+				halls.add(new Rectangle(pos1.getCol(), pos1.getRow(), Math.abs(w), 1));
+			}
+			else {
+				if (h < 0)
+					halls.add(new Rectangle(pos2.getCol(), pos2.getRow(), 1, Math.abs(h)));
+				else if (h > 0)
+					halls.add(new Rectangle(pos1.getCol(), pos1.getRow(), 1, Math.abs(h)));
+			}
+		}
+		public Rectangle getRoom() {
+			if (room != null)
+				return room;
+			else
+			{
+				Rectangle lRoom = new Rectangle();
+				Rectangle rRoom = new Rectangle();
+				if (leftChild != null)
+					lRoom = leftChild.getRoom();
+				if (rightChild != null)
+					rRoom = rightChild.getRoom();
+				if (lRoom == null && rRoom == null)
+					return null;
+				else if (rRoom == null)
+					return lRoom;
+				else if (lRoom == null)
+					return rRoom;
+				else if (randnum.nextDouble() > 0.5)
+					return lRoom;
+				else
+					return rRoom;
+			}
+		}
 	}
 	
 	public class Rectangle{
+		public Rectangle() {};
+		public Rectangle(int newx, int newy, int newwidth, int newheight) {
+			x = newx;
+			y = newy;
+			width = newwidth;
+			height = newheight;
+		}
 		int width, height, x, y;
 	}
 	private void generateTestRoom() {
