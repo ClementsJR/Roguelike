@@ -56,8 +56,9 @@ public class MainMenuController {
             stage.show();
             
         	((Node)(event.getSource())).getScene().getWindow().hide();
-        	
-        	Platform.runLater(() -> ((GameScreenController) fxmlLoader.getController()).setupGame());
+
+        	((GameScreenController) fxmlLoader.getController()).setupGame();
+        	//Platform.runLater(() -> ((GameScreenController) fxmlLoader.getController()).setupGame());
         }
         catch (IOException e) {
             e.printStackTrace();

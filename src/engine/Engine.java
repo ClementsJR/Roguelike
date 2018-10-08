@@ -24,7 +24,7 @@ public class Engine {
 		floors = new ArrayList<Floor>();
 		
 		//The test floor is just for testing purposes. duh.
-		Floor testFloor = new Floor(0, Floor.MapGenAlgorithm.TEST_ROOM);
+		Floor testFloor = new Floor(0, Floor.MapGenAlgorithm.BSP);
 		floors.add(testFloor);
 		currentFloorIdx = 0;
 		
