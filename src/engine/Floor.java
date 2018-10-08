@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Floor {
 	private long seed;
-	private Random randnum;
+	private Random rand;
 	private MapGenAlgorithm algorithm;
 	
 	private int numRows, numCols;
@@ -14,7 +14,8 @@ public class Floor {
 	
 	public Floor(long seed, MapGenAlgorithm algorithm) {
 		this.seed = seed;
-		randnum = new Random(seed);
+		rand = new Random(seed);
+		
 		this.algorithm = algorithm;
 		
 		livingEntities = new ArrayList<LivingEntity>();
@@ -65,204 +66,52 @@ public class Floor {
 	}
 	
 	private void generateBSPMap() {
-		final int MAX_LEAF_SIZE = 20;
-		ArrayList <BSPLeaf> _leafs = new ArrayList <BSPLeaf> ();
-		BSPLeaf root = new BSPLeaf(0, 0, numCols, numRows);
-		_leafs.add(root);
+		int maxSize = BSPLeaf.MAX_LEAF_SIZE;
+		
+		Rectangle dimensions = new Rectangle(0, 0, numRows, numCols);
+		BSPLeaf root = new BSPLeaf(dimensions, rand);
+		
+		ArrayList<BSPLeaf> leaves = new ArrayList<BSPLeaf> ();
+		leaves.add(root);
 		
 		boolean did_split = true;
 		while (did_split) {
 			did_split = false;
-			for (BSPLeaf I : _leafs) {
-				if (I.leftChild == null && I.rightChild == null) {
+			
+			for (int i = 0; i < leaves.size(); i++) {
+				BSPLeaf leaf = leaves.get(i);
+				
+				if (leaf.getLeftChild() == null && leaf.getRightChild() == null) {
 					//if this leaf is too big, or 75% chance
-					if (I.width > MAX_LEAF_SIZE || I.height > MAX_LEAF_SIZE || randnum.nextDouble() > 0.25) {
-						if (I.split()) {
+					if (leaf.getWidth() > maxSize || leaf.getHeight() > maxSize || rand.nextDouble() > 0.25) {
+						if (leaf.split()) {
 							//if we split, push the child leafs to the vector
-							_leafs.add(I.leftChild);
-							_leafs.add(I.rightChild);
+							leaves.add(leaf.getLeftChild());
+							leaves.add(leaf.getRightChild());
 							did_split = true;
 						}
 					}
 				}
 			}
 		}
+		
 		root.createRooms();
+		
+		for(int i=0; i<leaves.size(); i++) {
+			BSPLeaf leaf = leaves.get(i);
+			
+			Rectangle room = leaf.getRoom();
+			for(int row = room.getRow(); row < room.getHeight(); row++) {
+				for(int col = room.getCol();col < room.getWidth(); col++) {
+					map[row][col].setBaseEntity(new Ground());
+				}
+			}
+		}
 	}
 	
 	private void generateCAMap() {
 	}
-	private int getrandbetween(int min, int max) {
-		return randnum.nextInt(max - min)+min;
-	}
 	
-	protected class BSPLeaf{
-		public int x, y, width, height;
-		
-		private final int MIN_LEAF_SIZE = 6;
-		public BSPLeaf leftChild;
-		public BSPLeaf rightChild;
-		public Rectangle room;
-		public ArrayList <Rectangle> halls;
-		
-		public BSPLeaf (int newx, int newy, int newwidth, int newheight){
-			x = newx;
-			y = newy;
-			width = newwidth;
-			height = newheight;
-		}
-		
-		public boolean split() {
-			if (leftChild != null || rightChild != null)
-				return false; //already split
-			boolean splitH = randnum.nextBoolean();
-			if (width > height && width/height >= 1.25)
-				splitH = false;
-			else if (height > width && height/width >= 1.25)
-				splitH = true;
-			int max = (splitH ? height : width) - MIN_LEAF_SIZE;
-			if (max <= MIN_LEAF_SIZE)
-				return false;	//area is too small to split
-			int split = randnum.nextInt(max - MIN_LEAF_SIZE) + MIN_LEAF_SIZE;
-			if (splitH)
-			{
-				leftChild = new BSPLeaf(x, y, width, split);
-				rightChild = new BSPLeaf(x, y + split, width, height - split);
-			}
-			else
-			{
-				leftChild = new BSPLeaf(x, y, split, height);
-				rightChild = new BSPLeaf(x + split, y, width - split, height);
-			}
-			return true; //split successful
-		}
-		public void createRooms() {
-			if (leftChild != null || rightChild != null) {
-				if (leftChild != null)
-					leftChild.createRooms();
-				if (rightChild != null)
-					rightChild.createRooms();
-				if (leftChild != null && rightChild != null)
-					createHall(leftChild.getRoom(), rightChild.getRoom());
-			}
-			else {
-				Position roomSize;
-				Position roomPos;
-				roomSize = new Position(getrandbetween(3, height - 2), getrandbetween(3, width - 2));
-				roomPos = new Position(getrandbetween(1, height - roomSize.getCol() - 1), getrandbetween(1, width - roomSize.getRow() - 1));
-				room = new Rectangle();
-				room.x = x + roomPos.getCol();
-				room.y = y + roomPos.getRow();
-				room.width = roomSize.getCol();
-				room.height = roomSize.getRow();
-				
-				for(int row = room.y; row < room.height; row++) {
-					for(int col = room.x; col < room.width; col++) {
-						map[row][col].setBaseEntity(new Ground());
-					}
-				}
-			}
-		}
-		
-		public void createHall(Rectangle l, Rectangle r) {
-			ArrayList <Rectangle> halls = new ArrayList <Rectangle> ();
-			
-			Position pos1 = new Position(getrandbetween(l.y + 1, l.y + l.height - 2), getrandbetween(l.x + 1, l.x + l.width - 2));
-			Position pos2 = new Position(getrandbetween(r.y + 1, r.y + r.height - 2), getrandbetween(r.x + 1, r.x + r.width - 2));
-			
-			int w = pos2.getCol() - pos1.getCol();
-			int h = pos2.getRow() - pos1.getRow();
-			
-			if (w < 0) {
-				if (h < 0) {
-					if (randnum.nextDouble() < 0.5) {
-						halls.add(new Rectangle(pos2.getCol(), pos1.getRow(), Math.abs(w), 1));
-						halls.add(new Rectangle(pos2.getCol(), pos2.getRow(), 1, Math.abs(h)));
-					}
-					else {
-						halls.add(new Rectangle(pos2.getCol(), pos1.getRow(), Math.abs(w), 1));
-						halls.add(new Rectangle(pos1.getCol(), pos2.getRow(), 1, Math.abs(h)));
-					}
-				}
-				else if (h > 0) {
-					if (randnum.nextDouble() < 0.5) {
-						halls.add(new Rectangle(pos2.getCol(), pos1.getRow(), Math.abs(w), 1));
-						halls.add(new Rectangle(pos2.getCol(), pos1.getRow(), 1, Math.abs(h)));
-					}
-					else {
-						halls.add(new Rectangle(pos2.getCol(), pos2.getRow(), Math.abs(w), 1));
-						halls.add(new Rectangle(pos1.getCol(), pos1.getRow(), 1, Math.abs(h)));
-					}
-				}
-				else 
-					halls.add(new Rectangle(pos2.getCol(), pos2.getRow(), Math.abs(w), 1));
-			}
-			else if (w > 0) {
-				if (h < 0) {
-					if (randnum.nextDouble() < 0.5) {
-						halls.add(new Rectangle(pos1.getCol(), pos2.getRow(), Math.abs(w), 1));
-						halls.add(new Rectangle(pos1.getCol(), pos2.getRow(), 1, Math.abs(h)));
-						}
-					else {
-						halls.add(new Rectangle(pos1.getCol(), pos1.getRow(), Math.abs(w), 1));
-						halls.add(new Rectangle(pos2.getCol(), pos2.getRow(), 1, Math.abs(h)));
-					}
-				}
-				else if (h > 0) {
-					if (randnum.nextDouble() < 0.5) {
-						halls.add(new Rectangle(pos1.getCol(), pos1.getRow(), Math.abs(w), 1));
-						halls.add(new Rectangle(pos2.getCol(), pos1.getRow(), 1, Math.abs(h)));
-					}
-					else {
-						halls.add(new Rectangle(pos1.getCol(), pos1.getRow(), Math.abs(w), 1));
-						halls.add(new Rectangle(pos2.getCol(), pos1.getRow(), 1, Math.abs(h)));
-					}
-				}
-			else 
-				halls.add(new Rectangle(pos1.getCol(), pos1.getRow(), Math.abs(w), 1));
-			}
-			else {
-				if (h < 0)
-					halls.add(new Rectangle(pos2.getCol(), pos2.getRow(), 1, Math.abs(h)));
-				else if (h > 0)
-					halls.add(new Rectangle(pos1.getCol(), pos1.getRow(), 1, Math.abs(h)));
-			}
-		}
-		public Rectangle getRoom() {
-			if (room != null)
-				return room;
-			else
-			{
-				Rectangle lRoom = new Rectangle();
-				Rectangle rRoom = new Rectangle();
-				if (leftChild != null)
-					lRoom = leftChild.getRoom();
-				if (rightChild != null)
-					rRoom = rightChild.getRoom();
-				if (lRoom == null && rRoom == null)
-					return null;
-				else if (rRoom == null)
-					return lRoom;
-				else if (lRoom == null)
-					return rRoom;
-				else if (randnum.nextDouble() > 0.5)
-					return lRoom;
-				else
-					return rRoom;
-			}
-		}
-	}
-	
-	public class Rectangle{
-		public Rectangle() {};
-		public Rectangle(int newx, int newy, int newwidth, int newheight) {
-			x = newx;
-			y = newy;
-			width = newwidth;
-			height = newheight;
-		}
-		int width, height, x, y;
-	}
 	private void generateTestRoom() {
 		numRows = 10;
 		numCols = 10;
