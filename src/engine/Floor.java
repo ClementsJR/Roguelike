@@ -97,7 +97,7 @@ public class Floor {
 		
 		root.createRooms();
 		
-		for(int i=0; i<leaves.size(); i++) {
+		/*for(int i=0; i<leaves.size(); i++) {
 			BSPLeaf leaf = leaves.get(i);
 			
 			Rectangle room = leaf.getRoom();
@@ -106,7 +106,7 @@ public class Floor {
 					map[row][col].setBaseEntity(new Ground());
 				}
 			}
-		}
+		}*/
 	}
 	
 	private void generateCAMap() {
