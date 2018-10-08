@@ -41,7 +41,10 @@ public class Floor {
 		return numCols;
 	}
 	
-	public Tile getTileAt(int row, int col) {
+	public Tile getTileAt(Position target) {
+		int row = target.getRow();
+		int col = target.getCol();
+		
 		return map[row][col];
 	}
 	
@@ -65,8 +68,8 @@ public class Floor {
 	}
 	
 	private void generateTestRoom() {
-		numRows = 150;
-		numCols = 32;
+		numRows = 10;
+		numCols = 10;
 		
 		for(int row = 0; row < numRows; row++) {
 			for(int col = 0; col < numCols; col++) {
@@ -78,6 +81,8 @@ public class Floor {
 			}
 		}
 	}
+	
+	//TODO: Implement enemy generation here
 	
 	public enum MapGenAlgorithm {
 		BSP, CELLULAR_AUTOMATA, TEST_ROOM;

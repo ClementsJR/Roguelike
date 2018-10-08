@@ -3,7 +3,7 @@ package engine;
 import javafx.scene.image.Image;
 
 public class Wall extends Entity {
-	private static final String SPRITE_URL = "/assets/img/brick_gray_0.png";
+	public static final String SPRITE_URL = "/assets/img/brick_gray_0.png";
 	
 	public Wall() {
 		impassable = true;

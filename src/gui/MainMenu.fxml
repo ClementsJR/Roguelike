@@ -16,10 +16,6 @@
                <font>
                   <Font size="18.0" />
                </font></Button>
-            <Button fx:id="loadGameBtn" accessibleText="Load a saved game" disable="true" mnemonicParsing="false" styleClass="mmButton" stylesheets="@mainMenuStyles.css" text="Load Game" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font size="18.0" />
-               </font></Button>
          </children>
          <effect>
             <DropShadow color="#646464" />

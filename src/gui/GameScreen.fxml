@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.TilePane?>
-<?import javafx.scene.layout.VBox?>
 
-
-<BorderPane id="gameBorderPane" stylesheets="@gameStyles.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameScreenController">
-   <center>
-      <VBox alignment="CENTER" fillWidth="false" BorderPane.alignment="CENTER">
+<Pane styleClass="gameBackgroundPane" stylesheets="@gameStyles.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameScreenController">
+   <children>
+      <TilePane fx:id="mapGrid" alignment="CENTER" prefTileHeight="32.0" prefTileWidth="32.0" />
+      <Group>
          <children>
-            <TilePane fx:id="mapGrid" alignment="CENTER" prefTileHeight="32.0" prefTileWidth="32.0" />
+            <ImageView fx:id="loadingAnimation" pickOnBounds="false" preserveRatio="true">
+               <image>
+                  <Image url="@../assets/img/Book.gif" />
+               </image>
+            </ImageView>
          </children>
-      </VBox>
-   </center>
-</BorderPane>
+      </Group>
+   </children>
+</Pane>

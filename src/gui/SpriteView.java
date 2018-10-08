@@ -2,8 +2,7 @@ package gui;
 
 import java.util.ArrayList;
 
-import engine.Entity;
-import engine.Tile;
+import engine.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;

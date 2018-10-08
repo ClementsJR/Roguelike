@@ -1,19 +1,24 @@
 package engine;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+
+import engine.GameEvent.EventType;
 
 public class Engine {
 	public static final int DEFAULT_NUM_ROWS = 150;
 	public static final int DEFAULT_NUM_COLS = 150;
 	
-	private static final int TOTAL_NUM_FLOORS = 30;
+	private static final int MAX_NUM_FLOORS = 30;
 	
 	private ArrayList<Floor> floors;
 	private int currentFloorIdx;
 	
 	private PlayerCharacter player;
 	private Tile playerTile;
-	private int playerRow = 0, playerCol = 0;
+	private Position playerPosition;
+	
+	private LinkedList<GameEvent> eventQueue;
 	
 	public Engine() {
 		floors = new ArrayList<Floor>();
@@ -25,14 +30,18 @@ public class Engine {
 		
 		player = new PlayerCharacter();
 		playerTile = new Tile();
+		playerPosition = new Position(1, 1);
 		
-		//Puts the player on the map. The location (4,4) is just for testing purposes.
-		movePlayerTo(1,1);
+		eventQueue = new LinkedList<GameEvent>();
 		
+		//Puts the player on the map. The location (1,1) is just for testing purposes.
+		movePlayerTo(playerPosition);
+		
+		eventQueue.clear();
 	}
 	
-	public Tile getTileAt(int row, int col) {
-		return floors.get(currentFloorIdx).getTileAt(row, col);
+	public Tile getTileAt( Position position ) {
+		return floors.get(currentFloorIdx).getTileAt(position);
 	}
 
 	public int getNumRows() {
@@ -43,21 +52,22 @@ public class Engine {
 		return floors.get(currentFloorIdx).getNumCols();
 	}
 	
-	public int getPlayerRow() {
-		return playerRow;
+	public Position getPlayerPosition() {
+		return playerPosition;
 	}
 	
-	public int getPlayerCol() {
-		return playerCol;
+	public LinkedList<GameEvent> getEventQueue() {
+		return eventQueue;
 	}
 	
-	public void tileClicked(int row, int col) {
-		if(isValidMove(row, col)) {
-			movePlayerTo(row, col);
+	public void tileClicked(Position clickedPosition) {
+		if(isValidMove(clickedPosition)) {
+			movePlayerTo(clickedPosition);
+			
 		}
 	}
 	
-	private boolean isValidMove(int row, int col) {
+	private boolean isValidMove(Position targetPosition) {
 		
 		//TODO:
 		//Test if the location is adjacent to the player and if there is anything in the way.
@@ -65,12 +75,14 @@ public class Engine {
 		return true;
 	}
 	
-	private void movePlayerTo(int row, int col) {
-		playerTile.getOccupants().remove(player);
-		playerTile = floors.get(currentFloorIdx).getTileAt(row, col);
+	private void movePlayerTo(Position target) {
+		GameEvent moveRecord = new GameEvent(player, playerPosition, EventType.MOVES_TO, target);
+		eventQueue.add(moveRecord);
+		
+		playerTile.removeOccupant(player);
+		playerTile = floors.get(currentFloorIdx).getTileAt(target);
 		playerTile.addOccupant(player);
 		
-		playerRow = row;
-		playerCol = col;
+		playerPosition = target;
 	}
 }

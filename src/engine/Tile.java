@@ -24,10 +24,28 @@ public class Tile {
 	}
 	
 	public void addOccupant(Entity newOccupant) {
-		occupants.add(newOccupant);
+		if(!blocked) {
+			occupants.add(newOccupant);
+			
+			if(newOccupant.isImpassable()) {
+				blocked = true;
+			}
+		}
+	}
+	
+	public void removeOccupant(Entity entity) {
+		boolean removed = occupants.remove(entity);
+		
+		if(removed) {
+			blocked = false;
+		}
 	}
 	
 	public void setBaseEntity(Entity base) {
 		baseEntity = base;
+		
+		if(baseEntity.isImpassable()) {
+			blocked = true;
+		}
 	}
 }
