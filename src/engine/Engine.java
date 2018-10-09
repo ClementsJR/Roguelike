@@ -2,6 +2,7 @@ package engine;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 
 import engine.GameEvent.EventType;
 
@@ -23,8 +24,10 @@ public class Engine {
 	public Engine() {
 		floors = new ArrayList<Floor>();
 		
+		Random rand = new Random();
+		
 		//The test floor is just for testing purposes. duh.
-		Floor testFloor = new Floor(0, Floor.MapGenAlgorithm.BSP);
+		Floor testFloor = new Floor(rand.nextLong(), Floor.MapGenAlgorithm.BSP);
 		floors.add(testFloor);
 		currentFloorIdx = 0;
 		

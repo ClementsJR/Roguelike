@@ -90,7 +90,7 @@ public class BSPLeaf {
 			
 			roomEndPos = new Position(getRandomNumberBetween(3, dimensions.getHeight() - 2), getRandomNumberBetween(3, dimensions.getWidth() - 2));
 			
-			roomStartPos = new Position(dimensions.getRow() + getRandomNumberBetween(1, dimensions.getHeight() - roomEndPos.getCol() - 1), dimensions.getCol() + getRandomNumberBetween(1, dimensions.getWidth() - roomEndPos.getRow() - 1));
+			roomStartPos = new Position(dimensions.getRow() + getRandomNumberBetween(1, dimensions.getHeight() - roomEndPos.getRow() - 1), dimensions.getCol() + getRandomNumberBetween(1, dimensions.getWidth() - roomEndPos.getCol() - 1));
 			
 			room = new Rectangle(roomStartPos.getRow(), roomStartPos.getCol(), roomEndPos.getRow(), roomEndPos.getCol());
 		}

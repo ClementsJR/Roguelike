@@ -102,11 +102,11 @@ public class Floor {
 			
 			Rectangle room = leaf.getRoom();
 			
-			if(room.getRow() < 0  || room.getCol() < 0)
-				continue;
+			//if(room.getRow() < 0  || room.getCol() < 0)
+			//	continue;
 			
-			if(room.getRow() + room.getHeight() >= Engine.DEFAULT_NUM_ROWS || room.getCol() + room.getWidth() >= Engine.DEFAULT_NUM_ROWS)
-				continue;
+			//if(room.getRow() + room.getHeight() >= Engine.DEFAULT_NUM_ROWS || room.getCol() + room.getWidth() >= Engine.DEFAULT_NUM_ROWS)
+			//	continue;
 			
 			for(int row = room.getRow(); row < room.getRow() + room.getHeight(); row++) {
 				for(int col = room.getCol();col < room.getCol() + room.getWidth(); col++) {
@@ -123,11 +123,11 @@ public class Floor {
 			for(int j = 0; j < halls.size(); j++) {
 				Rectangle hall = halls.get(j);
 				
-				if(hall.getRow() < 0  || hall.getCol() < 0)
-					continue;
+				//if(hall.getRow() < 0  || hall.getCol() < 0)
+				//	continue;
 				
-				if(hall.getRow() + hall.getHeight() >= Engine.DEFAULT_NUM_ROWS || hall.getCol() + hall.getWidth() >= Engine.DEFAULT_NUM_ROWS)
-					continue;
+				//if(hall.getRow() + hall.getHeight() >= Engine.DEFAULT_NUM_ROWS || hall.getCol() + hall.getWidth() >= Engine.DEFAULT_NUM_ROWS)
+				//	continue;
 				
 				for(int row = hall.getRow(); row < hall.getRow() + hall.getHeight(); row++) {
 					for(int col = hall.getCol();col < hall.getCol() + hall.getWidth(); col++) {
