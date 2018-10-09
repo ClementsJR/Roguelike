@@ -100,6 +100,9 @@ public class Floor {
 		for(int i=0; i<leaves.size(); i++) {
 			BSPLeaf leaf = leaves.get(i);
 			
+			//if(!leaf.hasRoom())
+			//	continue;
+			
 			Rectangle room = leaf.getRoom();
 			
 			//if(room.getRow() < 0  || room.getCol() < 0)

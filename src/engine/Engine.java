@@ -27,7 +27,7 @@ public class Engine {
 		Random rand = new Random();
 		
 		//The test floor is just for testing purposes. duh.
-		Floor testFloor = new Floor(rand.nextLong(), Floor.MapGenAlgorithm.BSP);
+		Floor testFloor = new Floor(0, Floor.MapGenAlgorithm.BSP);
 		floors.add(testFloor);
 		currentFloorIdx = 0;
 		

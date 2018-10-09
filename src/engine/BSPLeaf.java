@@ -85,14 +85,10 @@ public class BSPLeaf {
 			Position roomStartPos;
 			Position roomEndPos;
 			
-			//roomEndPos = new Position(getRandomNumberBetween(3, dimensions.getHeight() - 2), getRandomNumberBetween(3, dimensions.getWidth() - 2));
-			//roomStartPos = new Position(getRandomNumberBetween(1, dimensions.getHeight() - roomEndPos.getCol() - 1), getRandomNumberBetween(1, dimensions.getWidth() - roomEndPos.getRow() - 1));
-			
 			roomEndPos = new Position(getRandomNumberBetween(3, dimensions.getHeight() - 2), getRandomNumberBetween(3, dimensions.getWidth() - 2));
+			roomStartPos = new Position(getRandomNumberBetween(1, dimensions.getHeight() - roomEndPos.getRow() - 1), getRandomNumberBetween(1, dimensions.getWidth() - roomEndPos.getCol() - 1));
 			
-			roomStartPos = new Position(dimensions.getRow() + getRandomNumberBetween(1, dimensions.getHeight() - roomEndPos.getRow() - 1), dimensions.getCol() + getRandomNumberBetween(1, dimensions.getWidth() - roomEndPos.getCol() - 1));
-			
-			room = new Rectangle(roomStartPos.getRow(), roomStartPos.getCol(), roomEndPos.getRow(), roomEndPos.getCol());
+			room = new Rectangle(dimensions.getRow() + roomStartPos.getRow(), dimensions.getCol() + roomStartPos.getCol(), roomEndPos.getRow(), roomEndPos.getCol());
 		}
 		
 	}
@@ -101,51 +97,51 @@ public class BSPLeaf {
 		halls = new ArrayList<Rectangle> ();
 		
 		Position leftPos = new Position(getRandomNumberBetween(left.getRow() + 1, left.getRow() + left.getHeight() - 2), getRandomNumberBetween(left.getCol() + 1, left.getCol() + left.getWidth() - 2));
-		Position pos2 = new Position(getRandomNumberBetween(right.getRow() + 1, right.getRow() + right.getHeight() - 2), getRandomNumberBetween(right.getCol() + 1, right.getCol() + right.getWidth() - 2));
+		Position rightPos = new Position(getRandomNumberBetween(right.getRow() + 1, right.getRow() + right.getHeight() - 2), getRandomNumberBetween(right.getCol() + 1, right.getCol() + right.getWidth() - 2));
 		
-		int w = pos2.getCol() - leftPos.getCol();
-		int h = pos2.getRow() - leftPos.getRow();
+		int w = rightPos.getCol() - leftPos.getCol();
+		int h = rightPos.getRow() - leftPos.getRow();
 		
 		if (w < 0) {
 			if (h < 0) {
-				if (rand.nextDouble() < 0.5) {
-					halls.add(new Rectangle(leftPos.getRow(), pos2.getCol(), 1, Math.abs(w)));
-					halls.add(new Rectangle(pos2.getRow(), pos2.getCol(), Math.abs(h), 1));
+				if (rand.nextBoolean()) {
+					halls.add(new Rectangle(leftPos.getRow(), rightPos.getCol(), 1, Math.abs(w)));
+					halls.add(new Rectangle(rightPos.getRow(), rightPos.getCol(), Math.abs(h), 1));
 				} else {
-					halls.add(new Rectangle(leftPos.getRow(), pos2.getCol(), 1, Math.abs(w)));
-					halls.add(new Rectangle(pos2.getRow(), leftPos.getCol(), Math.abs(h), 1));
+					halls.add(new Rectangle(rightPos.getRow(), rightPos.getCol(), 1, Math.abs(w)));
+					halls.add(new Rectangle(rightPos.getRow(), leftPos.getCol(), Math.abs(h), 1));
 				}
 				
 			} else if (h > 0) {
 				if (rand.nextBoolean()) {
-					halls.add(new Rectangle(leftPos.getRow(), pos2.getCol(), 1, Math.abs(w)));
-					halls.add(new Rectangle(leftPos.getRow(), pos2.getCol(), Math.abs(h), 1));
+					halls.add(new Rectangle(leftPos.getRow(), rightPos.getCol(), 1, Math.abs(w)));
+					halls.add(new Rectangle(leftPos.getRow(), rightPos.getCol(), Math.abs(h), 1));
 				} else {
-					halls.add(new Rectangle(pos2.getRow(), pos2.getCol(), 1, Math.abs(w)));
+					halls.add(new Rectangle(rightPos.getRow(), rightPos.getCol(), 1, Math.abs(w)));
 					halls.add(new Rectangle(leftPos.getRow(), leftPos.getCol(), Math.abs(h), 1));
 				}
 				
 			} else {
-				halls.add(new Rectangle(pos2.getRow(), pos2.getCol(), 1, Math.abs(w)));
+				halls.add(new Rectangle(rightPos.getRow(), rightPos.getCol(), 1, Math.abs(w)));
 			}
 			
 		} else if (w > 0) {
 			if (h < 0) {
 				if (rand.nextBoolean()) {
-					halls.add(new Rectangle(pos2.getRow(), leftPos.getCol(), 1, Math.abs(w)));
-					halls.add(new Rectangle(pos2.getRow(), leftPos.getCol(), Math.abs(h), 1));
+					halls.add(new Rectangle(rightPos.getRow(), leftPos.getCol(), 1, Math.abs(w)));
+					halls.add(new Rectangle(rightPos.getRow(), leftPos.getCol(), Math.abs(h), 1));
 				} else {
 					halls.add(new Rectangle(leftPos.getRow(), leftPos.getCol(), 1, Math.abs(w)));
-					halls.add(new Rectangle(pos2.getRow(), pos2.getCol(), Math.abs(h), 1));
+					halls.add(new Rectangle(rightPos.getRow(), rightPos.getCol(), Math.abs(h), 1));
 				}
 				
 			} else if (h > 0) {
 				if (rand.nextBoolean()) {
 					halls.add(new Rectangle(leftPos.getRow(), leftPos.getCol(), 1, Math.abs(w)));
-					halls.add(new Rectangle(leftPos.getRow(), pos2.getCol(), Math.abs(h), 1));
+					halls.add(new Rectangle(leftPos.getRow(), rightPos.getCol(), Math.abs(h), 1));
 				} else {
-					halls.add(new Rectangle(leftPos.getRow(), leftPos.getCol(), 1, Math.abs(w)));
-					halls.add(new Rectangle(leftPos.getRow(), pos2.getCol(), Math.abs(h), 1));
+					halls.add(new Rectangle(rightPos.getRow(), leftPos.getCol(), 1, Math.abs(w)));
+					halls.add(new Rectangle(leftPos.getRow(), leftPos.getCol(), Math.abs(h), 1));
 				}
 				
 			} else {
@@ -154,7 +150,7 @@ public class BSPLeaf {
 			
 		} else {
 			if (h < 0) {
-				halls.add(new Rectangle(pos2.getRow(), pos2.getCol(), Math.abs(h), 1));
+				halls.add(new Rectangle(rightPos.getRow(), rightPos.getCol(), Math.abs(h), 1));
 			} else if (h > 0) {
 				halls.add(new Rectangle(leftPos.getRow(), leftPos.getCol(), Math.abs(h), 1));
 			}
@@ -197,6 +193,8 @@ public class BSPLeaf {
 	public BSPLeaf getLeftChild() { return leftChild; }
 	public BSPLeaf getRightChild() { return rightChild; }
 	public ArrayList<Rectangle> getHalls() { return halls; }
+	
+	public boolean hasRoom() { return room == null; }
 	
 	private int getRandomNumberBetween(int min, int max) {
 		if(max == min) {
