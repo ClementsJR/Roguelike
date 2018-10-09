@@ -196,7 +196,7 @@ public class BSPLeaf {
 	public int getWidth() { return dimensions.getWidth(); }
 	public BSPLeaf getLeftChild() { return leftChild; }
 	public BSPLeaf getRightChild() { return rightChild; }
-	//public Rectangle getRoom() { return room; }
+	public ArrayList<Rectangle> getHalls() { return halls; }
 	
 	private int getRandomNumberBetween(int min, int max) {
 		if(max == min) {

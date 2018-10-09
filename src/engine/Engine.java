@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import engine.GameEvent.EventType;
 
 public class Engine {
-	public static final int DEFAULT_NUM_ROWS = 64;
-	public static final int DEFAULT_NUM_COLS = 64;
+	public static final int DEFAULT_NUM_ROWS = 32;
+	public static final int DEFAULT_NUM_COLS = 32;
 	
 	private static final int MAX_NUM_FLOORS = 30;
 	

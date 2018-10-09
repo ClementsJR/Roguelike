@@ -68,7 +68,7 @@ public class Floor {
 	private void generateBSPMap() {
 		int maxSize = BSPLeaf.MAX_LEAF_SIZE;
 		
-		Rectangle dimensions = new Rectangle(0, 0, numRows, numCols);
+		Rectangle dimensions = new Rectangle(1, 1, numRows - 1, numCols - 1);
 		BSPLeaf root = new BSPLeaf(dimensions, rand);
 		
 		ArrayList<BSPLeaf> leaves = new ArrayList<BSPLeaf> ();
@@ -101,23 +101,38 @@ public class Floor {
 			BSPLeaf leaf = leaves.get(i);
 			
 			Rectangle room = leaf.getRoom();
-
-			/*System.out.println("Leaf:\t" + i);
-			System.out.println("\tRow:\t" + room.getRow());
-			System.out.println("\tCol:\t" + room.getCol());
-			System.out.println("\tHeight:\t" + room.getHeight());
-			System.out.println("\tWidth:\t" + room.getWidth());
-			System.out.println();*/
 			
 			if(room.getRow() < 0  || room.getCol() < 0)
 				continue;
 			
-			if(room.getRow() + room.getHeight() >= 64 || room.getCol() + room.getWidth() >= 64)
+			if(room.getRow() + room.getHeight() >= Engine.DEFAULT_NUM_ROWS || room.getCol() + room.getWidth() >= Engine.DEFAULT_NUM_ROWS)
 				continue;
 			
 			for(int row = room.getRow(); row < room.getRow() + room.getHeight(); row++) {
 				for(int col = room.getCol();col < room.getCol() + room.getWidth(); col++) {
 					map[row][col].setBaseEntity(new Ground());
+				}
+			}
+
+			ArrayList<Rectangle> halls = leaf.getHalls();
+			
+			if(halls == null) {
+				continue;
+			}
+			
+			for(int j = 0; j < halls.size(); j++) {
+				Rectangle hall = halls.get(j);
+				
+				if(hall.getRow() < 0  || hall.getCol() < 0)
+					continue;
+				
+				if(hall.getRow() + hall.getHeight() >= Engine.DEFAULT_NUM_ROWS || hall.getCol() + hall.getWidth() >= Engine.DEFAULT_NUM_ROWS)
+					continue;
+				
+				for(int row = hall.getRow(); row < hall.getRow() + hall.getHeight(); row++) {
+					for(int col = hall.getCol();col < hall.getCol() + hall.getWidth(); col++) {
+						map[row][col].setBaseEntity(new Ground());
+					}
 				}
 			}
 		}
