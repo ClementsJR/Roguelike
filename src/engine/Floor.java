@@ -97,16 +97,30 @@ public class Floor {
 		
 		root.createRooms();
 		
-		/*for(int i=0; i<leaves.size(); i++) {
+		for(int i=0; i<leaves.size(); i++) {
 			BSPLeaf leaf = leaves.get(i);
 			
 			Rectangle room = leaf.getRoom();
-			for(int row = room.getRow(); row < room.getHeight(); row++) {
-				for(int col = room.getCol();col < room.getWidth(); col++) {
+
+			/*System.out.println("Leaf:\t" + i);
+			System.out.println("\tRow:\t" + room.getRow());
+			System.out.println("\tCol:\t" + room.getCol());
+			System.out.println("\tHeight:\t" + room.getHeight());
+			System.out.println("\tWidth:\t" + room.getWidth());
+			System.out.println();*/
+			
+			if(room.getRow() < 0  || room.getCol() < 0)
+				continue;
+			
+			if(room.getRow() + room.getHeight() >= 64 || room.getCol() + room.getWidth() >= 64)
+				continue;
+			
+			for(int row = room.getRow(); row < room.getRow() + room.getHeight(); row++) {
+				for(int col = room.getCol();col < room.getCol() + room.getWidth(); col++) {
 					map[row][col].setBaseEntity(new Ground());
 				}
 			}
-		}*/
+		}
 	}
 	
 	private void generateCAMap() {

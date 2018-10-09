@@ -85,8 +85,12 @@ public class BSPLeaf {
 			Position roomStartPos;
 			Position roomEndPos;
 			
+			//roomEndPos = new Position(getRandomNumberBetween(3, dimensions.getHeight() - 2), getRandomNumberBetween(3, dimensions.getWidth() - 2));
+			//roomStartPos = new Position(getRandomNumberBetween(1, dimensions.getHeight() - roomEndPos.getCol() - 1), getRandomNumberBetween(1, dimensions.getWidth() - roomEndPos.getRow() - 1));
+			
 			roomEndPos = new Position(getRandomNumberBetween(3, dimensions.getHeight() - 2), getRandomNumberBetween(3, dimensions.getWidth() - 2));
-			roomStartPos = new Position(getRandomNumberBetween(1, dimensions.getHeight() - roomEndPos.getCol() - 1), getRandomNumberBetween(1, dimensions.getWidth() - roomEndPos.getRow() - 1));
+			
+			roomStartPos = new Position(dimensions.getRow() + getRandomNumberBetween(1, dimensions.getHeight() - roomEndPos.getCol() - 1), dimensions.getCol() + getRandomNumberBetween(1, dimensions.getWidth() - roomEndPos.getRow() - 1));
 			
 			room = new Rectangle(roomStartPos.getRow(), roomStartPos.getCol(), roomEndPos.getRow(), roomEndPos.getCol());
 		}
@@ -203,6 +207,6 @@ public class BSPLeaf {
 			return getRandomNumberBetween(max, min);
 		}
 		
-		return rand.nextInt(max - min)+min;
+		return rand.nextInt(max - min) + min;
 	}
 }
