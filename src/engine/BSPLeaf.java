@@ -19,6 +19,8 @@ public class BSPLeaf {
 	public BSPLeaf (Rectangle newDimensions, Random newRand) {
 		dimensions = newDimensions;
 		rand = newRand;
+
+		halls = new ArrayList<Rectangle>();
 	}
 	
 	public boolean split() {
@@ -93,9 +95,53 @@ public class BSPLeaf {
 		
 	}
 	
-	public void createHall(Rectangle left, Rectangle right) {
-		halls = new ArrayList<Rectangle> ();
+	/*public void createHall(Rectangle sourceRoom, Rectangle targetRoom) {
+		int sourceStartRow = sourceRoom.getRow();
+		int sourceEndRow = sourceStartRow + sourceRoom.getHeight();
+		int sourceStartCol = sourceRoom.getCol();
+		int sourceEndCol = sourceStartCol + sourceRoom.getWidth();
+
+		int targetStartRow = targetRoom.getRow();
+		int targetEndRow = targetStartRow + targetRoom.getHeight();
+		int targetStartCol = targetRoom.getCol();
+		int targetEndCol = targetStartCol + targetRoom.getWidth();
 		
+		
+	}/**/
+	
+	public void createHall(Rectangle sourceRoom, Rectangle targetRoom) {
+		int startRow = sourceRoom.getRow();
+		int startCol = sourceRoom.getCol();
+		
+		int endRow = targetRoom.getRow();
+		int endCol = targetRoom.getCol();
+		
+		int height = endRow - startRow;
+		int width = endCol - startCol;
+		
+		if(height > 0) {
+			Rectangle vertical = new Rectangle(sourceRoom.getRow(), sourceRoom.getCol(), height, 1);
+			halls.add(vertical);
+		}
+		
+		if(height < 0) {
+			Rectangle vertical = new Rectangle(targetRoom.getRow(), sourceRoom.getCol(), -height, 1);
+			halls.add(vertical);
+		}
+		
+		if(width > 0) {
+			Rectangle horizontal = new Rectangle(sourceRoom.getRow(), sourceRoom.getCol(), 1, width);
+			halls.add(horizontal);
+		}
+		
+		if(width < 0) {
+			Rectangle horizontal = new Rectangle(sourceRoom.getRow(), targetRoom.getCol(), 1, -width);
+			halls.add(horizontal);
+		}
+		
+	}/**/
+	
+	/*public void createHall(Rectangle left, Rectangle right) {
 		Position leftPos = new Position(getRandomNumberBetween(left.getRow() + 1, left.getRow() + left.getHeight() - 2), getRandomNumberBetween(left.getCol() + 1, left.getCol() + left.getWidth() - 2));
 		Position rightPos = new Position(getRandomNumberBetween(right.getRow() + 1, right.getRow() + right.getHeight() - 2), getRandomNumberBetween(right.getCol() + 1, right.getCol() + right.getWidth() - 2));
 		
@@ -156,7 +202,7 @@ public class BSPLeaf {
 			}
 		}
 		
-	}
+	}/**/
 	
 	public Rectangle getRoom() {
 		if (room != null) {
