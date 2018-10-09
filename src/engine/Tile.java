@@ -46,6 +46,8 @@ public class Tile {
 		
 		if(baseEntity.isImpassable()) {
 			blocked = true;
+		} else {
+			blocked = false;
 		}
 	}
 }
