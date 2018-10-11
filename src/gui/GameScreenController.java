@@ -86,6 +86,8 @@ public class GameScreenController {
 				((SpriteView) mapGrid.getChildren().get(targetSpriteViewIndex)).setTile(game.getTileAt(target));
 				
 				break;
+			case CHANGES_FLOOR:
+				drawFloor();
 			default:
 				//do nothing yet.
 			}
