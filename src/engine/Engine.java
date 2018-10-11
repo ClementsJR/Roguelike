@@ -28,7 +28,7 @@ public class Engine {
 		long testSeed = rand.nextLong();
 		
 		//The test floor is just for testing purposes. duh.
-		Floor testFloor = new Floor(testSeed, Floor.MapGenAlgorithm.BSP);
+		Floor testFloor = new Floor(testSeed, Floor.MapGenAlgorithm.CELLULAR_AUTOMATA);
 		floors.add(testFloor);
 		currentFloorIdx = 0;
 		
