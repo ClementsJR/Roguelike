@@ -36,6 +36,6 @@ public class GameEvent {
 	public EventType getEventType() { return type; }
 	
 	public enum EventType {
-		MOVES_TO, ATTACKS, DIES;
+		MOVES_TO, ATTACKS, DIES, CHANGES_FLOOR;
 	}
 }

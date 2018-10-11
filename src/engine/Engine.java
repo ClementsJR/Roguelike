@@ -65,18 +65,59 @@ public class Engine {
 	}
 	
 	public void tileClicked(Position clickedPosition) {
-		if(isValidMove(clickedPosition)) {
-			movePlayerTo(clickedPosition);
+		if(isAdjacentMove(clickedPosition)) {
+			Floor currentFloor = floors.get(currentFloorIdx);
+			Tile target = currentFloor.getTileAt(clickedPosition);
 			
+			if(isOpenTile(target)) {
+				movePlayerTo(clickedPosition);
+			} else if(isEnemyPosition(target)) {
+				playerAttacks(clickedPosition);
+			} else if(isStairPosition(target)) {
+				changeFloor(target);
+			} else {
+				return;
+			}
 		}
 	}
 	
-	private boolean isValidMove(Position targetPosition) {
+	private boolean isAdjacentMove(Position targetPosition) {
+		int rowDifference = playerPosition.getRow() - targetPosition.getRow();
+		rowDifference = Math.abs(rowDifference);
 		
-		//TODO:
-		//Test if the location is adjacent to the player and if there is anything in the way.
+		int colDifference = playerPosition.getCol() - targetPosition.getCol();
+		colDifference = Math.abs(colDifference);
 		
-		return true;
+		boolean isAdjacent = (rowDifference <= 1 && colDifference <= 1);
+		
+		return isAdjacent;
+	}
+	
+	private boolean isOpenTile(Tile target) {
+		boolean validMove = true;
+		
+		if(target.isBlocked()) {
+			validMove = false;
+		}
+		
+		return validMove;
+	}
+	
+	private boolean isEnemyPosition(Tile target) {
+		boolean hasEnemy = false;
+		
+		for(Entity entity : target.getOccupants()) {
+			if(entity.getClass() == Enemy.class) {
+				hasEnemy = true;
+				break;
+			}
+		}
+		
+		return hasEnemy;
+	}
+	
+	private boolean isStairPosition(Tile target) {
+		return false;
 	}
 	
 	private void movePlayerTo(Position target) {
@@ -88,5 +129,15 @@ public class Engine {
 		playerTile.addOccupant(player);
 		
 		playerPosition = target;
+	}
+	
+	private void playerAttacks(Position target) {
+		GameEvent attackRecord = new GameEvent(player, playerPosition, EventType.ATTACKS, target);
+		eventQueue.add(attackRecord);
+	}
+	
+	private void changeFloor(Tile stairTile) {
+		//GameEvent changeFloorRecord = new GameEvent(player, playerPosition, EventType.CHANGES_FLOOR, );
+		//eventQueue.add(changeFloorRecord);
 	}
 }

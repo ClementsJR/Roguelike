@@ -120,22 +120,22 @@ public class BSPLeaf {
 		int width = endCol - startCol;
 		
 		if(height > 0) {
-			Rectangle vertical = new Rectangle(sourceRoom.getRow(), sourceRoom.getCol(), height, 1);
+			Rectangle vertical = new Rectangle(startRow, startCol, height, 1);
 			halls.add(vertical);
 		}
 		
 		if(height < 0) {
-			Rectangle vertical = new Rectangle(targetRoom.getRow(), sourceRoom.getCol(), -height, 1);
+			Rectangle vertical = new Rectangle(endRow, startCol, -height, 1);
 			halls.add(vertical);
 		}
 		
 		if(width > 0) {
-			Rectangle horizontal = new Rectangle(sourceRoom.getRow(), sourceRoom.getCol(), 1, width);
+			Rectangle horizontal = new Rectangle(startRow + height, startCol, 1, width);
 			halls.add(horizontal);
 		}
 		
 		if(width < 0) {
-			Rectangle horizontal = new Rectangle(sourceRoom.getRow(), targetRoom.getCol(), 1, -width);
+			Rectangle horizontal = new Rectangle(startRow + height, endCol, 1, -width);
 			halls.add(horizontal);
 		}
 		

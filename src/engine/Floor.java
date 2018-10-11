@@ -68,7 +68,7 @@ public class Floor {
 	private void generateBSPMap() {
 		int maxSize = BSPLeaf.MAX_LEAF_SIZE;
 		
-		Rectangle dimensions = new Rectangle(1, 1, numRows - 1, numCols - 1);
+		Rectangle dimensions = new Rectangle(0, 0, numRows, numCols);
 		BSPLeaf root = new BSPLeaf(dimensions, rand);
 		
 		ArrayList<BSPLeaf> leaves = new ArrayList<BSPLeaf> ();
