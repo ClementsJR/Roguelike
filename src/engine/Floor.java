@@ -7,7 +7,8 @@ public class Floor {
 	private long seed;
 	private Random rand;
 	private MapGenAlgorithm algorithm;
-	
+	public static final float chanceToStartAlive = 0.40f;
+
 	private int numRows, numCols;
 	private Tile[][] map;
 	private ArrayList<LivingEntity> livingEntities;
@@ -68,7 +69,7 @@ public class Floor {
 	private void generateBSPMap() {
 		int maxSize = BSPLeaf.MAX_LEAF_SIZE;
 		
-		Rectangle dimensions = new Rectangle(0, 0, numRows, numCols);
+		Rectangle dimensions = new Rectangle(1, 1, numRows - 1, numCols - 1);
 		BSPLeaf root = new BSPLeaf(dimensions, rand);
 		
 		ArrayList<BSPLeaf> leaves = new ArrayList<BSPLeaf> ();
@@ -142,6 +143,63 @@ public class Floor {
 	}
 	
 	private void generateCAMap() {
+		boolean[][] cellmap = new boolean[numCols][numRows];
+		cellmap = initializeMap(cellmap);
+		
+		for (int i = 0; i < 6; i++)
+			cellmap = doSimulationStep (cellmap);
+		for (int row = 0; row < numRows; row ++)
+			for (int col = 0; col < numCols; col++)
+				if (cellmap [row][col])
+					map [row][col].setBaseEntity(new Wall());
+				else
+					map [row][col].setBaseEntity(new Ground());
+	}
+	
+	public int countAliveNeighbors (boolean[][] map, int x, int y) {
+		int count = 0;
+		for (int i = -1; i < 2; i++)
+			for (int j = -1; j < 2; j++)
+			{
+				int neighbor_x = x+i;
+				int neighbor_y = y+j;
+				if (i == 0 && j == 0) {
+				}
+				else if (neighbor_x < 0 || neighbor_y < 0 || neighbor_x >= map.length || neighbor_y >= map[0].length)
+					count = count + 1;
+				else if (map[neighbor_x][neighbor_y])
+					count = count + 1;
+			}
+		return count;
+	}
+	
+	public boolean[][] initializeMap (boolean[][] map){
+		for (int x = 0; x < numCols; x++)
+			for (int y = 0; y < numRows; y++)
+				if (rand.nextFloat() < chanceToStartAlive)
+					map[x][y] = true;
+		return map;
+	}
+	
+	public boolean[][] doSimulationStep (boolean[][] oldMap){
+		boolean[][] newMap = new boolean[numCols][numRows];
+		for (int x = 0; x < oldMap.length; x++)
+			for (int y = 0; y < oldMap[0].length; y++) {
+				int nbs = countAliveNeighbors (oldMap, x, y);
+				if (oldMap[x][y]) {
+					if (nbs < 3)
+						newMap[x][y] = false;
+					else
+						newMap[x][y] = true;
+				}
+				else {
+					if (nbs > 4)
+						newMap[x][y] = true;
+					else
+						newMap[x][y] = false;
+				}
+			}
+		return newMap;
 	}
 	
 	private void generateTestRoom() {
