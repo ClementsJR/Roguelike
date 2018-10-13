@@ -25,23 +25,26 @@ public class Engine {
 		floors = new ArrayList<Floor>();
 		
 		Random rand = new Random();
-		long testSeed = rand.nextLong();
+		long floorSeed = rand.nextLong();
 		
-		//The test floor is just for testing purposes. duh.
-		Floor testFloor = new Floor(testSeed, Floor.MapGenAlgorithm.CELLULAR_AUTOMATA);
-		floors.add(testFloor);
+		generateFloor(floorSeed, Floor.MapGenAlgorithm.CELLULAR_AUTOMATA);
 		currentFloorIdx = 0;
+		
+		eventQueue = new LinkedList<GameEvent>();
 		
 		player = new PlayerCharacter();
 		playerTile = new Tile();
 		playerPosition = new Position(1, 1);
 		
-		eventQueue = new LinkedList<GameEvent>();
-		
 		//Puts the player on the map. The location (1,1) is just for testing purposes.
 		movePlayerTo(playerPosition);
 		
 		eventQueue.clear();
+	}
+	
+	private void generateFloor(long seed, Floor.MapGenAlgorithm algorithm) {
+		Floor newFloor = new Floor(seed, algorithm);
+		floors.add(newFloor);
 	}
 	
 	public Tile getTileAt( Position position ) {
@@ -90,7 +93,8 @@ public class Engine {
 		
 		boolean isAdjacent = (rowDifference <= 1 && colDifference <= 1);
 		
-		return isAdjacent;
+		//return isAdjacent;
+		return true;
 	}
 	
 	private boolean isOpenTile(Tile target) {
