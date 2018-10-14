@@ -7,13 +7,8 @@ import java.util.Random;
 import engine.GameEvent.EventType;
 
 public class Engine {
-	public static final int DEFAULT_NUM_ROWS = 32;
-	public static final int DEFAULT_NUM_COLS = 32;
 	
-	private static final int MAX_NUM_FLOORS = 30;
-	
-	private ArrayList<Floor> floors;
-	private int currentFloorIdx;
+	private Dungeon dungeon;
 	
 	private PlayerCharacter player;
 	private Tile playerTile;
@@ -22,13 +17,7 @@ public class Engine {
 	private LinkedList<GameEvent> eventQueue;
 	
 	public Engine() {
-		floors = new ArrayList<Floor>();
-		
-		Random rand = new Random();
-		long floorSeed = rand.nextLong();
-		
-		generateFloor(floorSeed, Floor.MapGenAlgorithm.CELLULAR_AUTOMATA);
-		currentFloorIdx = 0;
+		dungeon = new Dungeon();
 		
 		eventQueue = new LinkedList<GameEvent>();
 		
@@ -42,21 +31,16 @@ public class Engine {
 		eventQueue.clear();
 	}
 	
-	private void generateFloor(long seed, Floor.MapGenAlgorithm algorithm) {
-		Floor newFloor = new Floor(seed, algorithm);
-		floors.add(newFloor);
-	}
-	
-	public Tile getTileAt( Position position ) {
-		return floors.get(currentFloorIdx).getTileAt(position);
+	public Tile getTileAt(Position position) {
+		return dungeon.getCurrentTileAt(position);
 	}
 
 	public int getNumRows() {
-		return floors.get(currentFloorIdx).getNumRows();
+		return dungeon.getCurrentFloor().getNumRows();
 	}
 
 	public int getNumCols() {
-		return floors.get(currentFloorIdx).getNumCols();
+		return dungeon.getCurrentFloor().getNumCols();
 	}
 	
 	public Position getPlayerPosition() {
@@ -69,8 +53,7 @@ public class Engine {
 	
 	public void tileClicked(Position clickedPosition) {
 		if(isAdjacentMove(clickedPosition)) {
-			Floor currentFloor = floors.get(currentFloorIdx);
-			Tile target = currentFloor.getTileAt(clickedPosition);
+			Tile target = dungeon.getCurrentTileAt(clickedPosition);
 			
 			if(isOpenTile(target)) {
 				movePlayerTo(clickedPosition);
@@ -129,7 +112,7 @@ public class Engine {
 		eventQueue.add(moveRecord);
 		
 		playerTile.removeOccupant(player);
-		playerTile = floors.get(currentFloorIdx).getTileAt(target);
+		playerTile = dungeon.getCurrentTileAt(target);
 		playerTile.addOccupant(player);
 		
 		playerPosition = target;

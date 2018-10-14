@@ -28,8 +28,8 @@ public class Floor {
 	}
 	
 	private void instantiateMapBase() {
-		numRows = Engine.DEFAULT_NUM_ROWS;
-		numCols = Engine.DEFAULT_NUM_COLS;
+		numRows = Dungeon.DEFAULT_NUM_ROWS;
+		numCols = Dungeon.DEFAULT_NUM_COLS;
 		map = new Tile[numRows][numCols];
 		
 		for(int row = 0; row < numRows; row++) {
