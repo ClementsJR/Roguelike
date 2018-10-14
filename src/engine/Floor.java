@@ -53,6 +53,18 @@ public class Floor {
 		return numCols;
 	}
 	
+	public ArrayList<LivingEntity> getLivingEntities() {
+		return livingEntities;
+	}
+	
+	public Position getPath(Position source, Position target) {
+		
+		Position nextStep = null;
+		
+		
+		return nextStep;
+	}
+	
 	public Tile getTileAt(Position target) {
 		int row = target.getRow();
 		int col = target.getCol();

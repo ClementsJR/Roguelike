@@ -64,6 +64,8 @@ public class Engine {
 			} else {
 				return;
 			}
+			
+			takeEnemyTurns();
 		}
 	}
 	
@@ -118,6 +120,19 @@ public class Engine {
 		
 		playerPosition = target;
 	}
+	
+	public void takeEnemyTurns() {
+		ArrayList <LivingEntity> livingEntities = dungeon.getCurrentFloor().getLivingEntities();
+		
+		for(int i = 0; i < livingEntities.size(); i++)
+		{
+			Position source = livingEntities.get(i).getCurrentPosition();
+			Position target = playerPosition;
+			Position nextStep = dungeon.getCurrentFloor().getPath(source, target);
+		}
+	}
+	
+	
 	
 	private void playerAttacks(Position target) {
 		GameEvent attackRecord = new GameEvent(player, playerPosition, EventType.ATTACKS, target);
