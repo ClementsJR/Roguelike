@@ -4,12 +4,19 @@ import java.util.LinkedList;
 
 import engine.*;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
 
 public class GameScreenController {
 	private Engine game;
+	
+	@FXML
+	Pane p;
 	
 	@FXML
 	ImageView loadingAnimation;
@@ -19,7 +26,30 @@ public class GameScreenController {
 	
 	@FXML
 	public void initialize() {
+		
 		startLoadingAnimation();
+	}
+	
+	private void handleKeyPress(KeyEvent event) {
+		System.out.println("Key pressed");
+    	switch(event.getCode()) {
+    	case UP:
+    		game.UpKeyPressed();
+    		break;
+    	case DOWN:
+    		game.DownKeyPressed();
+    		break;
+    	case LEFT:
+    		game.LeftKeyPressed();
+    		break;
+    	case RIGHT:
+    		game.RightKeyPressed();
+    		break;
+		default:
+			break;
+    	}
+        event.consume();
+        updateFloor();
 	}
 	
 	private void startLoadingAnimation() {
@@ -36,6 +66,9 @@ public class GameScreenController {
 		game = new Engine();
 		drawFloor();
 		endLoadingAnimation();
+		
+
+		p.getScene().setOnKeyPressed((event) -> handleKeyPress(event));
 	}
 	
 	public void drawFloor() {
