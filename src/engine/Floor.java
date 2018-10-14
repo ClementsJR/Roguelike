@@ -10,6 +10,9 @@ public class Floor {
 	private long seed;
 	private Random rand;
 	private MapGenAlgorithm algorithm;
+	
+	private Position stairUp;
+	private Position stairDown;
 
 	private int numRows, numCols;
 	private Tile[][] map;
@@ -100,6 +103,7 @@ public class Floor {
 		
 		root.createRooms();
 		
+		
 		for(int i=0; i<leaves.size(); i++) {
 			BSPLeaf leaf = leaves.get(i);
 			
@@ -130,6 +134,21 @@ public class Floor {
 				}
 			}
 		}
+		int index1 = rand.nextInt(leaves.size());
+		int index2 = rand.nextInt(leaves.size());
+		while (index1 == index2) {
+			index2 = rand.nextInt(leaves.size());
+		}
+		Rectangle room1 = leaves.get(index1).getRoom();
+		Rectangle room2 = leaves.get(index2).getRoom();
+		int centerRow = room1.getRow() + (room1.getHeight()/2);
+		int centerCol = room1.getCol() + (room1.getWidth()/2);
+		map[centerRow][centerCol].setBaseEntity(new Stairs(1));
+		stairDown = new Position(centerRow, centerCol);
+		centerRow = room2.getRow() + (room2.getHeight()/2);
+		centerCol = room2.getCol() + (room2.getWidth()/2);
+		map[centerRow][centerCol].setBaseEntity(new Stairs(0));
+		stairUp = new Position(centerRow, centerCol);
 	}
 	
 	private void generateCAMap() {
@@ -151,6 +170,14 @@ public class Floor {
 				}
 			}
 		}
+	}
+	
+	public Position GetStairUp() {
+		return stairUp;
+	}
+	
+	public Position GetStairDown() {
+		return stairDown;
 	}
 	
 	private boolean[][] initializeCellMap (boolean[][] map){

@@ -18,13 +18,13 @@ public class Dungeon {
 		Random rand = new Random();
 		long seed = rand.nextLong();
 		
-		generateNewFloor(seed, Floor.MapGenAlgorithm.CELLULAR_AUTOMATA);
+		generateNewFloor(seed, Floor.MapGenAlgorithm.BSP);
 		
 		currentFloorIndex = 0;
 	}
 	
 	private void generateNewFloor(long seed, Floor.MapGenAlgorithm algorithm) {
-		Floor firstFloor = new Floor(seed, Floor.MapGenAlgorithm.CELLULAR_AUTOMATA);
+		Floor firstFloor = new Floor(seed, algorithm);
 		floors.add(firstFloor);
 	}
 	
