@@ -3,7 +3,7 @@ package engine;
 import javafx.scene.image.Image;
 
 public class Stairs extends Entity {
-	int stairType;
+	private int stairType;
 	
 	public static final String STAIR_UP_SPRITE_URL = "/assets/img/stair_up.png";
 	public static final String STAIR_DOWN_SPRITE_URL = "/assets/img/stair_down.png";

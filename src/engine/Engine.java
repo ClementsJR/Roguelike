@@ -104,7 +104,8 @@ public class Engine {
 	}
 	
 	private boolean isStairPosition(Tile target) {
-		return false;
+		boolean isStair = target.getBaseEntity().getClass() == Stairs.class;
+		return isStair;
 	}
 	
 	private void movePlayerTo(Position target) {
@@ -124,7 +125,24 @@ public class Engine {
 	}
 	
 	private void changeFloor(Tile stairTile) {
-		//GameEvent changeFloorRecord = new GameEvent(player, playerPosition, EventType.CHANGES_FLOOR, );
-		//eventQueue.add(changeFloorRecord);
+		int stairType = ((Stairs) stairTile.getBaseEntity()).getType();
+		Position landing;
+		
+		if(stairType == 0) {
+			dungeon.goUpOneFloor();
+			landing = dungeon.getCurrentFloor().GetStairDown();
+		} else {
+			dungeon.goDownOneFloor();
+			landing = dungeon.getCurrentFloor().GetStairUp();
+		}
+		
+		GameEvent changeFloorRecord = new GameEvent(player, playerPosition, EventType.CHANGES_FLOOR, landing);
+		eventQueue.add(changeFloorRecord);
+		
+		playerPosition = landing;
+		
+		playerTile.removeOccupant(player);
+		playerTile = dungeon.getCurrentTileAt(landing);
+		playerTile.addOccupant(player);
 	}
 }

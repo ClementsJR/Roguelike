@@ -87,7 +87,9 @@ public class GameScreenController {
 				
 				break;
 			case CHANGES_FLOOR:
+				startLoadingAnimation();
 				drawFloor();
+				endLoadingAnimation();
 			default:
 				//do nothing yet.
 			}
