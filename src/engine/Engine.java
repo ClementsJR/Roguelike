@@ -55,7 +55,7 @@ public class Engine {
 		if(isAdjacentMove(clickedPosition)) {
 			Tile target = dungeon.getCurrentTileAt(clickedPosition);
 			
-			if(isOpenTile(target)) {
+			if(isOpenTile(target) && !isStairPosition(target)) {
 				movePlayerTo(clickedPosition);
 			} else if(isEnemyPosition(target)) {
 				playerAttacks(clickedPosition);
