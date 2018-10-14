@@ -18,14 +18,14 @@ public class Dungeon {
 		Random rand = new Random();
 		long seed = rand.nextLong();
 		
-		generateNewFloor(seed, Floor.MapGenAlgorithm.BSP);
+		generateNewFloor(seed, Floor.MapGenAlgorithm.BSP, true, false);
 		
 		currentFloorIndex = 0;
 	}
 	
-	private void generateNewFloor(long seed, Floor.MapGenAlgorithm algorithm) {
-		Floor firstFloor = new Floor(seed, algorithm);
-		floors.add(firstFloor);
+	private void generateNewFloor(long seed, Floor.MapGenAlgorithm algorithm, boolean DontMakeStairsUp, boolean DontMakeStairsDown) {
+		Floor newFloor = new Floor(seed, algorithm, DontMakeStairsUp, DontMakeStairsDown);
+		floors.add(newFloor);
 	}
 	
 	public Floor getCurrentFloor() {
@@ -37,10 +37,15 @@ public class Dungeon {
 	}
 	
 	public void goUpOneFloor() {
-		
+		currentFloorIndex--;
 	}
 	
 	public void goDownOneFloor() {
-		
+		currentFloorIndex++;
+		if (currentFloorIndex == floors.size()) {
+			Random rand = new Random();
+			long seed = rand.nextLong();
+			generateNewFloor(seed, Floor.MapGenAlgorithm.BSP, false, currentFloorIndex == MAX_NUM_FLOORS);
+		}
 	}
 }

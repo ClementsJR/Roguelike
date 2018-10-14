@@ -10,7 +10,8 @@ public class Floor {
 	private long seed;
 	private Random rand;
 	private MapGenAlgorithm algorithm;
-	
+	public boolean noStairsUp;
+	public boolean noStairsDown;
 	private Position stairUp;
 	private Position stairDown;
 
@@ -18,14 +19,15 @@ public class Floor {
 	private Tile[][] map;
 	private ArrayList<LivingEntity> livingEntities;
 	
-	public Floor(long seed, MapGenAlgorithm algorithm) {
+	public Floor(long seed, MapGenAlgorithm algorithm, boolean DontMakeStairsUp, boolean DontMakeStairsDown) {
 		this.seed = seed;
 		rand = new Random(seed);
 		
 		this.algorithm = algorithm;
 		
 		livingEntities = new ArrayList<LivingEntity>();
-		
+		noStairsUp = DontMakeStairsUp;
+		noStairsDown = DontMakeStairsDown;
 		instantiateMapBase();
 		generateMap();
 	}
@@ -143,12 +145,16 @@ public class Floor {
 		Rectangle room2 = leaves.get(index2).getRoom();
 		int centerRow = room1.getRow() + (room1.getHeight()/2);
 		int centerCol = room1.getCol() + (room1.getWidth()/2);
-		map[centerRow][centerCol].setBaseEntity(new Stairs(1));
-		stairDown = new Position(centerRow, centerCol);
+		if (!noStairsDown) {
+			map[centerRow][centerCol].setBaseEntity(new Stairs(1));
+			stairDown = new Position(centerRow, centerCol);
+		}
 		centerRow = room2.getRow() + (room2.getHeight()/2);
 		centerCol = room2.getCol() + (room2.getWidth()/2);
-		map[centerRow][centerCol].setBaseEntity(new Stairs(0));
-		stairUp = new Position(centerRow, centerCol);
+		if (!noStairsUp) {
+			map[centerRow][centerCol].setBaseEntity(new Stairs(0));
+			stairUp = new Position(centerRow, centerCol);
+		}
 	}
 	
 	private void generateCAMap() {
