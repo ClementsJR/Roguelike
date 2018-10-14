@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.TilePane?>
 
-<Pane styleClass="gameBackgroundPane" stylesheets="@gameStyles.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameScreenController">
+<Pane fx:id="p" styleClass="gameBackgroundPane" stylesheets="@gameStyles.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameScreenController">
    <children>
       <TilePane fx:id="mapGrid" alignment="CENTER" prefTileHeight="32.0" prefTileWidth="32.0" />
       <Group>

@@ -31,6 +31,23 @@ public class Engine {
 		eventQueue.clear();
 	}
 	
+	public void UpKeyPressed() {
+		tileClicked(new Position (playerPosition.getRow() - 1, playerPosition.getCol()));
+	}
+	
+	public void DownKeyPressed() {
+		tileClicked(new Position (playerPosition.getRow() + 1, playerPosition.getCol()));
+	}
+
+	public void LeftKeyPressed() {
+		tileClicked(new Position (playerPosition.getRow(), playerPosition.getCol() - 1));
+
+	}
+
+	public void RightKeyPressed() {
+		tileClicked(new Position (playerPosition.getRow(), playerPosition.getCol() + 1));
+	}
+	
 	public Tile getTileAt(Position position) {
 		return dungeon.getCurrentTileAt(position);
 	}
