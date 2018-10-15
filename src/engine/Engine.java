@@ -16,14 +16,14 @@ public class Engine {
 		dungeon = new Dungeon();
 		player = new PlayerCharacter();
 		
-		player.setCurrentPosition(dungeon.getCurrentFloor().GetStairUp());
+		player.setCurrentPosition(dungeon.getCurrentFloor().getStairsUpPosition());
 		movePlayerTo(player.getCurrentPosition());
 		
 		eventQueue.clear();
 	}
 	
 	public Tile getTileAt(Position position) {
-		return dungeon.getCurrentTileAt(position);
+		return dungeon.getTileAt(position);
 	}
 
 	public int getNumRows() {
@@ -61,7 +61,7 @@ public class Engine {
 	
 	public void tileSelected(Position clickedPosition) {
 		if(isAdjacentMove(clickedPosition)) {
-			Tile target = dungeon.getCurrentTileAt(clickedPosition);
+			Tile target = dungeon.getTileAt(clickedPosition);
 			
 			if(isOpenTile(target) && !isStairTile(target)) {
 				movePlayerTo(clickedPosition);
@@ -119,9 +119,9 @@ public class Engine {
 		GameEvent moveRecord = new GameEvent(player, player.getCurrentPosition(), EventType.MOVES_TO, target);
 		eventQueue.add(moveRecord);
 		
-		Tile currentPlayerTile = dungeon.getCurrentTileAt(player.getCurrentPosition());
+		Tile currentPlayerTile = dungeon.getTileAt(player.getCurrentPosition());
 		currentPlayerTile.removeOccupant(player);
-		currentPlayerTile = dungeon.getCurrentTileAt(target);
+		currentPlayerTile = dungeon.getTileAt(target);
 		currentPlayerTile.addOccupant(player);
 		
 		player.setCurrentPosition(target);
@@ -138,10 +138,10 @@ public class Engine {
 		
 		if(stairType == Stairs.StairType.UP) {
 			dungeon.goUpOneFloor();
-			landing = dungeon.getCurrentFloor().GetStairDown();
+			landing = dungeon.getCurrentFloor().getStairsDownPosition();
 		} else {
 			dungeon.goDownOneFloor();
-			landing = dungeon.getCurrentFloor().GetStairUp();
+			landing = dungeon.getCurrentFloor().getStairsUpPosition();
 		}
 		
 		GameEvent changeFloorRecord = new GameEvent(player, player.getCurrentPosition(), EventType.CHANGES_FLOOR, landing);
@@ -149,10 +149,10 @@ public class Engine {
 		
 		//playerPosition = landing;
 		
-		Tile playerTile = dungeon.getCurrentTileAt(player.getCurrentPosition());
+		Tile playerTile = dungeon.getTileAt(player.getCurrentPosition());
 		
 		playerTile.removeOccupant(player);
-		playerTile = dungeon.getCurrentTileAt(landing);
+		playerTile = dungeon.getTileAt(landing);
 		playerTile.addOccupant(player);
 		
 		player.setCurrentPosition(landing);
