@@ -18,6 +18,7 @@ public class Floor {
 	private int numRows, numCols;
 	private Tile[][] map;
 	private ArrayList<LivingEntity> livingEntities;
+	private ArrayList<Position> openPositions;
 	
 	public Floor(long seed, MapGenAlgorithm algorithm, boolean DontMakeStairsUp, boolean DontMakeStairsDown) {
 		this.seed = seed;
@@ -30,6 +31,41 @@ public class Floor {
 		noStairsDown = DontMakeStairsDown;
 		instantiateMapBase();
 		generateMap();
+		
+		openPositions = new ArrayList<Position>();
+		for (int row = 0; row < numRows; row++) {
+			for (int col = 0; col < numCols; col++) {
+				if (!map[row][col].isBlocked())
+					openPositions.add(new Position (row, col));
+			}
+		}
+		
+		addStairs();
+		addEnemies();
+	}
+	
+	private void addStairs() {
+		int randPos = rand.nextInt(openPositions.size());
+		stairUp = openPositions.remove(randPos);
+		if (!noStairsUp) {
+			map[stairUp.getRow()][stairUp.getCol()].setBaseEntity(new Stairs(Stairs.StairType.UP));
+		}
+		if (!noStairsDown) {
+			randPos = rand.nextInt(openPositions.size());
+			stairDown = openPositions.remove(randPos);
+			map[stairDown.getRow()][stairDown.getCol()].setBaseEntity(new Stairs(Stairs.StairType.DOWN));
+		}
+	}
+	
+	private void addEnemies() {
+		int randPos;
+		for (int i = 0; i < 4; i++) {
+			Skeleton skelly = new Skeleton();
+			randPos = rand.nextInt(openPositions.size());
+			skelly.setCurrentPosition(openPositions.remove(randPos));
+			livingEntities.add(skelly);
+			map[skelly.currentPosition.getRow()][skelly.getCurrentPosition().getCol()].addOccupant(skelly);
+		}
 	}
 	
 	private void instantiateMapBase() {
@@ -148,7 +184,7 @@ public class Floor {
 				}
 			}
 		}
-		int index1 = rand.nextInt(leaves.size());
+		/*int index1 = rand.nextInt(leaves.size());
 		int index2 = rand.nextInt(leaves.size());
 		while (index1 == index2) {
 			index2 = rand.nextInt(leaves.size());
@@ -165,8 +201,9 @@ public class Floor {
 		centerCol = room2.getCol() + (room2.getWidth()/2);
 		if (!noStairsUp) {
 			map[centerRow][centerCol].setBaseEntity(new Stairs(Stairs.StairType.UP));
-			stairUp = new Position(centerRow, centerCol);
 		}
+		stairUp = new Position(centerRow, centerCol);
+		*/
 	}
 	
 	private void generateCAMap() {
