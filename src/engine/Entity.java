@@ -6,6 +6,8 @@ public abstract class Entity {
 	protected boolean impassable;
 	protected Image sprite;
 	
+	protected Position currentPosition;
+	
 	public Entity() {
 	}
 	
@@ -23,5 +25,13 @@ public abstract class Entity {
 	
 	public Image getSprite() {
 		return sprite;
+	}
+
+	public Position getCurrentPosition() {
+		return currentPosition;
+	}
+	
+	public void setCurrentPosition(Position newPosition) {
+		currentPosition = newPosition;
 	}
 }

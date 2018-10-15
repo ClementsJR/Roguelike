@@ -148,9 +148,7 @@ public class Engine {
 			Position nextStep = dungeon.getCurrentFloor().getPath(source, target);
 		}
 	}
-	
-	
-	
+		
 	private void playerAttacks(Position target) {
 		GameEvent attackRecord = new GameEvent(player, playerPosition, EventType.ATTACKS, target);
 		eventQueue.add(attackRecord);
