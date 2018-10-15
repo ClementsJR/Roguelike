@@ -22,7 +22,7 @@ public class Engine {
 		player = new PlayerCharacter();
 		
 		//The location (1,1) is just for testing purposes.
-		player.setCurrentPosition(new Position(1,1));
+		player.setCurrentPosition(dungeon.getCurrentFloor().GetStairUp());
 		movePlayerTo(player.getCurrentPosition());
 		
 		eventQueue.clear();
