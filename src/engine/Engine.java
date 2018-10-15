@@ -155,10 +155,10 @@ public class Engine {
 	}
 	
 	private void changeFloor(Tile stairTile) {
-		int stairType = ((Stairs) stairTile.getBaseEntity()).getType();
+		Stairs.StairType stairType = ((Stairs) stairTile.getBaseEntity()).getType();
 		Position landing;
 		
-		if(stairType == 0) {
+		if(stairType == Stairs.StairType.UP) {
 			dungeon.goUpOneFloor();
 			landing = dungeon.getCurrentFloor().GetStairDown();
 		} else {

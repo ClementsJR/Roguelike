@@ -158,13 +158,13 @@ public class Floor {
 		int centerRow = room1.getRow() + (room1.getHeight()/2);
 		int centerCol = room1.getCol() + (room1.getWidth()/2);
 		if (!noStairsDown) {
-			map[centerRow][centerCol].setBaseEntity(new Stairs(1));
+			map[centerRow][centerCol].setBaseEntity(new Stairs(Stairs.StairType.DOWN));
 			stairDown = new Position(centerRow, centerCol);
 		}
 		centerRow = room2.getRow() + (room2.getHeight()/2);
 		centerCol = room2.getCol() + (room2.getWidth()/2);
 		if (!noStairsUp) {
-			map[centerRow][centerCol].setBaseEntity(new Stairs(0));
+			map[centerRow][centerCol].setBaseEntity(new Stairs(Stairs.StairType.UP));
 			stairUp = new Position(centerRow, centerCol);
 		}
 	}
