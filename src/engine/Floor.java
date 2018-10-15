@@ -279,10 +279,10 @@ public class Floor {
 			randPos = rand.nextInt(openPositions.size());
 			
 			Skeleton skelly = new Skeleton();
-			skelly.setCurrentPosition(openPositions.remove(randPos));
+			skelly.setPosition(openPositions.remove(randPos));
 			
 			livingEntities.add(skelly);
-			map[skelly.currentPosition.getRow()][skelly.getCurrentPosition().getCol()].addOccupant(skelly);
+			map[skelly.currentPosition.getRow()][skelly.getPosition().getCol()].addOccupant(skelly);
 		}
 	}
 	

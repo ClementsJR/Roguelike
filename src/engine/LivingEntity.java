@@ -12,7 +12,7 @@ public abstract class LivingEntity extends Entity {
 	protected BehaviorState currentBehavior;
 	
 	public LivingEntity() {
-		super(true);
+		impassable = true;
 	}
 		
 	public enum StatusEffect {

@@ -11,27 +11,23 @@ public abstract class Entity {
 	public Entity() {
 	}
 	
-	public Entity(boolean impassable) {
-		this.impassable = impassable;
-	}
-	
 	public boolean isImpassable() {
 		return impassable;
-	}
-	
-	public void setImpassable(boolean impassable) {
-		this.impassable = impassable;
 	}
 	
 	public Image getSprite() {
 		return sprite;
 	}
 
-	public Position getCurrentPosition() {
+	public Position getPosition() {
 		return currentPosition;
 	}
 	
-	public void setCurrentPosition(Position newPosition) {
+	public void setPosition(Position newPosition) {
 		currentPosition = newPosition;
+	}
+	
+	public void setImpassable(boolean impassable) {
+		this.impassable = impassable;
 	}
 }

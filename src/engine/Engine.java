@@ -16,8 +16,8 @@ public class Engine {
 		dungeon = new Dungeon();
 		player = new PlayerCharacter();
 		
-		player.setCurrentPosition(dungeon.getCurrentFloor().getStairsUpPosition());
-		movePlayerTo(player.getCurrentPosition());
+		player.setPosition(dungeon.getCurrentFloor().getStairsUpPosition());
+		movePlayerTo(player.getPosition());
 		
 		eventQueue.clear();
 	}
@@ -39,24 +39,24 @@ public class Engine {
 	}
 	
 	public Position getPlayerPosition() {
-		return player.getCurrentPosition();
+		return player.getPosition();
 	}
 
 	public void UpKeyPressed() {
-		tileSelected(new Position (player.getCurrentPosition().getRow() - 1, player.getCurrentPosition().getCol()));
+		tileSelected(new Position (player.getPosition().getRow() - 1, player.getPosition().getCol()));
 	}
 	
 	public void DownKeyPressed() {
-		tileSelected(new Position (player.getCurrentPosition().getRow() + 1, player.getCurrentPosition().getCol()));
+		tileSelected(new Position (player.getPosition().getRow() + 1, player.getPosition().getCol()));
 	}
 
 	public void LeftKeyPressed() {
-		tileSelected(new Position (player.getCurrentPosition().getRow(), player.getCurrentPosition().getCol() - 1));
+		tileSelected(new Position (player.getPosition().getRow(), player.getPosition().getCol() - 1));
 
 	}
 
 	public void RightKeyPressed() {
-		tileSelected(new Position (player.getCurrentPosition().getRow(), player.getCurrentPosition().getCol() + 1));
+		tileSelected(new Position (player.getPosition().getRow(), player.getPosition().getCol() + 1));
 	}
 	
 	public void tileSelected(Position clickedPosition) {
@@ -79,10 +79,10 @@ public class Engine {
 	}
 	
 	private boolean isAdjacentMove(Position targetPosition) {
-		int rowDifference = player.getCurrentPosition().getRow() - targetPosition.getRow();
+		int rowDifference = player.getPosition().getRow() - targetPosition.getRow();
 		rowDifference = Math.abs(rowDifference);
 		
-		int colDifference = player.getCurrentPosition().getCol() - targetPosition.getCol();
+		int colDifference = player.getPosition().getCol() - targetPosition.getCol();
 		colDifference = Math.abs(colDifference);
 		
 		boolean isAdjacent = (rowDifference <= 1 && colDifference <= 1);
@@ -116,19 +116,19 @@ public class Engine {
 	}
 	
 	private void movePlayerTo(Position target) {
-		GameEvent moveRecord = new GameEvent(player, player.getCurrentPosition(), EventType.MOVES_TO, target);
+		GameEvent moveRecord = new GameEvent(player, player.getPosition(), EventType.MOVES_TO, target);
 		eventQueue.add(moveRecord);
 		
-		Tile currentPlayerTile = dungeon.getTileAt(player.getCurrentPosition());
+		Tile currentPlayerTile = dungeon.getTileAt(player.getPosition());
 		currentPlayerTile.removeOccupant(player);
 		currentPlayerTile = dungeon.getTileAt(target);
 		currentPlayerTile.addOccupant(player);
 		
-		player.setCurrentPosition(target);
+		player.setPosition(target);
 	}
 		
 	private void playerAttacks(Position target) {
-		GameEvent attackRecord = new GameEvent(player, player.getCurrentPosition(), EventType.ATTACKS, target);
+		GameEvent attackRecord = new GameEvent(player, player.getPosition(), EventType.ATTACKS, target);
 		eventQueue.add(attackRecord);
 	}
 	
@@ -144,18 +144,18 @@ public class Engine {
 			landing = dungeon.getCurrentFloor().getStairsUpPosition();
 		}
 		
-		GameEvent changeFloorRecord = new GameEvent(player, player.getCurrentPosition(), EventType.CHANGES_FLOOR, landing);
+		GameEvent changeFloorRecord = new GameEvent(player, player.getPosition(), EventType.CHANGES_FLOOR, landing);
 		eventQueue.add(changeFloorRecord);
 		
 		//playerPosition = landing;
 		
-		Tile playerTile = dungeon.getTileAt(player.getCurrentPosition());
+		Tile playerTile = dungeon.getTileAt(player.getPosition());
 		
 		playerTile.removeOccupant(player);
 		playerTile = dungeon.getTileAt(landing);
 		playerTile.addOccupant(player);
 		
-		player.setCurrentPosition(landing);
+		player.setPosition(landing);
 	}
 
 	private void takeEnemyTurns() {
@@ -163,8 +163,8 @@ public class Engine {
 		
 		for(int i = 0; i < livingEntities.size(); i++)
 		{
-			Position source = livingEntities.get(i).getCurrentPosition();
-			Position target = player.getCurrentPosition();
+			Position source = livingEntities.get(i).getPosition();
+			Position target = player.getPosition();
 			Position nextStep = dungeon.getCurrentFloor().getPath(source, target);
 		}
 	}
