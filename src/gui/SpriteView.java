@@ -34,6 +34,7 @@ public class SpriteView extends Pane {
 	
 	private void handleClick(MouseEvent event) {
 		controller.tileClicked(this);
+		event.consume();
 	}
 	
 	private void setupImageViews() {

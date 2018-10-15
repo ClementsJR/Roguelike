@@ -9,7 +9,7 @@ public class Stairs extends Entity {
 	public static final String STAIR_DOWN_SPRITE_URL = "/assets/img/stair_down.png";
 	
 	public Stairs(StairType type) {
-		super(false);
+		impassable = false;
 		
 		stairType = type;
 		

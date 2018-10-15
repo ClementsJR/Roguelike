@@ -16,7 +16,7 @@ public class GameScreenController {
 	private Engine game;
 	
 	@FXML
-	Pane p;
+	Pane backgroundPane;
 	
 	@FXML
 	ImageView loadingAnimation;
@@ -26,12 +26,37 @@ public class GameScreenController {
 	
 	@FXML
 	public void initialize() {
-		
 		startLoadingAnimation();
 	}
 	
+	public void setupGame() {
+		backgroundPane.getScene().setOnKeyPressed((event) -> handleKeyPress(event));
+		
+		game = new Engine();
+		drawFloor();
+		endLoadingAnimation();
+	}
+	
+	public void tileClicked(SpriteView spriteView) {
+		int index = mapGrid.getChildren().indexOf(spriteView);
+		
+		Position clicked = getPositionOf(index);
+		
+		game.tileSelected(clicked);
+		updateFloor();
+	}
+	
+	private void startLoadingAnimation() {
+		mapGrid.setVisible(false);
+		loadingAnimation.setVisible(true);
+	}
+	
+	private void endLoadingAnimation() {
+		loadingAnimation.setVisible(false);
+		mapGrid.setVisible(true);
+	}
+	
 	private void handleKeyPress(KeyEvent event) {
-		System.out.println("Key pressed");
     	switch(event.getCode()) {
     	case UP:
     		game.UpKeyPressed();
@@ -52,26 +77,7 @@ public class GameScreenController {
         updateFloor();
 	}
 	
-	private void startLoadingAnimation() {
-		mapGrid.setVisible(false);
-		loadingAnimation.setVisible(true);
-	}
-	
-	public void endLoadingAnimation() {
-		loadingAnimation.setVisible(false);
-		mapGrid.setVisible(true);
-	}
-	
-	public void setupGame() {
-		game = new Engine();
-		drawFloor();
-		endLoadingAnimation();
-		
-
-		p.getScene().setOnKeyPressed((event) -> handleKeyPress(event));
-	}
-	
-	public void drawFloor() {
+	private void drawFloor() {
 		mapGrid.getChildren().clear();
 		
 		int totalRows = game.getNumRows();
@@ -90,15 +96,6 @@ public class GameScreenController {
 		}
 		
 		centerMapGrid();
-	}
-	
-	public void tileClicked(SpriteView spriteView) {
-		int index = mapGrid.getChildren().indexOf(spriteView);
-		
-		Position clicked = getPositionOf(index);
-		
-		game.tileClicked(clicked);
-		updateFloor();
 	}
 	
 	private void updateFloor() {
