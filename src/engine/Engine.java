@@ -11,8 +11,6 @@ public class Engine {
 	private Dungeon dungeon;
 	
 	private PlayerCharacter player;
-	private Tile playerTile;
-	private Position playerPosition;
 	
 	private LinkedList<GameEvent> eventQueue;
 	
@@ -22,30 +20,29 @@ public class Engine {
 		eventQueue = new LinkedList<GameEvent>();
 		
 		player = new PlayerCharacter();
-		playerTile = new Tile();
-		playerPosition = new Position(1, 1);
 		
-		//Puts the player on the map. The location (1,1) is just for testing purposes.
-		movePlayerTo(playerPosition);
+		//The location (1,1) is just for testing purposes.
+		player.setCurrentPosition(new Position(1,1));
+		movePlayerTo(player.getCurrentPosition());
 		
 		eventQueue.clear();
 	}
 	
 	public void UpKeyPressed() {
-		tileClicked(new Position (playerPosition.getRow() - 1, playerPosition.getCol()));
+		tileClicked(new Position (player.getCurrentPosition().getRow() - 1, player.getCurrentPosition().getCol()));
 	}
 	
 	public void DownKeyPressed() {
-		tileClicked(new Position (playerPosition.getRow() + 1, playerPosition.getCol()));
+		tileClicked(new Position (player.getCurrentPosition().getRow() + 1, player.getCurrentPosition().getCol()));
 	}
 
 	public void LeftKeyPressed() {
-		tileClicked(new Position (playerPosition.getRow(), playerPosition.getCol() - 1));
+		tileClicked(new Position (player.getCurrentPosition().getRow(), player.getCurrentPosition().getCol() - 1));
 
 	}
 
 	public void RightKeyPressed() {
-		tileClicked(new Position (playerPosition.getRow(), playerPosition.getCol() + 1));
+		tileClicked(new Position (player.getCurrentPosition().getRow(), player.getCurrentPosition().getCol() + 1));
 	}
 	
 	public Tile getTileAt(Position position) {
@@ -61,7 +58,7 @@ public class Engine {
 	}
 	
 	public Position getPlayerPosition() {
-		return playerPosition;
+		return player.getCurrentPosition();
 	}
 	
 	public LinkedList<GameEvent> getEventQueue() {
@@ -87,10 +84,10 @@ public class Engine {
 	}
 	
 	private boolean isAdjacentMove(Position targetPosition) {
-		int rowDifference = playerPosition.getRow() - targetPosition.getRow();
+		int rowDifference = player.getCurrentPosition().getRow() - targetPosition.getRow();
 		rowDifference = Math.abs(rowDifference);
 		
-		int colDifference = playerPosition.getCol() - targetPosition.getCol();
+		int colDifference = player.getCurrentPosition().getCol() - targetPosition.getCol();
 		colDifference = Math.abs(colDifference);
 		
 		boolean isAdjacent = (rowDifference <= 1 && colDifference <= 1);
@@ -128,14 +125,15 @@ public class Engine {
 	}
 	
 	private void movePlayerTo(Position target) {
-		GameEvent moveRecord = new GameEvent(player, playerPosition, EventType.MOVES_TO, target);
+		GameEvent moveRecord = new GameEvent(player, player.getCurrentPosition(), EventType.MOVES_TO, target);
 		eventQueue.add(moveRecord);
 		
-		playerTile.removeOccupant(player);
-		playerTile = dungeon.getCurrentTileAt(target);
-		playerTile.addOccupant(player);
+		Tile currentPlayerTile = dungeon.getCurrentTileAt(player.getCurrentPosition());
+		currentPlayerTile.removeOccupant(player);
+		currentPlayerTile = dungeon.getCurrentTileAt(target);
+		currentPlayerTile.addOccupant(player);
 		
-		playerPosition = target;
+		player.setCurrentPosition(target);
 	}
 	
 	public void takeEnemyTurns() {
@@ -144,13 +142,13 @@ public class Engine {
 		for(int i = 0; i < livingEntities.size(); i++)
 		{
 			Position source = livingEntities.get(i).getCurrentPosition();
-			Position target = playerPosition;
+			Position target = player.getCurrentPosition();
 			Position nextStep = dungeon.getCurrentFloor().getPath(source, target);
 		}
 	}
 		
 	private void playerAttacks(Position target) {
-		GameEvent attackRecord = new GameEvent(player, playerPosition, EventType.ATTACKS, target);
+		GameEvent attackRecord = new GameEvent(player, player.getCurrentPosition(), EventType.ATTACKS, target);
 		eventQueue.add(attackRecord);
 	}
 	
@@ -166,13 +164,17 @@ public class Engine {
 			landing = dungeon.getCurrentFloor().GetStairUp();
 		}
 		
-		GameEvent changeFloorRecord = new GameEvent(player, playerPosition, EventType.CHANGES_FLOOR, landing);
+		GameEvent changeFloorRecord = new GameEvent(player, player.getCurrentPosition(), EventType.CHANGES_FLOOR, landing);
 		eventQueue.add(changeFloorRecord);
 		
-		playerPosition = landing;
+		//playerPosition = landing;
+		
+		Tile playerTile = dungeon.getCurrentTileAt(player.getCurrentPosition());
 		
 		playerTile.removeOccupant(player);
 		playerTile = dungeon.getCurrentTileAt(landing);
 		playerTile.addOccupant(player);
+		
+		player.setCurrentPosition(landing);
 	}
 }
