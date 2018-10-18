@@ -107,13 +107,8 @@ public class Engine {
 		boolean hasLivingEntity = false;
 		
 		for(Entity entity : target.getOccupants()) {
-<<<<<<< HEAD
-			if(entity.getClass() == Skeleton.class) {
-				hasEnemy = true;
-=======
 			if(entity.getClass() == Skeleton.class || entity.getClass() == PlayerCharacter.class) {
 				hasLivingEntity = true;
->>>>>>> 77f5e766a548612170f75d81ed678d5b5a9f5c0e
 				break;
 			}
 		}
