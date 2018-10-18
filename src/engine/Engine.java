@@ -18,6 +18,7 @@ public class Engine {
 		
 		player.setPosition(dungeon.getCurrentFloor().getStairsUpPosition());
 		movePlayerTo(player.getPosition());
+		updatePlayerFOW();
 		
 		eventQueue.clear();
 	}
@@ -65,7 +66,7 @@ public class Engine {
 			
 			if(isOpenTile(target) && !isStairTile(target)) {
 				movePlayerTo(clickedPosition);
-			} else if(hasEnemy(target)) {
+			} else if(hasLivingEntity(target)) {
 				playerAttacks(clickedPosition);
 			} else if(isStairTile(target)) {
 				movePlayerTo(clickedPosition);
@@ -102,17 +103,17 @@ public class Engine {
 		return isStair;
 	}
 	
-	private boolean hasEnemy(Tile target) {
-		boolean hasEnemy = false;
+	private boolean hasLivingEntity(Tile target) {
+		boolean hasLivingEntity = false;
 		
 		for(Entity entity : target.getOccupants()) {
-			if(entity.getClass() == Enemy.class) {
-				hasEnemy = true;
+			if(entity.getClass() == Skeleton.class || entity.getClass() == PlayerCharacter.class) {
+				hasLivingEntity = true;
 				break;
 			}
 		}
 		
-		return hasEnemy;
+		return hasLivingEntity;
 	}
 	
 	private void movePlayerTo(Position target) {
@@ -125,6 +126,8 @@ public class Engine {
 		currentPlayerTile.addOccupant(player);
 		
 		player.setPosition(target);
+		
+		updatePlayerFOW();
 	}
 		
 	private void playerAttacks(Position target) {
@@ -147,8 +150,6 @@ public class Engine {
 		GameEvent changeFloorRecord = new GameEvent(player, player.getPosition(), EventType.CHANGES_FLOOR, landing);
 		eventQueue.add(changeFloorRecord);
 		
-		//playerPosition = landing;
-		
 		Tile playerTile = dungeon.getTileAt(player.getPosition());
 		
 		playerTile.removeOccupant(player);
@@ -156,7 +157,57 @@ public class Engine {
 		playerTile.addOccupant(player);
 		
 		player.setPosition(landing);
+		
+		player.resetFOW();
+		updatePlayerFOW();
 	}
+	
+	private void updatePlayerFOW() {
+		player.setAllCurrentlySeenToWasSeen();
+		
+		Position startPosition = player.getPosition();
+		int startDistance = player.getSightDistance();
+		
+		tryToSee(player, startPosition, startDistance);
+	}
+	
+	private void tryToSee(LivingEntity entity, Position position, int distanceLeft) {
+		Tile tile = dungeon.getTileAt(position);
+		
+		int fogOfWar = entity.getFOWAt(position);
+		if(fogOfWar >= distanceLeft) {
+			return;
+		}
+		
+		entity.setCurrentlySeen(position, distanceLeft);
+		
+		if(distanceLeft == 0) {
+			return;
+		}
+		
+		int centerRow = position.getRow();
+		int centerCol = position.getCol();
+		
+		for(int rowOffset = -1; rowOffset <= 1; rowOffset++) {
+			for(int colOffset = -1; colOffset <= 1; colOffset++) {
+				int row = centerRow + rowOffset;
+				int col = centerCol + colOffset;
+				
+				if(row == centerRow && col == centerCol) {
+					continue;
+				} else if(row < 0 || col < 0 || row >= Dungeon.DEFAULT_NUM_ROWS || col >= Dungeon.DEFAULT_NUM_COLS) {
+					continue;
+				} else {
+					if(!(isOpenTile(tile) || hasLivingEntity(tile))) {
+						return;
+					}
+					tryToSee(entity, new Position(row, col), distanceLeft - 1);
+				}
+			}
+		}
+	}
+	
+	public PlayerCharacter getPlayer() { return player; }
 
 	private void takeEnemyTurns() {
 		ArrayList <LivingEntity> livingEntities = dungeon.getCurrentFloor().getLivingEntities();
