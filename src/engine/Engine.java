@@ -106,7 +106,7 @@ public class Engine {
 		boolean hasEnemy = false;
 		
 		for(Entity entity : target.getOccupants()) {
-			if(entity.getClass() == Enemy.class) {
+			if(entity.getClass() == Skeleton.class) {
 				hasEnemy = true;
 				break;
 			}
@@ -132,11 +132,13 @@ public class Engine {
 		eventQueue.add(attackRecord);
 		Tile targetTile = getTileAt(target);
 		for(Entity entity : targetTile.getOccupants()) {
-			if(entity.getClass() == Enemy.class) {
+			if(entity.getClass() == Skeleton.class) {
 				((LivingEntity)entity).Hit(player.attackPower);
-				if (((LivingEntity)entity).currentHealth <= 0)
-					targetTile.removeOccupant((LivingEntity)entity);
-			}	
+				if (((LivingEntity)entity).currentHealth <= 0) {
+					targetTile.removeOccupant(entity);
+					dungeon.getCurrentFloor().getLivingEntities().remove(entity);
+				}	
+			}
 		}
 	}
 	
