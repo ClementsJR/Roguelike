@@ -22,4 +22,11 @@ public abstract class LivingEntity extends Entity {
 	public enum BehaviorState {
 		IDLE, ENGAGED;
 	}
+	
+	public void Hit(int opponentAttackPower) {
+		opponentAttackPower = opponentAttackPower - defense;
+		if (opponentAttackPower > 0)
+			currentHealth = currentHealth - opponentAttackPower;
+	}
+	
 }
