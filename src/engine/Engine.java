@@ -2,54 +2,28 @@ package engine;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Random;
 
 import engine.GameEvent.EventType;
 
 public class Engine {
-	
-	private Dungeon dungeon;
-	
-	private PlayerCharacter player;
-	private Tile playerTile;
-	private Position playerPosition;
-	
+
 	private LinkedList<GameEvent> eventQueue;
+	private Dungeon dungeon;
+	private PlayerCharacter player;
 	
 	public Engine() {
-		dungeon = new Dungeon();
-		
 		eventQueue = new LinkedList<GameEvent>();
-		
+		dungeon = new Dungeon();
 		player = new PlayerCharacter();
-		playerTile = new Tile();
-		playerPosition = new Position(1, 1);
 		
-		//Puts the player on the map. The location (1,1) is just for testing purposes.
-		movePlayerTo(playerPosition);
+		player.setPosition(dungeon.getCurrentFloor().getStairsUpPosition());
+		movePlayerTo(player.getPosition());
 		
 		eventQueue.clear();
 	}
 	
-	public void UpKeyPressed() {
-		tileClicked(new Position (playerPosition.getRow() - 1, playerPosition.getCol()));
-	}
-	
-	public void DownKeyPressed() {
-		tileClicked(new Position (playerPosition.getRow() + 1, playerPosition.getCol()));
-	}
-
-	public void LeftKeyPressed() {
-		tileClicked(new Position (playerPosition.getRow(), playerPosition.getCol() - 1));
-
-	}
-
-	public void RightKeyPressed() {
-		tileClicked(new Position (playerPosition.getRow(), playerPosition.getCol() + 1));
-	}
-	
 	public Tile getTileAt(Position position) {
-		return dungeon.getCurrentTileAt(position);
+		return dungeon.getTileAt(position);
 	}
 
 	public int getNumRows() {
@@ -60,23 +34,41 @@ public class Engine {
 		return dungeon.getCurrentFloor().getNumCols();
 	}
 	
-	public Position getPlayerPosition() {
-		return playerPosition;
-	}
-	
 	public LinkedList<GameEvent> getEventQueue() {
 		return eventQueue;
 	}
 	
-	public void tileClicked(Position clickedPosition) {
+	public Position getPlayerPosition() {
+		return player.getPosition();
+	}
+
+	public void UpKeyPressed() {
+		tileSelected(new Position (player.getPosition().getRow() - 1, player.getPosition().getCol()));
+	}
+	
+	public void DownKeyPressed() {
+		tileSelected(new Position (player.getPosition().getRow() + 1, player.getPosition().getCol()));
+	}
+
+	public void LeftKeyPressed() {
+		tileSelected(new Position (player.getPosition().getRow(), player.getPosition().getCol() - 1));
+
+	}
+
+	public void RightKeyPressed() {
+		tileSelected(new Position (player.getPosition().getRow(), player.getPosition().getCol() + 1));
+	}
+	
+	public void tileSelected(Position clickedPosition) {
 		if(isAdjacentMove(clickedPosition)) {
-			Tile target = dungeon.getCurrentTileAt(clickedPosition);
+			Tile target = dungeon.getTileAt(clickedPosition);
 			
-			if(isOpenTile(target) && !isStairPosition(target)) {
+			if(isOpenTile(target) && !isStairTile(target)) {
 				movePlayerTo(clickedPosition);
-			} else if(isEnemyPosition(target)) {
+			} else if(hasEnemy(target)) {
 				playerAttacks(clickedPosition);
-			} else if(isStairPosition(target)) {
+			} else if(isStairTile(target)) {
+				movePlayerTo(clickedPosition);
 				changeFloor(target);
 			} else {
 				return;
@@ -87,29 +79,30 @@ public class Engine {
 	}
 	
 	private boolean isAdjacentMove(Position targetPosition) {
-		int rowDifference = playerPosition.getRow() - targetPosition.getRow();
+		int rowDifference = player.getPosition().getRow() - targetPosition.getRow();
 		rowDifference = Math.abs(rowDifference);
 		
-		int colDifference = playerPosition.getCol() - targetPosition.getCol();
+		int colDifference = player.getPosition().getCol() - targetPosition.getCol();
 		colDifference = Math.abs(colDifference);
 		
 		boolean isAdjacent = (rowDifference <= 1 && colDifference <= 1);
 		
-		//return isAdjacent;
-		return true;
+		return isAdjacent;
 	}
 	
 	private boolean isOpenTile(Tile target) {
-		boolean validMove = true;
-		
-		if(target.isBlocked()) {
-			validMove = false;
-		}
-		
-		return validMove;
+		boolean isOpenTile;
+		isOpenTile = !target.isBlocked();
+		return isOpenTile;
 	}
 	
-	private boolean isEnemyPosition(Tile target) {
+	private boolean isStairTile(Tile target) {
+		boolean isStair;
+		isStair = (target.getBaseEntity().getClass() == Stairs.class);
+		return isStair;
+	}
+	
+	private boolean hasEnemy(Tile target) {
 		boolean hasEnemy = false;
 		
 		for(Entity entity : target.getOccupants()) {
@@ -122,59 +115,58 @@ public class Engine {
 		return hasEnemy;
 	}
 	
-	private boolean isStairPosition(Tile target) {
-		boolean isStair = target.getBaseEntity().getClass() == Stairs.class;
-		return isStair;
-	}
-	
 	private void movePlayerTo(Position target) {
-		GameEvent moveRecord = new GameEvent(player, playerPosition, EventType.MOVES_TO, target);
+		GameEvent moveRecord = new GameEvent(player, player.getPosition(), EventType.MOVES_TO, target);
 		eventQueue.add(moveRecord);
 		
-		playerTile.removeOccupant(player);
-		playerTile = dungeon.getCurrentTileAt(target);
-		playerTile.addOccupant(player);
+		Tile currentPlayerTile = dungeon.getTileAt(player.getPosition());
+		currentPlayerTile.removeOccupant(player);
+		currentPlayerTile = dungeon.getTileAt(target);
+		currentPlayerTile.addOccupant(player);
 		
-		playerPosition = target;
+		player.setPosition(target);
 	}
-	
-	public void takeEnemyTurns() {
-		ArrayList <LivingEntity> livingEntities = dungeon.getCurrentFloor().getLivingEntities();
 		
-		for(int i = 0; i < livingEntities.size(); i++)
-		{
-			Position source = livingEntities.get(i).getCurrentPosition();
-			Position target = playerPosition;
-			Position nextStep = dungeon.getCurrentFloor().getPath(source, target);
-		}
-	}
-	
-	
-	
 	private void playerAttacks(Position target) {
-		GameEvent attackRecord = new GameEvent(player, playerPosition, EventType.ATTACKS, target);
+		GameEvent attackRecord = new GameEvent(player, player.getPosition(), EventType.ATTACKS, target);
 		eventQueue.add(attackRecord);
 	}
 	
 	private void changeFloor(Tile stairTile) {
-		int stairType = ((Stairs) stairTile.getBaseEntity()).getType();
+		Stairs.StairType stairType = ((Stairs) stairTile.getBaseEntity()).getType();
 		Position landing;
 		
-		if(stairType == 0) {
+		if(stairType == Stairs.StairType.UP) {
 			dungeon.goUpOneFloor();
-			landing = dungeon.getCurrentFloor().GetStairDown();
+			landing = dungeon.getCurrentFloor().getStairsDownPosition();
 		} else {
 			dungeon.goDownOneFloor();
-			landing = dungeon.getCurrentFloor().GetStairUp();
+			landing = dungeon.getCurrentFloor().getStairsUpPosition();
 		}
 		
-		GameEvent changeFloorRecord = new GameEvent(player, playerPosition, EventType.CHANGES_FLOOR, landing);
+		GameEvent changeFloorRecord = new GameEvent(player, player.getPosition(), EventType.CHANGES_FLOOR, landing);
 		eventQueue.add(changeFloorRecord);
 		
-		playerPosition = landing;
+		//playerPosition = landing;
+		
+		Tile playerTile = dungeon.getTileAt(player.getPosition());
 		
 		playerTile.removeOccupant(player);
-		playerTile = dungeon.getCurrentTileAt(landing);
+		playerTile = dungeon.getTileAt(landing);
 		playerTile.addOccupant(player);
+		
+		player.setPosition(landing);
 	}
+
+	private void takeEnemyTurns() {
+		ArrayList <LivingEntity> livingEntities = dungeon.getCurrentFloor().getLivingEntities();
+		
+		for(int i = 0; i < livingEntities.size(); i++)
+		{
+			Position source = livingEntities.get(i).getPosition();
+			Position target = player.getPosition();
+			Position nextStep = dungeon.getCurrentFloor().getPath(source, target);
+		}
+	}
+	
 }

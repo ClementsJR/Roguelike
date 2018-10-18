@@ -10,26 +10,76 @@ public class Floor {
 	private long seed;
 	private Random rand;
 	private MapGenAlgorithm algorithm;
-	public boolean noStairsUp;
-	public boolean noStairsDown;
-	private Position stairUp;
-	private Position stairDown;
+	
+	public boolean makeStairsUp;
+	public boolean makeStairsDown;
+	private Position stairsUpPosition;
+	private Position stairsDownPosition;
 
 	private int numRows, numCols;
 	private Tile[][] map;
 	private ArrayList<LivingEntity> livingEntities;
+	private ArrayList<Position> openPositions;
 	
-	public Floor(long seed, MapGenAlgorithm algorithm, boolean DontMakeStairsUp, boolean DontMakeStairsDown) {
+	public Floor(long seed, MapGenAlgorithm algorithm, boolean makeStairsUp, boolean makeStairsDown) {
 		this.seed = seed;
 		rand = new Random(seed);
 		
 		this.algorithm = algorithm;
 		
-		livingEntities = new ArrayList<LivingEntity>();
-		noStairsUp = DontMakeStairsUp;
-		noStairsDown = DontMakeStairsDown;
+		this.makeStairsUp = makeStairsUp;
+		this.makeStairsDown = makeStairsDown;
+		
 		instantiateMapBase();
 		generateMap();
+		
+		livingEntities = new ArrayList<LivingEntity>();
+		openPositions = new ArrayList<Position>();
+		
+		for (int row = 0; row < numRows; row++) {
+			for (int col = 0; col < numCols; col++) {
+				if (!map[row][col].isBlocked())
+					openPositions.add(new Position (row, col));
+			}
+		}
+		
+		addStairs();
+		addEnemies();
+	}
+	
+	public int getNumRows() {
+		return numRows;
+	}
+	
+	public int getNumCols() {
+		return numCols;
+	}
+	
+	public Position getStairsUpPosition() {
+		return stairsUpPosition;
+	}
+	
+	public Position getStairsDownPosition() {
+		return stairsDownPosition;
+	}
+	
+	public ArrayList<LivingEntity> getLivingEntities() {
+		return livingEntities;
+	}
+	
+	public Tile getTileAt(Position target) {
+		int row = target.getRow();
+		int col = target.getCol();
+		
+		return map[row][col];
+	}
+	
+	public Position getPath(Position source, Position target) {
+		
+		Position nextStep = null;
+		
+		
+		return nextStep;
 	}
 	
 	private void instantiateMapBase() {
@@ -45,34 +95,7 @@ public class Floor {
 		}
 	}
 	
-	public int getNumRows() {
-		return numRows;
-	}
-	
-	public int getNumCols() {
-		return numCols;
-	}
-	
-	public ArrayList<LivingEntity> getLivingEntities() {
-		return livingEntities;
-	}
-	
-	public Position getPath(Position source, Position target) {
-		
-		Position nextStep = null;
-		
-		
-		return nextStep;
-	}
-	
-	public Tile getTileAt(Position target) {
-		int row = target.getRow();
-		int col = target.getCol();
-		
-		return map[row][col];
-	}
-	
-	public void generateMap() {
+	private void generateMap() {
 		switch(algorithm) {
 		case BSP:
 			generateBSPMap();
@@ -148,25 +171,6 @@ public class Floor {
 				}
 			}
 		}
-		int index1 = rand.nextInt(leaves.size());
-		int index2 = rand.nextInt(leaves.size());
-		while (index1 == index2) {
-			index2 = rand.nextInt(leaves.size());
-		}
-		Rectangle room1 = leaves.get(index1).getRoom();
-		Rectangle room2 = leaves.get(index2).getRoom();
-		int centerRow = room1.getRow() + (room1.getHeight()/2);
-		int centerCol = room1.getCol() + (room1.getWidth()/2);
-		if (!noStairsDown) {
-			map[centerRow][centerCol].setBaseEntity(new Stairs(1));
-			stairDown = new Position(centerRow, centerCol);
-		}
-		centerRow = room2.getRow() + (room2.getHeight()/2);
-		centerCol = room2.getCol() + (room2.getWidth()/2);
-		if (!noStairsUp) {
-			map[centerRow][centerCol].setBaseEntity(new Stairs(0));
-			stairUp = new Position(centerRow, centerCol);
-		}
 	}
 	
 	private void generateCAMap() {
@@ -188,14 +192,6 @@ public class Floor {
 				}
 			}
 		}
-	}
-	
-	public Position GetStairUp() {
-		return stairUp;
-	}
-	
-	public Position GetStairDown() {
-		return stairDown;
 	}
 	
 	private boolean[][] initializeCellMap (boolean[][] map){
@@ -250,9 +246,6 @@ public class Floor {
 	}
 	
 	private void generateTestRoom() {
-		numRows = 10;
-		numCols = 10;
-		
 		for(int row = 0; row < numRows; row++) {
 			for(int col = 0; col < numCols; col++) {
 				if(row == 0 || row == numRows - 1 || col == 0 || col == numCols - 1) {
@@ -264,7 +257,34 @@ public class Floor {
 		}
 	}
 	
-	//TODO: Implement enemy generation here
+	private void addStairs() {
+		int randPos = rand.nextInt(openPositions.size());
+		stairsUpPosition = openPositions.remove(randPos);
+		
+		if(makeStairsUp) {
+			map[stairsUpPosition.getRow()][stairsUpPosition.getCol()].setBaseEntity(new Stairs(Stairs.StairType.UP));
+		}
+		
+		if(makeStairsDown) {
+			randPos = rand.nextInt(openPositions.size());
+			stairsDownPosition = openPositions.remove(randPos);
+			map[stairsDownPosition.getRow()][stairsDownPosition.getCol()].setBaseEntity(new Stairs(Stairs.StairType.DOWN));
+		}
+	}
+	
+	private void addEnemies() {
+		int randPos;
+		
+		for(int i = 0; i < 10; i++) {
+			randPos = rand.nextInt(openPositions.size());
+			
+			Skeleton skelly = new Skeleton();
+			skelly.setPosition(openPositions.remove(randPos));
+			
+			livingEntities.add(skelly);
+			map[skelly.currentPosition.getRow()][skelly.getPosition().getCol()].addOccupant(skelly);
+		}
+	}
 	
 	public enum MapGenAlgorithm {
 		BSP, CELLULAR_AUTOMATA, TEST_ROOM;

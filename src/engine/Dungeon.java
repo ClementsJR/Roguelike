@@ -8,23 +8,28 @@ public class Dungeon {
 	public static final int DEFAULT_NUM_COLS = 32;
 	
 	private static final int MAX_NUM_FLOORS = 30;
-	
+
+	private Range cellularAutomataLevels;
 	private ArrayList<Floor> floors;
 	private int currentFloorIndex;
 	
 	public Dungeon() {
+		cellularAutomataLevels = new Range(0, 4);
+		
 		floors = new ArrayList<Floor>();
 		
 		Random rand = new Random();
 		long seed = rand.nextLong();
 		
-		generateNewFloor(seed, Floor.MapGenAlgorithm.BSP, true, false);
+		boolean makeStairsUp = false;
+		boolean makeStairsDown = true;
+		generateNewFloor(seed, Floor.MapGenAlgorithm.CELLULAR_AUTOMATA, makeStairsUp, makeStairsDown);
 		
 		currentFloorIndex = 0;
 	}
 	
-	private void generateNewFloor(long seed, Floor.MapGenAlgorithm algorithm, boolean DontMakeStairsUp, boolean DontMakeStairsDown) {
-		Floor newFloor = new Floor(seed, algorithm, DontMakeStairsUp, DontMakeStairsDown);
+	private void generateNewFloor(long seed, Floor.MapGenAlgorithm algorithm, boolean makeStairsUp, boolean makeStairsDown) {
+		Floor newFloor = new Floor(seed, algorithm, makeStairsUp, makeStairsDown);
 		floors.add(newFloor);
 	}
 	
@@ -32,7 +37,7 @@ public class Dungeon {
 		return floors.get(currentFloorIndex);
 	}
 	
-	public Tile getCurrentTileAt(Position target) {
+	public Tile getTileAt(Position target) {
 		return floors.get(currentFloorIndex).getTileAt(target);
 	}
 	
@@ -45,7 +50,28 @@ public class Dungeon {
 		if (currentFloorIndex == floors.size()) {
 			Random rand = new Random();
 			long seed = rand.nextLong();
-			generateNewFloor(seed, Floor.MapGenAlgorithm.BSP, false, currentFloorIndex == MAX_NUM_FLOORS);
+			
+			Floor.MapGenAlgorithm algorithm = (cellularAutomataLevels.isInRange(currentFloorIndex) ? Floor.MapGenAlgorithm.CELLULAR_AUTOMATA : Floor.MapGenAlgorithm.BSP);
+			
+			boolean makeStairsUp = true;
+			boolean makeStairsDown = (currentFloorIndex != MAX_NUM_FLOORS);
+			generateNewFloor(seed, algorithm, makeStairsUp, makeStairsDown);
+		}
+	}
+
+	protected class Range {
+		private int lowerBound;
+		private int upperBound;
+		
+		public Range(int lowerBound, int upperBound) {
+			this.lowerBound = lowerBound;
+			this.upperBound = upperBound;
+		}
+		
+		public boolean isInRange(int num) {
+			boolean isInRange;
+			isInRange = (lowerBound <= num && num <= upperBound);
+			return isInRange;
 		}
 	}
 }

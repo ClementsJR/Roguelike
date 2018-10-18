@@ -6,22 +6,28 @@ public abstract class Entity {
 	protected boolean impassable;
 	protected Image sprite;
 	
-	public Entity() {
-	}
+	protected Position currentPosition;
 	
-	public Entity(boolean impassable) {
-		this.impassable = impassable;
+	public Entity() {
 	}
 	
 	public boolean isImpassable() {
 		return impassable;
 	}
 	
-	public void setImpassable(boolean impassable) {
-		this.impassable = impassable;
-	}
-	
 	public Image getSprite() {
 		return sprite;
+	}
+
+	public Position getPosition() {
+		return currentPosition;
+	}
+	
+	public void setPosition(Position newPosition) {
+		currentPosition = newPosition;
+	}
+	
+	public void setImpassable(boolean impassable) {
+		this.impassable = impassable;
 	}
 }

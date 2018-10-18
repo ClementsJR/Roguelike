@@ -5,28 +5,21 @@ import java.util.ArrayList;
 public abstract class LivingEntity extends Entity {
 	protected int maxHealth;
 	protected int currentHealth;
-	protected Position currentPosition;
+	protected int attackPower;
+	protected int defense;
 	
 	protected ArrayList<StatusEffect> activeStatusEffects;
-	protected ArrayList<CurrentBehavior> entityCurrentBehavior;
-	
-	public Position getCurrentPosition() {
-		return currentPosition;
-	}
-	
-	public void setCurrentPosition(Position newPosition) {
-		currentPosition = newPosition;
-	}
+	protected BehaviorState currentBehavior;
 	
 	public LivingEntity() {
-		super(true);
+		impassable = true;
 	}
-	
+		
 	public enum StatusEffect {
-		POISONED, PARALYZED, CONFUSED, CHARMED, FRIGHTENED, BOUND, RABID;
+		POISONED, PARALYZED;
 	}
 	
-	public enum CurrentBehavior {
-		PURSUING, PATROLLING, FLEEING, HOLDINGPOSITION;
+	public enum BehaviorState {
+		IDLE, ENGAGED;
 	}
 }
