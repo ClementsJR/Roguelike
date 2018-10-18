@@ -80,6 +80,8 @@ public class GameScreenController {
 	private void drawFloor() {
 		mapGrid.getChildren().clear();
 		
+		PlayerCharacter player = game.getPlayer();
+		
 		int totalRows = game.getNumRows();
 		int totalCols = game.getNumCols();
 		
@@ -88,10 +90,11 @@ public class GameScreenController {
 		for(int row = 0; row < totalRows; row++) {
 			for(int col = 0; col < totalCols; col++) {
 				Position position = new Position(row, col);
-				SpriteView spriteView = new SpriteView(game.getTileAt(position), this);
+				
+				int fow = player.getFOWAt(position);
+				SpriteView spriteView = new SpriteView(game.getTileAt(position), this, fow);
 				
 				mapGrid.getChildren().add(spriteView);
-				
 			}
 		}
 		
@@ -106,14 +109,16 @@ public class GameScreenController {
 			
 			switch(event.getEventType()) {
 			case MOVES_TO:
-				Position source = event.getSource();
+				/*Position source = event.getSource();
 				Position target = event.getTarget();
 				
 				int sourceSpriteViewIndex = getIndexOf(source);
 				int targetSpriteViewIndex = getIndexOf(target);
 				
 				((SpriteView) mapGrid.getChildren().get(sourceSpriteViewIndex)).setTile(game.getTileAt(source));
-				((SpriteView) mapGrid.getChildren().get(targetSpriteViewIndex)).setTile(game.getTileAt(target));
+				((SpriteView) mapGrid.getChildren().get(targetSpriteViewIndex)).setTile(game.getTileAt(target));*/
+				
+				drawFloor();
 				
 				break;
 			case CHANGES_FLOOR:
