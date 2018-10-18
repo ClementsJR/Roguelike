@@ -74,10 +74,27 @@ public class Floor {
 		return map[row][col];
 	}
 	
+	public 
+	
 	public Position getPath(Position source, Position target) {
 		
+		ArrayList<Position> openTiles = null;
+		ArrayList<Position> closedTiles = null;
+		Position breadCrumbs[][];
+		int costs[][];
 		Position nextStep = null;
 		
+		openTiles.add(source);
+		
+		int lastIndex = openTiles.size() - 1;
+				
+		while (openTiles.get(lastIndex) != target)
+		{
+			Position current = openTiles.get(lastIndex);
+			openTiles.remove(lastIndex);
+			closedTiles.add(current);
+			
+		}
 		
 		return nextStep;
 	}
