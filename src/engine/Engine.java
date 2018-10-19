@@ -133,14 +133,20 @@ public class Engine {
 	private void playerAttacks(Position target) {
 		GameEvent attackRecord = new GameEvent(player, player.getPosition(), EventType.ATTACKS, target);
 		eventQueue.add(attackRecord);
+		
 		Tile targetTile = getTileAt(target);
-		for(Entity entity : targetTile.getOccupants()) {
+		for(int i = 0; i < targetTile.getOccupants().size(); i++) {
+			Entity entity = targetTile.getOccupants().get(i);
+			
 			if(entity.getClass() == Skeleton.class) {
 				((LivingEntity)entity).Hit(player.attackPower);
+				
 				if (((LivingEntity)entity).currentHealth <= 0) {
 					targetTile.removeOccupant(entity);
 					dungeon.getCurrentFloor().getLivingEntities().remove(entity);
-				}	
+				}
+				
+				break;
 			}
 		}
 	}
