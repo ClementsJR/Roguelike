@@ -74,8 +74,6 @@ public class Floor {
 		return map[row][col];
 	}
 	
-	public 
-	
 	public Position getPath(Position source, Position target) {
 		
 		ArrayList<Position> openTiles = null;

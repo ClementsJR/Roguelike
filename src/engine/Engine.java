@@ -75,7 +75,7 @@ public class Engine {
 				return;
 			}
 			
-			takeEnemyTurns();
+			//takeEnemyTurns();
 		}
 	}
 	
