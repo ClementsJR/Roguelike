@@ -78,22 +78,86 @@ public class Floor {
 		
 		ArrayList<Position> openTiles = null;
 		ArrayList<Position> closedTiles = null;
-		Position breadCrumbs[][];
-		int costs[][];
+		Position cameFrom[][] = null;
+		int costs[][] = null;
+		int movementCosts[][] = null;
 		Position nextStep = null;
 		
+		int targetRow = target.getRow();
+		int targetCol = target.getCol();
+		
 		openTiles.add(source);
+		costs[source.getRow()][source.getCol()] = ((Math.abs(targetRow - source.getRow()) + (Math.abs(targetCol - source.getCol()))));
+		movementCosts[source.getRow()][source.getCol()] = 0;
 		
 		int lastIndex = openTiles.size() - 1;
-				
+		
+		int lowestCostIndex = 0;
+		
 		while (openTiles.get(lastIndex) != target)
 		{
-			Position current = openTiles.get(lastIndex);
-			openTiles.remove(lastIndex);
+			int k = 0;
+			int lowestCost = costs[openTiles.get(0).getRow()][openTiles.get(0).getCol()];
+			while (openTiles.get(k) != null)
+			{
+				int r = openTiles.get(k).getRow();
+				int c = openTiles.get(k).getCol();
+				int compCost = costs[r][c];
+				if (compCost < lowestCost) {
+					lowestCost = compCost;
+					lowestCostIndex = k;
+				}
+				k++;
+			}
+			
+			Position current = openTiles.get(lowestCostIndex);
+			openTiles.remove(lowestCostIndex);
 			closedTiles.add(current);
 			
+			int centerRow = current.getRow();
+			int centerCol = current.getCol();
+			
+			for(int rowOffset = -1; rowOffset <= 1; rowOffset++) {
+				for(int colOffset = -1; colOffset <= 1; colOffset++) {
+					int row = centerRow + rowOffset;
+					int col = centerCol + colOffset;
+					
+					if(row == centerRow && col == centerCol) {
+						continue;
+					} else if(row < 0 || col < 0 || row >= Dungeon.DEFAULT_NUM_ROWS || col >= Dungeon.DEFAULT_NUM_COLS) {
+						continue;
+					} else {
+						Tile tile = map[row][col];
+						if(tile.isBlocked()) {
+							continue;
+						}
+					boolean isPresent = false;
+					for (int i = 0; i <= openTiles.size(); i++) {
+						if (openTiles.get(i).equals(new Position(row, col))) {
+							isPresent = true;
+						}
+					}
+					for (int i = 0; i <= closedTiles.size(); i++) {
+						if (closedTiles.get(i).equals(new Position(row, col))) {
+							isPresent = true;
+						}
+					}					
+					if (isPresent == false) {
+						openTiles.add(new Position(row, col));
+					}
+					costs[row][col] = ((Math.abs(targetRow - row)) + (Math.abs(targetCol - col)) + movementCosts[centerRow][centerCol]);
+					cameFrom[row][col] = current;
+						
+					}
+				}
+			}
+				
 		}
-		
+		Position crumb = cameFrom[source.getRow()][source.getCol()];
+		while (!crumb.equals(source)) {
+			crumb = cameFrom[crumb.getRow()][crumb.getCol()];
+		}
+		nextStep = crumb;
 		return nextStep;
 	}
 	

@@ -41,4 +41,9 @@ public class Position {
 		row = p.getRow();
 		col = p.getCol();
 	}
+	
+	public boolean equals(Position p) {
+		boolean isEqual = (row == p.getRow() && col == p.getCol());
+		return isEqual;
+	}
 }
