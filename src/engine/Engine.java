@@ -62,7 +62,7 @@ public class Engine {
 				return;
 			}
 			
-			//takeEnemyTurns();
+			takeEnemyTurns();
 		}
 	}
 	
@@ -224,6 +224,14 @@ public class Engine {
 			Position source = livingEntities.get(i).getPosition();
 			Position target = player.getPosition();
 			Position nextStep = dungeon.getCurrentFloor().getPath(source, target);
+			Tile sourceTile = getTileAt(source);
+			Tile nextTile = getTileAt(nextStep);
+			sourceTile.removeOccupant(livingEntities.get(i));
+			nextTile.addOccupant(livingEntities.get(i));
+			livingEntities.get(i).setPosition(nextStep);
+			
+			GameEvent moveRecord = new GameEvent(livingEntities.get(i), source, EventType.MOVES_TO, nextStep);
+			eventQueue.add(moveRecord);
 		}
 	}
 	
