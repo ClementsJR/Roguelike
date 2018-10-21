@@ -88,11 +88,14 @@ public abstract class LivingEntity extends Entity {
 		fogOfWarMap[position.getRow()][position.getCol()] = fow;
 	}
 	
-	public void receiveDamage(int damage) {
+	public int receiveDamage(int damage) {
 		damage -= defense;
 		
 		if (damage > 0) {
 			currentHealth -= damage;
+			return damage;
+		} else {
+			return 0;
 		}
 	}
 		
