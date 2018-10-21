@@ -127,7 +127,7 @@ public class Engine {
 			Entity entity = targetTile.getOccupants().get(i);
 			
 			if(entity instanceof LivingEntity) {
-				((LivingEntity)entity).receiveDamage(player.getAttack());
+				((LivingEntity)entity).receiveDamage(player.getRandomAttackDamage());
 				
 				if (((LivingEntity)entity).getCurrentHealth() <= 0) {
 					GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);

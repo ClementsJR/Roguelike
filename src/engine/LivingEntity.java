@@ -10,7 +10,7 @@ public abstract class LivingEntity extends Entity {
 	
 	private int maxHealth;
 	private int currentHealth;
-	private int attack;
+	private Range damageRange;
 	private int defense;
 
 	private int sightDistance;
@@ -33,20 +33,24 @@ public abstract class LivingEntity extends Entity {
 		resetFOW();
 	}
 	
-	public LivingEntity(int maxHealth, int attack, int defense) {
+	public LivingEntity(int maxHealth, Range damageRange, int defense) {
 		this();
 		
 		this.maxHealth =  maxHealth;
 		this.currentHealth = maxHealth;
-		this.attack = attack;
+		this.damageRange = damageRange;
 		this.defense = defense;
 	}
 	
 	public int getSightDistance() { return sightDistance; }
-	public int getAttack() { return attack; }
 	public int getCurrentHealth() { return currentHealth; }
 	public boolean isEnemy() { return isEnemy; }
 	public int getFOWAt(Position position) { return fogOfWarMap[position.getRow()][position.getCol()]; }
+	public int getRandomAttackDamage() { return damageRange.getRandomNum(); }
+	
+	public void setDamageRange(Range damageRange) {
+		this.damageRange = damageRange;
+	}
 	
 	public void setIsEnemy(boolean isEnemy) {
 		this.isEnemy = isEnemy;

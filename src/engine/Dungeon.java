@@ -61,20 +61,4 @@ public class Dungeon {
 			generateNewFloor(seed, algorithm, makeStairsUp, makeStairsDown);
 		}
 	}
-
-	protected class Range {
-		private int lowerBound;
-		private int upperBound;
-		
-		public Range(int lowerBound, int upperBound) {
-			this.lowerBound = lowerBound;
-			this.upperBound = upperBound;
-		}
-		
-		public boolean isInRange(int num) {
-			boolean isInRange;
-			isInRange = (lowerBound <= num && num <= upperBound);
-			return isInRange;
-		}
-	}
 }
