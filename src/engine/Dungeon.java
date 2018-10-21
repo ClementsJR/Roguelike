@@ -8,13 +8,15 @@ public class Dungeon {
 	public static final int DEFAULT_NUM_COLS = 32;
 	
 	private static final int MAX_NUM_FLOORS = 30;
+	private static final int FIRST_CAVE_FLOOR = 0;
+	private static final int LAST_CAVE_FLOOR = 2;
 
 	private Range cellularAutomataLevels;
 	private ArrayList<Floor> floors;
 	private int currentFloorIndex;
 	
 	public Dungeon() {
-		cellularAutomataLevels = new Range(0, 4);
+		cellularAutomataLevels = new Range(FIRST_CAVE_FLOOR, LAST_CAVE_FLOOR);
 		
 		floors = new ArrayList<Floor>();
 		
@@ -47,6 +49,7 @@ public class Dungeon {
 	
 	public void goDownOneFloor() {
 		currentFloorIndex++;
+		
 		if (currentFloorIndex == floors.size()) {
 			Random rand = new Random();
 			long seed = rand.nextLong();

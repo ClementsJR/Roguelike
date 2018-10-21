@@ -23,25 +23,12 @@ public class Engine {
 		eventQueue.clear();
 	}
 	
-	public Tile getTileAt(Position position) {
-		return dungeon.getTileAt(position);
-	}
-
-	public int getNumRows() {
-		return dungeon.getCurrentFloor().getNumRows();
-	}
-
-	public int getNumCols() {
-		return dungeon.getCurrentFloor().getNumCols();
-	}
-	
-	public LinkedList<GameEvent> getEventQueue() {
-		return eventQueue;
-	}
-	
-	public Position getPlayerPosition() {
-		return player.getPosition();
-	}
+	public Tile getTileAt(Position position) { return dungeon.getTileAt(position); }
+	public int getNumRows() { return dungeon.getCurrentFloor().getNumRows(); }
+	public int getNumCols() { return dungeon.getCurrentFloor().getNumCols(); }
+	public LinkedList<GameEvent> getEventQueue() { return eventQueue; }
+	public PlayerCharacter getPlayer() { return player; }
+	public Position getPlayerPosition() { return player.getPosition(); }
 
 	public void UpKeyPressed() {
 		tileSelected(new Position (player.getPosition().getRow() - 1, player.getPosition().getCol()));
@@ -62,7 +49,7 @@ public class Engine {
 	
 	public void tileSelected(Position clickedPosition) {
 		if(isAdjacentMove(clickedPosition)) {
-			Tile target = dungeon.getTileAt(clickedPosition);
+			Tile target = getTileAt(clickedPosition);
 			
 			if(isOpenTile(target) && !isStairTile(target)) {
 				movePlayerTo(clickedPosition);
@@ -120,10 +107,11 @@ public class Engine {
 		GameEvent moveRecord = new GameEvent(player, player.getPosition(), EventType.MOVES_TO, target);
 		eventQueue.add(moveRecord);
 		
-		Tile currentPlayerTile = dungeon.getTileAt(player.getPosition());
-		currentPlayerTile.removeOccupant(player);
-		currentPlayerTile = dungeon.getTileAt(target);
-		currentPlayerTile.addOccupant(player);
+		Tile oldPlayerTile = getTileAt(player.getPosition());
+		oldPlayerTile.removeOccupant(player);
+		
+		Tile newPlayerTile = getTileAt(target);
+		newPlayerTile.addOccupant(player);
 		
 		player.setPosition(target);
 		
@@ -131,8 +119,6 @@ public class Engine {
 	}
 		
 	private void playerAttacks(Position target) {
-		System.out.println("attack");
-		
 		GameEvent attackRecord = new GameEvent(player, player.getPosition(), EventType.ATTACKS, target);
 		eventQueue.add(attackRecord);
 		
@@ -140,10 +126,13 @@ public class Engine {
 		for(int i = 0; i < targetTile.getOccupants().size(); i++) {
 			Entity entity = targetTile.getOccupants().get(i);
 			
-			if(entity instanceof Enemy) {
-				((LivingEntity)entity).Hit(player.attackPower);
+			if(entity instanceof LivingEntity) {
+				((LivingEntity)entity).receiveDamage(player.getAttack());
 				
-				if (((LivingEntity)entity).currentHealth <= 0) {
+				if (((LivingEntity)entity).getCurrentHealth() <= 0) {
+					GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
+					eventQueue.add(deathRecord);
+					
 					targetTile.removeOccupant(entity);
 					dungeon.getCurrentFloor().getLivingEntities().remove(entity);
 				}
@@ -225,8 +214,6 @@ public class Engine {
 		}
 	}
 	
-	public PlayerCharacter getPlayer() { return player; }
-
 	private void takeEnemyTurns() {
 		ArrayList <LivingEntity> livingEntities = dungeon.getCurrentFloor().getLivingEntities();
 		

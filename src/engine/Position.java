@@ -16,29 +16,9 @@ public class Position {
 		this.col = col;
 	}
 	
-	public int getRow() {
-		return row;
-	}
+	public int getRow() { return row; }
+	public int getCol() { return col; }
 	
-	public int getCol() {
-		return col;
-	}
-	
-	public boolean isInInventory() {
-		return row == PLAYER_INVENTORY;
-	}
-	
-	public boolean isOutOfGame() {
-		return row == OUT_OF_GAME;
-	}
-	
-	public void setTo(int row, int col) {
-		this.row = row;
-		this.col = col;
-	}
-	
-	public void setTo(Position p) {
-		row = p.getRow();
-		col = p.getCol();
-	}
+	public boolean isInInventory() { return row == PLAYER_INVENTORY; }
+	public boolean isOutOfGame() { return row == OUT_OF_GAME; }
 }

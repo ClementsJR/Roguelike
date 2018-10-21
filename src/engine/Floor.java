@@ -35,37 +35,17 @@ public class Floor {
 		
 		livingEntities = new ArrayList<LivingEntity>();
 		openPositions = new ArrayList<Position>();
-		
-		for (int row = 0; row < numRows; row++) {
-			for (int col = 0; col < numCols; col++) {
-				if (!map[row][col].isBlocked())
-					openPositions.add(new Position (row, col));
-			}
-		}
+		findOpenPositions();
 		
 		addStairs();
 		addEnemies();
 	}
 	
-	public int getNumRows() {
-		return numRows;
-	}
-	
-	public int getNumCols() {
-		return numCols;
-	}
-	
-	public Position getStairsUpPosition() {
-		return stairsUpPosition;
-	}
-	
-	public Position getStairsDownPosition() {
-		return stairsDownPosition;
-	}
-	
-	public ArrayList<LivingEntity> getLivingEntities() {
-		return livingEntities;
-	}
+	public int getNumRows() { return numRows; }
+	public int getNumCols() { return numCols; }
+	public Position getStairsUpPosition() { return stairsUpPosition; }
+	public Position getStairsDownPosition() { return stairsDownPosition; }
+	public ArrayList<LivingEntity> getLivingEntities() { return livingEntities; }
 	
 	public Tile getTileAt(Position target) {
 		int row = target.getRow();
@@ -132,9 +112,9 @@ public class Floor {
 		ArrayList<BSPLeaf> leaves = new ArrayList<BSPLeaf> ();
 		leaves.add(root);
 		
-		boolean did_split = true;
-		while (did_split) {
-			did_split = false;
+		boolean didSplit = true;
+		while (didSplit) {
+			didSplit = false;
 			
 			for (int i = 0; i < leaves.size(); i++) {
 				BSPLeaf leaf = leaves.get(i);
@@ -142,11 +122,13 @@ public class Floor {
 				if (leaf.getLeftChild() == null && leaf.getRightChild() == null) {
 					//if this leaf is too big, or 75% chance
 					if (leaf.getWidth() > maxSize || leaf.getHeight() > maxSize || rand.nextDouble() > 0.25) {
-						if (leaf.split()) {
-							//if we split, push the child leafs to the vector
+						boolean result = leaf.split();
+						
+						if (result) {
+							//if we split, push the child leaves to the vector
 							leaves.add(leaf.getLeftChild());
 							leaves.add(leaf.getRightChild());
-							did_split = true;
+							didSplit = true;
 						}
 					}
 				}
@@ -155,13 +137,8 @@ public class Floor {
 		
 		root.createRooms();
 		
-		
-		for(int i=0; i<leaves.size(); i++) {
+		for(int i = 0; i < leaves.size(); i++) {
 			BSPLeaf leaf = leaves.get(i);
-			
-			//if(!leaf.hasRoom())
-			//	continue;
-			
 			Rectangle room = leaf.getRoom();
 			
 			for(int row = room.getRow(); row < room.getRow() + room.getHeight(); row++) {
@@ -272,6 +249,16 @@ public class Floor {
 		}
 	}
 	
+	private void findOpenPositions() {
+		for (int row = 0; row < numRows; row++) {
+			for (int col = 0; col < numCols; col++) {
+				if (!map[row][col].isBlocked()) {
+					openPositions.add(new Position (row, col));
+				}
+			}
+		}
+	}
+	
 	private void addStairs() {
 		int randPos = rand.nextInt(openPositions.size());
 		stairsUpPosition = openPositions.remove(randPos);
@@ -294,10 +281,11 @@ public class Floor {
 			randPos = rand.nextInt(openPositions.size());
 			
 			Skeleton skelly = new Skeleton();
-			skelly.setPosition(openPositions.remove(randPos));
+			Position spawnPosition = openPositions.remove(randPos);
+			skelly.setPosition(spawnPosition);
 			
 			livingEntities.add(skelly);
-			map[skelly.currentPosition.getRow()][skelly.getPosition().getCol()].addOccupant(skelly);
+			map[spawnPosition.getRow()][spawnPosition.getCol()].addOccupant(skelly);
 		}
 	}
 	
