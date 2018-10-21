@@ -3,17 +3,23 @@ package gui;
 import java.util.LinkedList;
 
 import engine.*;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
+import javafx.util.Duration;
 
 public class GameScreenController {
 	private Engine game;
+	
+	private static final String DAMAGE_LABEL_STYLE_CLASS = "damageLabel";
+	private static final String ZERO_LABEL_STYLE_CLASS = "zeroLabel";
+	private static final String NONZERO_LABEL_STYLE_CLASS = "nonzeroLabel";
 	
 	@FXML
 	Pane backgroundPane;
@@ -130,6 +136,7 @@ public class GameScreenController {
 				
 				break;
 			case ATTACKS:
+				animateDamage(event.getTarget(), event.getEventType().getEventValue());
 				break;
 			case DIES:
 				Position source = event.getSource();
@@ -143,7 +150,7 @@ public class GameScreenController {
 		
 		centerMapGrid();
 	}
-	
+
 	private void updatePlayerPosition() {
 		PlayerCharacter player = game.getPlayer();
 		
@@ -174,6 +181,37 @@ public class GameScreenController {
 		((SpriteView) mapGrid.getChildren().get(spriteViewIndex)).setTile(game.getTileAt(position));
 	}
 	
+	private void animateDamage(Position target, int damage) {
+		int targetIndex = getIndexOf(target);
+		SpriteView targetSpriteView = ((SpriteView) mapGrid.getChildren().get(targetIndex));
+		
+		Label dmgLabel = new Label(Integer.toString(damage));
+		dmgLabel.getStyleClass().add(DAMAGE_LABEL_STYLE_CLASS);
+		
+		if(damage == 0) {
+			dmgLabel.getStyleClass().add(ZERO_LABEL_STYLE_CLASS);
+		} else {
+			dmgLabel.getStyleClass().add(NONZERO_LABEL_STYLE_CLASS);
+		}
+		
+		targetSpriteView.getChildren().add(dmgLabel);
+		
+		TranslateTransition translation = new TranslateTransition();
+		translation.setDuration(Duration.millis(1000));
+		translation.setNode(dmgLabel);
+		translation.setByY(-32);
+		
+		FadeTransition fade = new FadeTransition();
+		fade.setDuration(Duration.millis(1000));
+		fade.setNode(dmgLabel);
+		fade.setFromValue(1.0);
+		fade.setToValue(0.0);
+		
+		ParallelTransition para = new ParallelTransition();
+		para.getChildren().addAll(translation, fade);
+		para.play();
+	}
+
 	private int getIndexOf(Position position) {
 		return (position.getRow() * game.getNumRows()) + position.getCol();
 	}
