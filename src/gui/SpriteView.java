@@ -25,13 +25,12 @@ public class SpriteView extends Pane {
 		this.setOnMouseClicked((event) -> handleClick(event));
 		this.controller = controller;
 		
-		this.fogOfWar = fogOfWar;
-		
-		setTile(tile);
+		setTile(tile, fogOfWar);
 	}
 	
-	public void setTile(Tile newTile) {
+	public void setTile(Tile newTile, int fogOfWar) {
 		tile = newTile;
+		this.fogOfWar = fogOfWar;
 		images = new ArrayList<ImageView>();
 		
 		setupImageViews();

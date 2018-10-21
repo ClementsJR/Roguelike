@@ -30,9 +30,9 @@ public class GameEvent {
 		target = new Position(row, col);
 	}
 	
+	public Entity getActor() { return actor; }
 	public Position getSource() { return source; }
 	public Position getTarget() { return target; }
-	
 	public EventType getEventType() { return type; }
 	
 	public enum EventType {

@@ -118,7 +118,11 @@ public class GameScreenController {
 				((SpriteView) mapGrid.getChildren().get(sourceSpriteViewIndex)).setTile(game.getTileAt(source));
 				((SpriteView) mapGrid.getChildren().get(targetSpriteViewIndex)).setTile(game.getTileAt(target));*/
 				
-				drawFloor();
+				Entity actor = event.getActor();
+				
+				if(actor instanceof PlayerCharacter) {
+					updatePlayerPosition();
+				}
 				
 				break;
 			case CHANGES_FLOOR:
@@ -131,6 +135,26 @@ public class GameScreenController {
 		}
 		
 		centerMapGrid();
+	}
+	
+	private void updatePlayerPosition() {
+		PlayerCharacter player = game.getPlayer();
+		
+		int fowDistance = player.getSightDistance() + 1;
+		int playerRow = player.getPosition().getRow();
+		int playerCol = player.getPosition().getCol();
+		
+		for(int row = playerRow - fowDistance; row <= playerRow + fowDistance; row++) {
+			for(int col = playerCol - fowDistance; col <= playerCol + fowDistance; col++) {
+				if(row < 0 || col < 0 || row >= Dungeon.DEFAULT_NUM_ROWS || col >= Dungeon.DEFAULT_NUM_COLS) {
+					continue;
+				}
+				
+				Position position = new Position(row, col);
+				int positionSpriteViewIndex = getIndexOf(position);
+				((SpriteView) mapGrid.getChildren().get(positionSpriteViewIndex)).setTile(game.getTileAt(position), player.getFOWAt(position));
+			}
+		}
 	}
 	
 	private int getIndexOf(Position position) {
