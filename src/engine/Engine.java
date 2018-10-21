@@ -107,7 +107,7 @@ public class Engine {
 		boolean hasLivingEntity = false;
 		
 		for(Entity entity : target.getOccupants()) {
-			if(entity.getClass() == Skeleton.class || entity.getClass() == PlayerCharacter.class) {
+			if(entity instanceof LivingEntity) {
 				hasLivingEntity = true;
 				break;
 			}
@@ -131,6 +131,8 @@ public class Engine {
 	}
 		
 	private void playerAttacks(Position target) {
+		System.out.println("attack");
+		
 		GameEvent attackRecord = new GameEvent(player, player.getPosition(), EventType.ATTACKS, target);
 		eventQueue.add(attackRecord);
 		
@@ -138,7 +140,7 @@ public class Engine {
 		for(int i = 0; i < targetTile.getOccupants().size(); i++) {
 			Entity entity = targetTile.getOccupants().get(i);
 			
-			if(entity.getClass() == Skeleton.class) {
+			if(entity instanceof Enemy) {
 				((LivingEntity)entity).Hit(player.attackPower);
 				
 				if (((LivingEntity)entity).currentHealth <= 0) {
