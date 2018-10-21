@@ -56,29 +56,30 @@ public class Floor {
 	
 	public Position getPath(Position source, Position target) {
 		
-		ArrayList<Position> openTiles = null;
-		ArrayList<Position> closedTiles = null;
-		Position cameFrom[][] = null;
-		int costs[][] = null;
-		int movementCosts[][] = null;
+		ArrayList<Position> openTiles = new ArrayList<Position>();
+		ArrayList<Position> closedTiles = new ArrayList<Position>();
+		Position cameFrom[][] = new Position[numRows][numCols];
+		int costs[][] = new int[numRows][numCols];
+		int movementCosts[][] = new int[numRows][numCols];
 		Position nextStep = null;
 		
 		int targetRow = target.getRow();
 		int targetCol = target.getCol();
 		
-		openTiles.add(source);
+		openTiles.add(0, source);
 		costs[source.getRow()][source.getCol()] = ((Math.abs(targetRow - source.getRow()) + (Math.abs(targetCol - source.getCol()))));
 		movementCosts[source.getRow()][source.getCol()] = 0;
 		
-		int lastIndex = openTiles.size() - 1;
-		
 		int lowestCostIndex = 0;
-		
-		while (openTiles.get(lastIndex) != target)
+		int lowestCost = costs[source.getRow()][source.getCol()];
+		if (openTiles.size() == 0) {
+			return source;
+		}
+		while (!openTiles.get(lowestCostIndex).equals(target))
 		{
-			int k = 0;
-			int lowestCost = costs[openTiles.get(0).getRow()][openTiles.get(0).getCol()];
-			while (openTiles.get(k) != null)
+			lowestCostIndex = 0;
+			lowestCost = costs[openTiles.get(0).getRow()][openTiles.get(0).getCol()];
+			for (int k = 0; k < openTiles.size(); k++)
 			{
 				int r = openTiles.get(k).getRow();
 				int c = openTiles.get(k).getCol();
@@ -87,9 +88,7 @@ public class Floor {
 					lowestCost = compCost;
 					lowestCostIndex = k;
 				}
-				k++;
 			}
-			
 			Position current = openTiles.get(lowestCostIndex);
 			openTiles.remove(lowestCostIndex);
 			closedTiles.add(current);
@@ -108,32 +107,43 @@ public class Floor {
 						continue;
 					} else {
 						Tile tile = map[row][col];
-						if(tile.isBlocked()) {
+						if(tile.isBlocked() && !target.equals(new Position(row, col))) {
 							continue;
 						}
-					boolean isPresent = false;
-					for (int i = 0; i <= openTiles.size(); i++) {
-						if (openTiles.get(i).equals(new Position(row, col))) {
-							isPresent = true;
+						boolean isPresentOpen = false;
+						boolean isPresentClosed = false;
+						for (int i = 0; i < openTiles.size(); i++) {
+							if (openTiles.get(i).equals(new Position(row, col))) {
+								isPresentOpen = true;
+							}
 						}
-					}
-					for (int i = 0; i <= closedTiles.size(); i++) {
-						if (closedTiles.get(i).equals(new Position(row, col))) {
-							isPresent = true;
+						for (int i = 0; i < closedTiles.size(); i++) {
+							if (closedTiles.get(i).equals(new Position(row, col))) {
+								isPresentClosed = true;
+							}
+						}					
+						if (isPresentOpen == false && isPresentClosed == false) {
+							openTiles.add(new Position(row, col));
+							costs[row][col] = ((Math.abs(targetRow - row)) + (Math.abs(targetCol - col)) + movementCosts[centerRow][centerCol]);
+							cameFrom[row][col] = current;								
 						}
-					}					
-					if (isPresent == false) {
-						openTiles.add(new Position(row, col));
-					}
-					costs[row][col] = ((Math.abs(targetRow - row)) + (Math.abs(targetCol - col)) + movementCosts[centerRow][centerCol]);
-					cameFrom[row][col] = current;
-						
 					}
 				}
 			}
-				
+			lowestCostIndex = 0;
+			lowestCost = costs[openTiles.get(0).getRow()][openTiles.get(0).getCol()];
+			for (int k = 0; k < openTiles.size(); k++)
+			{
+				int r = openTiles.get(k).getRow();
+				int c = openTiles.get(k).getCol();
+				int compCost = costs[r][c];
+				if (compCost < lowestCost) {
+					lowestCost = compCost;
+					lowestCostIndex = k;
+				}
+			}	
 		}
-		Position crumb = cameFrom[source.getRow()][source.getCol()];
+		Position crumb = cameFrom[target.getRow()][target.getCol()];
 		while (!crumb.equals(source)) {
 			crumb = cameFrom[crumb.getRow()][crumb.getCol()];
 		}
@@ -341,7 +351,7 @@ public class Floor {
 	private void addEnemies() {
 		int randPos;
 		
-		for(int i = 0; i < 10; i++) {
+		for(int i = 0; i < 1; i++) {
 			randPos = rand.nextInt(openPositions.size());
 			
 			Skeleton skelly = new Skeleton();

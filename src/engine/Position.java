@@ -19,18 +19,11 @@ public class Position {
 	public int getRow() { return row; }
 	public int getCol() { return col; }
 	
-<<<<<<< HEAD
-	public void setTo(Position p) {
-		row = p.getRow();
-		col = p.getCol();
-	}
 	
 	public boolean equals(Position p) {
 		boolean isEqual = (row == p.getRow() && col == p.getCol());
 		return isEqual;
 	}
-=======
 	public boolean isInInventory() { return row == PLAYER_INVENTORY; }
 	public boolean isOutOfGame() { return row == OUT_OF_GAME; }
->>>>>>> ebbd5a3dd9a1fa74501969dbb5fb587c12bde8d7
 }
