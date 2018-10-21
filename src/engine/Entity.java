@@ -3,31 +3,28 @@ package engine;
 import javafx.scene.image.Image;
 
 public abstract class Entity {
-	protected boolean impassable;
-	protected Image sprite;
+	private boolean impassable;
+	private Image sprite;
 	
-	protected Position currentPosition;
+	private Position currentPosition;
 	
 	public Entity() {
+		
 	}
 	
-	public boolean isImpassable() {
-		return impassable;
+	public boolean isImpassable() { return impassable; }
+	public Image getSprite() { return sprite; }
+	public Position getPosition() { return currentPosition; }
+	
+	public void setImpassable(boolean impassable) {
+		this.impassable = impassable;
 	}
 	
-	public Image getSprite() {
-		return sprite;
-	}
-
-	public Position getPosition() {
-		return currentPosition;
+	public void setImage(String url) {
+		sprite = new Image(url);
 	}
 	
 	public void setPosition(Position newPosition) {
 		currentPosition = newPosition;
-	}
-	
-	public void setImpassable(boolean impassable) {
-		this.impassable = impassable;
 	}
 }

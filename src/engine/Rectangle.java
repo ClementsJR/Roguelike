@@ -8,11 +8,11 @@ public class Rectangle {
 		
 	}
 	
-	public Rectangle(int newFirstRow, int newFirstCol, int newHeight, int newWidth) {
-		firstRow = newFirstRow;
-		firstCol = newFirstCol;
-		height = newHeight;
-		width = newWidth;
+	public Rectangle(int firstRow, int firstCol, int height, int width) {
+		this.firstRow = firstRow;
+		this.firstCol = firstCol;
+		this.height = height;
+		this.width = width;
 	}
 	
 	public int getRow() { return firstRow; }

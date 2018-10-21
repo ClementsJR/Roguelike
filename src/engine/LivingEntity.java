@@ -8,19 +8,21 @@ public abstract class LivingEntity extends Entity {
 	public static final int NOT_SEEN = -10;
 	public static final int WAS_SEEN = -5;
 	
-	protected int maxHealth;
-	protected int currentHealth;
-	protected int attackPower;
-	protected int defense;
-	
-	protected ArrayList<StatusEffect> activeStatusEffects;
-	protected BehaviorState currentBehavior;
+	private int maxHealth;
+	private int currentHealth;
+	private Range damageRange;
+	private int defense;
 
-	protected int sightDistance;
-	protected int[][] fogOfWarMap;
+	private int sightDistance;
+	private int[][] fogOfWarMap;
+	
+	private boolean isEnemy;
+
+	private ArrayList<StatusEffect> activeStatusEffects;
+	private BehaviorState currentBehavior;
 	
 	public LivingEntity() {
-		impassable = true;
+		setImpassable(true);
 		
 		sightDistance = DEFAULT_SIGHT_DISTANCE;
 		
@@ -31,8 +33,27 @@ public abstract class LivingEntity extends Entity {
 		resetFOW();
 	}
 	
-	public int getSightDistance() {
-		return sightDistance;
+	public LivingEntity(int maxHealth, Range damageRange, int defense) {
+		this();
+		
+		this.maxHealth =  maxHealth;
+		this.currentHealth = maxHealth;
+		this.damageRange = damageRange;
+		this.defense = defense;
+	}
+	
+	public int getSightDistance() { return sightDistance; }
+	public int getCurrentHealth() { return currentHealth; }
+	public boolean isEnemy() { return isEnemy; }
+	public int getFOWAt(Position position) { return fogOfWarMap[position.getRow()][position.getCol()]; }
+	public int getRandomAttackDamage() { return damageRange.getRandomNum(); }
+	
+	public void setDamageRange(Range damageRange) {
+		this.damageRange = damageRange;
+	}
+	
+	public void setIsEnemy(boolean isEnemy) {
+		this.isEnemy = isEnemy;
 	}
 	
 	public void resetFOW() {
@@ -61,14 +82,18 @@ public abstract class LivingEntity extends Entity {
 		}
 	}
 	
-	public int getFOWAt(Position position) {
-		return fogOfWarMap[position.getRow()][position.getCol()];
-	}
-	
 	public void setCurrentlySeen(Position position, int distance) {
 		int fow = distance;
 		
 		fogOfWarMap[position.getRow()][position.getCol()] = fow;
+	}
+	
+	public void receiveDamage(int damage) {
+		damage -= defense;
+		
+		if (damage > 0) {
+			currentHealth -= damage;
+		}
 	}
 		
 	public enum StatusEffect {
@@ -79,10 +104,8 @@ public abstract class LivingEntity extends Entity {
 		IDLE, ENGAGED;
 	}
 	
-	public void Hit(int opponentAttackPower) {
-		opponentAttackPower = opponentAttackPower - defense;
-		if (opponentAttackPower > 0)
-			currentHealth = currentHealth - opponentAttackPower;
+	public enum FOWState {
+		
 	}
 	
 }

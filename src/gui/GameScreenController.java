@@ -109,19 +109,17 @@ public class GameScreenController {
 			
 			switch(event.getEventType()) {
 			case MOVES_TO:
-				/*Position source = event.getSource();
-				Position target = event.getTarget();
 				
-				int sourceSpriteViewIndex = getIndexOf(source);
-				int targetSpriteViewIndex = getIndexOf(target);
-				
-				((SpriteView) mapGrid.getChildren().get(sourceSpriteViewIndex)).setTile(game.getTileAt(source));
-				((SpriteView) mapGrid.getChildren().get(targetSpriteViewIndex)).setTile(game.getTileAt(target));*/
 				
 				Entity actor = event.getActor();
 				
 				if(actor instanceof PlayerCharacter) {
 					updatePlayerPosition();
+				} else {
+					Position source = event.getSource();
+					Position target = event.getTarget();
+					
+					updateNonPlayerPosition(source, target);
 				}
 				
 				break;
@@ -129,6 +127,15 @@ public class GameScreenController {
 				startLoadingAnimation();
 				drawFloor();
 				endLoadingAnimation();
+				
+				break;
+			case ATTACKS:
+				break;
+			case DIES:
+				Position source = event.getSource();
+				updateSinglePosition(source);
+				
+				break;
 			default:
 				//do nothing yet.
 			}
@@ -155,6 +162,16 @@ public class GameScreenController {
 				((SpriteView) mapGrid.getChildren().get(positionSpriteViewIndex)).setTile(game.getTileAt(position), player.getFOWAt(position));
 			}
 		}
+	}
+	
+	private void updateNonPlayerPosition(Position source, Position target) {
+		updateSinglePosition(source);
+		updateSinglePosition(target);
+	}
+	
+	private void updateSinglePosition(Position position) {
+		int spriteViewIndex = getIndexOf(position);
+		((SpriteView) mapGrid.getChildren().get(spriteViewIndex)).setTile(game.getTileAt(position));
 	}
 	
 	private int getIndexOf(Position position) {
