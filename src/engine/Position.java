@@ -19,20 +19,11 @@ public class Position {
 	public int getRow() { return row; }
 	public int getCol() { return col; }
 	
-<<<<<<< HEAD
-	
-=======
 	public boolean isInInventory() { return row == PLAYER_INVENTORY; }
 	public boolean isOutOfGame() { return row == OUT_OF_GAME; }
 
->>>>>>> 97ad386cd5eeed60aecab04447cffe85ec9eaa89
 	public boolean equals(Position p) {
 		boolean isEqual = (row == p.getRow() && col == p.getCol());
 		return isEqual;
 	}
-<<<<<<< HEAD
-	public boolean isInInventory() { return row == PLAYER_INVENTORY; }
-	public boolean isOutOfGame() { return row == OUT_OF_GAME; }
-=======
->>>>>>> 97ad386cd5eeed60aecab04447cffe85ec9eaa89
 }

@@ -224,6 +224,8 @@ public class Engine {
 			Position source = livingEntities.get(i).getPosition();
 			Position target = player.getPosition();
 			Position nextStep = dungeon.getCurrentFloor().getPath(source, target);
+			
+			System.out.println("" + source.getRow() + " " + source.getCol() + "   " + nextStep.getRow() + " " + nextStep.getCol());
 			Tile sourceTile = getTileAt(source);
 			Tile nextTile = getTileAt(nextStep);
 			sourceTile.removeOccupant(livingEntities.get(i));
