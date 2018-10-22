@@ -144,7 +144,7 @@ public class Floor {
 			}	
 		}
 		Position crumb = cameFrom[target.getRow()][target.getCol()];
-		while (!crumb.equals(source)) {
+		while (!cameFrom[crumb.getRow()][crumb.getCol()].equals(source)) {
 			crumb = cameFrom[crumb.getRow()][crumb.getCol()];
 		}
 		nextStep = crumb;
@@ -351,7 +351,7 @@ public class Floor {
 	private void addEnemies() {
 		int randPos;
 		
-		for(int i = 0; i < 10; i++) {
+		for(int i = 0; i < 2; i++) {
 			randPos = rand.nextInt(openPositions.size());
 			
 			Skeleton skelly = new Skeleton();
