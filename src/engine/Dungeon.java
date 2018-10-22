@@ -8,8 +8,8 @@ public class Dungeon {
 	public static final int DEFAULT_NUM_COLS = 32;
 	
 	private static final int MAX_NUM_FLOORS = 30;
-	private static final int FIRST_CAVE_FLOOR = 0;
-	private static final int LAST_CAVE_FLOOR = 2;
+	private static final int FIRST_CAVE_FLOOR = -1;
+	private static final int LAST_CAVE_FLOOR = 0;
 
 	private Range cellularAutomataLevels;
 	private ArrayList<Floor> floors;
@@ -25,7 +25,7 @@ public class Dungeon {
 		
 		boolean makeStairsUp = false;
 		boolean makeStairsDown = true;
-		generateNewFloor(seed, Floor.MapGenAlgorithm.CELLULAR_AUTOMATA, makeStairsUp, makeStairsDown);
+		generateNewFloor(seed, Floor.MapGenAlgorithm.BSP, makeStairsUp, makeStairsDown);
 		
 		currentFloorIndex = 0;
 	}
