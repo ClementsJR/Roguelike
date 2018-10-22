@@ -121,20 +121,24 @@ public class GameScreenController {
 			Position source = event.getSource();
 			Position target = event.getTarget();
 			
-			Transition transition;
+			//Transition transition;
 			
 			switch(event.getEventType()) {
 			case MOVES_TO:
 				Entity actor = event.getActor();
 				
-				transition = makeMoveAnimation(source, target);
+				//transition = makeMoveAnimation(source, target);
 				
 				if(actor instanceof PlayerCharacter) {
-					transition.setOnFinished((moveEvent) -> updatePlayerPosition());
+					//transition.setOnFinished((moveEvent) -> updatePlayerPosition());
+					
+					updatePlayerPosition();
 				} else {
-					transition.setOnFinished((moveEvent) -> updateNonPlayerPosition(source, target));
+					//transition.setOnFinished((moveEvent) -> updateNonPlayerPosition(source, target));
+					
+					updateNonPlayerPosition(source, target);
 				}
-				turnAnimations.getChildren().add(transition);
+				//turnAnimations.getChildren().add(transition);
 				//transition.play();
 				
 				break;
@@ -145,15 +149,18 @@ public class GameScreenController {
 				
 				break;
 			case ATTACKS:
-				int damage = event.getEventType().getEventValue();
-				transition = makeDamageAnimation(target, damage);
-				turnAnimations.getChildren().add(transition);
+				//int damage = event.getEventType().getEventValue();
+				//transition = makeDamageAnimation(target, damage);
+				//turnAnimations.getChildren().add(transition);
 				
 				break;
 			case DIES:
-				transition = makeDeathAnimation(source);
-				transition.setOnFinished((moveEvent) -> updateSinglePosition(source));
-				turnAnimations.getChildren().add(transition);
+				//transition = makeDeathAnimation(source);
+				//transition.setOnFinished((moveEvent) -> updateSinglePosition(source));
+				//turnAnimations.getChildren().add(transition);
+				//transition.play();
+				
+				updateSinglePosition(source);
 				
 				break;
 			default:
@@ -161,7 +168,7 @@ public class GameScreenController {
 			}
 		}
 		
-		turnAnimations.play();
+		//turnAnimations.play();
 		centerMapGrid();
 	}
 	
