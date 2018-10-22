@@ -55,7 +55,6 @@ public class Floor {
 	}
 	
 	public Position getPath(Position source, Position target) {
-		
 		ArrayList<Position> openTiles = new ArrayList<Position>();
 		ArrayList<Position> closedTiles = new ArrayList<Position>();
 		Position cameFrom[][] = new Position[numRows][numCols];
@@ -66,7 +65,7 @@ public class Floor {
 		int targetRow = target.getRow();
 		int targetCol = target.getCol();
 		
-		openTiles.add(0, source);
+		openTiles.add(source);
 		costs[source.getRow()][source.getCol()] = ((Math.abs(targetRow - source.getRow()) + (Math.abs(targetCol - source.getCol()))));
 		movementCosts[source.getRow()][source.getCol()] = 0;
 		
@@ -75,6 +74,7 @@ public class Floor {
 		if (openTiles.size() == 0) {
 			return source;
 		}
+		
 		while (!openTiles.get(lowestCostIndex).equals(target))
 		{
 			lowestCostIndex = 0;
@@ -103,7 +103,7 @@ public class Floor {
 					
 					if(row == centerRow && col == centerCol) {
 						continue;
-					} else if(row < 0 || col < 0 || row >= Dungeon.DEFAULT_NUM_ROWS || col >= Dungeon.DEFAULT_NUM_COLS) {
+					} else if(row < 0 || col < 0 || row >= numRows || col >= numCols) {
 						continue;
 					} else {
 						Tile tile = map[row][col];
@@ -143,8 +143,9 @@ public class Floor {
 				}
 			}	
 		}
+		
 		Position crumb = cameFrom[target.getRow()][target.getCol()];
-		while (!cameFrom[crumb.getRow()][crumb.getCol()].equals(source)) {
+		while (crumb != null && cameFrom[crumb.getRow()][crumb.getCol()] != null && !cameFrom[crumb.getRow()][crumb.getCol()].equals(source)) {
 			crumb = cameFrom[crumb.getRow()][crumb.getCol()];
 		}
 		nextStep = crumb;
@@ -351,7 +352,7 @@ public class Floor {
 	private void addEnemies() {
 		int randPos;
 		
-		for(int i = 0; i < 2; i++) {
+		for(int i = 0; i < 5; i++) {
 			randPos = rand.nextInt(openPositions.size());
 			
 			Skeleton skelly = new Skeleton();

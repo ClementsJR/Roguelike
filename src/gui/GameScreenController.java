@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import engine.*;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
+import javafx.animation.SequentialTransition;
+import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -110,23 +112,29 @@ public class GameScreenController {
 	private void updateFloor() {
 		LinkedList<GameEvent> eventQueue = game.getEventQueue();
 		
+		SequentialTransition turnAnimations = new SequentialTransition();
+		turnAnimations.setOnFinished((event) -> centerMapGrid());
+		
 		while(!eventQueue.isEmpty()) {
 			GameEvent event = eventQueue.remove();
+
+			Position source = event.getSource();
+			Position target = event.getTarget();
+			
+			Transition transition;
 			
 			switch(event.getEventType()) {
 			case MOVES_TO:
-				
-				
 				Entity actor = event.getActor();
 				
+				transition = makeMoveAnimation(source, target);
+				
 				if(actor instanceof PlayerCharacter) {
-					updatePlayerPosition();
+					transition.setOnFinished((moveEvent) -> updatePlayerPosition());
 				} else {
-					Position source = event.getSource();
-					Position target = event.getTarget();
-					
-					updateNonPlayerPosition(source, target);
+					transition.setOnFinished((moveEvent) -> updateNonPlayerPosition(source, target));
 				}
+				turnAnimations.getChildren().add(transition);
 				
 				break;
 			case CHANGES_FLOOR:
@@ -136,10 +144,15 @@ public class GameScreenController {
 				
 				break;
 			case ATTACKS:
-				animateDamage(event.getTarget(), event.getEventType().getEventValue());
+				int damage = event.getEventType().getEventValue();
+				transition = makeDamageAnimation(target, damage);
+				turnAnimations.getChildren().add(transition);
+				
 				break;
 			case DIES:
-				Position source = event.getSource();
+				//transition = makeDeathAnimation(source);
+				//transition.setOnFinished((moveEvent) -> updateSinglePosition(source));
+				//turnAnimations.getChildren().add(transition);
 				updateSinglePosition(source);
 				
 				break;
@@ -148,9 +161,54 @@ public class GameScreenController {
 			}
 		}
 		
+		turnAnimations.play();
 		centerMapGrid();
 	}
+	
+	private Transition makeMoveAnimation(Position source, Position target) {
+		TranslateTransition translation = new TranslateTransition();
+		
+		return translation;
+	}
+	
+	private Transition makeDamageAnimation(Position target, int damage) {
+		int targetIndex = getIndexOf(target);
+		SpriteView targetSpriteView = ((SpriteView) mapGrid.getChildren().get(targetIndex));
+		
+		Label dmgLabel = new Label(Integer.toString(damage));
+		dmgLabel.getStyleClass().add(DAMAGE_LABEL_STYLE_CLASS);
+		
+		if(damage == 0) {
+			dmgLabel.getStyleClass().add(ZERO_LABEL_STYLE_CLASS);
+		} else {
+			dmgLabel.getStyleClass().add(NONZERO_LABEL_STYLE_CLASS);
+		}
+		
+		targetSpriteView.getChildren().add(dmgLabel);
+		
+		TranslateTransition translation = new TranslateTransition();
+		translation.setDuration(Duration.millis(1000));
+		translation.setNode(dmgLabel);
+		translation.setByY(-32);
+		
+		FadeTransition fade = new FadeTransition();
+		fade.setDuration(Duration.millis(1000));
+		fade.setNode(dmgLabel);
+		fade.setFromValue(1.0);
+		fade.setToValue(0.0);
+		
+		ParallelTransition para = new ParallelTransition();
+		para.getChildren().addAll(translation, fade);
+		
+		return para;
+	}
 
+	private Transition makeDeathAnimation(Position source) {
+		FadeTransition animation = new FadeTransition();
+		
+		return animation;
+	}
+	
 	private void updatePlayerPosition() {
 		PlayerCharacter player = game.getPlayer();
 		
@@ -181,37 +239,6 @@ public class GameScreenController {
 		((SpriteView) mapGrid.getChildren().get(spriteViewIndex)).setTile(game.getTileAt(position));
 	}
 	
-	private void animateDamage(Position target, int damage) {
-		int targetIndex = getIndexOf(target);
-		SpriteView targetSpriteView = ((SpriteView) mapGrid.getChildren().get(targetIndex));
-		
-		Label dmgLabel = new Label(Integer.toString(damage));
-		dmgLabel.getStyleClass().add(DAMAGE_LABEL_STYLE_CLASS);
-		
-		if(damage == 0) {
-			dmgLabel.getStyleClass().add(ZERO_LABEL_STYLE_CLASS);
-		} else {
-			dmgLabel.getStyleClass().add(NONZERO_LABEL_STYLE_CLASS);
-		}
-		
-		targetSpriteView.getChildren().add(dmgLabel);
-		
-		TranslateTransition translation = new TranslateTransition();
-		translation.setDuration(Duration.millis(1000));
-		translation.setNode(dmgLabel);
-		translation.setByY(-32);
-		
-		FadeTransition fade = new FadeTransition();
-		fade.setDuration(Duration.millis(1000));
-		fade.setNode(dmgLabel);
-		fade.setFromValue(1.0);
-		fade.setToValue(0.0);
-		
-		ParallelTransition para = new ParallelTransition();
-		para.getChildren().addAll(translation, fade);
-		para.play();
-	}
-
 	private int getIndexOf(Position position) {
 		return (position.getRow() * game.getNumRows()) + position.getCol();
 	}
