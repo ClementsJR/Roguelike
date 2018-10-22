@@ -135,6 +135,7 @@ public class GameScreenController {
 					transition.setOnFinished((moveEvent) -> updateNonPlayerPosition(source, target));
 				}
 				turnAnimations.getChildren().add(transition);
+				//transition.play();
 				
 				break;
 			case CHANGES_FLOOR:
@@ -150,10 +151,9 @@ public class GameScreenController {
 				
 				break;
 			case DIES:
-				//transition = makeDeathAnimation(source);
-				//transition.setOnFinished((moveEvent) -> updateSinglePosition(source));
-				//turnAnimations.getChildren().add(transition);
-				updateSinglePosition(source);
+				transition = makeDeathAnimation(source);
+				transition.setOnFinished((moveEvent) -> updateSinglePosition(source));
+				turnAnimations.getChildren().add(transition);
 				
 				break;
 			default:
@@ -166,7 +166,17 @@ public class GameScreenController {
 	}
 	
 	private Transition makeMoveAnimation(Position source, Position target) {
+		int sourceIndex = getIndexOf(source);
+		SpriteView sourceSpriteView  = ((SpriteView) mapGrid.getChildren().get(sourceIndex));
+		ImageView sourceSprite = sourceSpriteView.getLivingEntitySprite();
+		
+		int yOffset = (target.getRow() - source.getRow()) * SpriteView.STANDARD_SPRITE_DIMENSION;
+		int xOffset = (target.getCol() - source.getCol()) * SpriteView.STANDARD_SPRITE_DIMENSION;
+		
 		TranslateTransition translation = new TranslateTransition();
+		translation.setNode(sourceSprite);
+		translation.setByY(yOffset);
+		translation.setByX(xOffset);
 		
 		return translation;
 	}
@@ -187,12 +197,12 @@ public class GameScreenController {
 		targetSpriteView.getChildren().add(dmgLabel);
 		
 		TranslateTransition translation = new TranslateTransition();
-		translation.setDuration(Duration.millis(1000));
+		//translation.setDuration(Duration.millis(1000));
 		translation.setNode(dmgLabel);
 		translation.setByY(-32);
 		
 		FadeTransition fade = new FadeTransition();
-		fade.setDuration(Duration.millis(1000));
+		//fade.setDuration(Duration.millis(1000));
 		fade.setNode(dmgLabel);
 		fade.setFromValue(1.0);
 		fade.setToValue(0.0);
@@ -204,9 +214,16 @@ public class GameScreenController {
 	}
 
 	private Transition makeDeathAnimation(Position source) {
-		FadeTransition animation = new FadeTransition();
+		int sourceIndex = getIndexOf(source);
+		SpriteView sourceSpriteView  = ((SpriteView) mapGrid.getChildren().get(sourceIndex));
+		ImageView sourceSprite = sourceSpriteView.getLivingEntitySprite();
 		
-		return animation;
+		FadeTransition fade = new FadeTransition();
+		fade.setNode(sourceSprite);
+		fade.setFromValue(1.0);
+		fade.setToValue(0.0);
+		
+		return fade;
 	}
 	
 	private void updatePlayerPosition() {

@@ -18,6 +18,7 @@ public class SpriteView extends Pane {
 	
 	private Tile tile;
 	private ArrayList<ImageView> images;
+	private ImageView livingEntitySprite;
 	private int fogOfWar;
 	
 	public SpriteView(Tile tile, GameScreenController controller, int fogOfWar) {
@@ -68,7 +69,12 @@ public class SpriteView extends Pane {
 				ArrayList<Entity> occupants = tile.getOccupants();
 				for(Entity occupant : occupants) {
 					sprite = occupant.getSprite();
-					images.add(new ImageView(sprite));
+					ImageView imgView = new ImageView(sprite);
+					images.add(imgView);
+					
+					if(occupant instanceof LivingEntity) {
+						livingEntitySprite = imgView;
+					}
 				}
 			}
 		}
@@ -81,4 +87,6 @@ public class SpriteView extends Pane {
 			this.getChildren().add(img);
 		}
 	}
+	
+	public ImageView getLivingEntitySprite() { return livingEntitySprite; }
 }
