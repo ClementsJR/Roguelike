@@ -11,7 +11,7 @@ import javafx.scene.layout.Pane;
 public class SpriteView extends Pane {
 	public static final int STANDARD_SPRITE_DIMENSION = 32;
 	
-	public static final String NOT_SEEN_OVERLAY = "/assets/img/not_seen_overlay.png";
+	public static final String NOT_SEEN_OVERLAY = "/assets/img/not_seen_overlay_2.png";
 	public static final String WAS_SEEN_OVERLAY = "/assets/img/was_seen_overlay.png";
 	
 	private GameScreenController controller;
