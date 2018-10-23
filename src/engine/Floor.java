@@ -352,7 +352,7 @@ public class Floor {
 	private void addEnemies() {
 		int randPos;
 		
-		for(int i = 0; i < 5; i++) {
+		for(int i = 0; i < 8; i++) {
 			randPos = rand.nextInt(openPositions.size());
 			
 			Skeleton skelly = new Skeleton();

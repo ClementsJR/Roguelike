@@ -9,15 +9,16 @@ import javafx.animation.SequentialTransition;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
-import javafx.util.Duration;
 
 public class GameScreenController {
 	private Engine game;
+	private boolean acceptInput;
 	
 	private static final String DAMAGE_LABEL_STYLE_CLASS = "damageLabel";
 	private static final String ZERO_LABEL_STYLE_CLASS = "zeroLabel";
@@ -34,6 +35,7 @@ public class GameScreenController {
 	
 	@FXML
 	public void initialize() {
+		acceptInput = true;
 		startLoadingAnimation();
 	}
 	
@@ -46,6 +48,10 @@ public class GameScreenController {
 	}
 	
 	public void tileClicked(SpriteView spriteView) {
+		if(acceptInput == false) {
+			return;
+		}
+		
 		int index = mapGrid.getChildren().indexOf(spriteView);
 		
 		Position clicked = getPositionOf(index);
@@ -65,6 +71,11 @@ public class GameScreenController {
 	}
 	
 	private void handleKeyPress(KeyEvent event) {
+		if(acceptInput == false) {
+			event.consume();
+			return;
+		}
+		
     	switch(event.getCode()) {
     	case UP:
     		game.UpKeyPressed();
@@ -81,6 +92,7 @@ public class GameScreenController {
 		default:
 			break;
     	}
+    	
         event.consume();
         updateFloor();
 	}
@@ -110,36 +122,30 @@ public class GameScreenController {
 	}
 	
 	private void updateFloor() {
+		acceptInput = false;
+		
 		LinkedList<GameEvent> eventQueue = game.getEventQueue();
 		
 		SequentialTransition turnAnimations = new SequentialTransition();
-		turnAnimations.setOnFinished((event) -> centerMapGrid());
+		turnAnimations.setOnFinished((event) -> {acceptInput = true;});
+		
+		centerMapGrid();
 		
 		while(!eventQueue.isEmpty()) {
 			GameEvent event = eventQueue.remove();
 
 			Position source = event.getSource();
 			Position target = event.getTarget();
+			Entity actor = event.getActor();
 			
-			//Transition transition;
+			Transition transition;
 			
 			switch(event.getEventType()) {
 			case MOVES_TO:
-				Entity actor = event.getActor();
+				updateSinglePosition(source);
+				transition = makeMoveAnimation(actor, source, target);
 				
-				//transition = makeMoveAnimation(source, target);
-				
-				if(actor instanceof PlayerCharacter) {
-					//transition.setOnFinished((moveEvent) -> updatePlayerPosition());
-					
-					updatePlayerPosition();
-				} else {
-					//transition.setOnFinished((moveEvent) -> updateNonPlayerPosition(source, target));
-					
-					updateNonPlayerPosition(source, target);
-				}
-				//turnAnimations.getChildren().add(transition);
-				//transition.play();
+				turnAnimations.getChildren().add(transition);
 				
 				break;
 			case CHANGES_FLOOR:
@@ -149,18 +155,15 @@ public class GameScreenController {
 				
 				break;
 			case ATTACKS:
-				//int damage = event.getEventType().getEventValue();
-				//transition = makeDamageAnimation(target, damage);
-				//turnAnimations.getChildren().add(transition);
+				int damage = event.getEventType().getEventValue();
+				transition = makeDamageAnimation(target, damage);
+				turnAnimations.getChildren().add(transition);
 				
 				break;
 			case DIES:
-				//transition = makeDeathAnimation(source);
-				//transition.setOnFinished((moveEvent) -> updateSinglePosition(source));
-				//turnAnimations.getChildren().add(transition);
-				//transition.play();
-				
 				updateSinglePosition(source);
+				transition = makeDeathAnimation(actor, source);
+				turnAnimations.getChildren().add(transition);
 				
 				break;
 			default:
@@ -168,26 +171,46 @@ public class GameScreenController {
 			}
 		}
 		
-		//turnAnimations.play();
-		centerMapGrid();
+		turnAnimations.play();
 	}
 	
-	private Transition makeMoveAnimation(Position source, Position target) {
-		int sourceIndex = getIndexOf(source);
-		SpriteView sourceSpriteView  = ((SpriteView) mapGrid.getChildren().get(sourceIndex));
-		ImageView sourceSprite = sourceSpriteView.getLivingEntitySprite();
+	private Transition makeMoveAnimation(Entity actor, Position source, Position target) {
+		ImageView sourceSprite = new ImageView(actor.getSprite());
+		backgroundPane.getChildren().add(sourceSprite);
+		
+		sourceSprite.setLayoutY(0);
+		sourceSprite.setLayoutX(0);
+		sourceSprite.setTranslateY(mapGrid.getLayoutY() + mapGrid.getTranslateY() + source.getRow() * 32);
+		sourceSprite.setTranslateX(mapGrid.getLayoutX() + mapGrid.getTranslateX() + source.getCol() * 32);
 		
 		int yOffset = (target.getRow() - source.getRow()) * SpriteView.STANDARD_SPRITE_DIMENSION;
 		int xOffset = (target.getCol() - source.getCol()) * SpriteView.STANDARD_SPRITE_DIMENSION;
 		
-		TranslateTransition translation = new TranslateTransition();
-		translation.setNode(sourceSprite);
-		translation.setByY(yOffset);
-		translation.setByX(xOffset);
+		TranslateTransition translation = makeTranslation(sourceSprite, yOffset, xOffset);
+		translation.setOnFinished((moveEvent) -> cleanUpMoveAnimation(sourceSprite, actor, target));
+		
+
+		/*if(actor instanceof PlayerCharacter) {
+			TranslateTransition mapTranslation = makeTranslation(mapGrid, -yOffset, -xOffset);
+			
+			ParallelTransition para = new ParallelTransition();
+			para.getChildren().addAll(translation, mapTranslation);
+			return para;
+		}*/
 		
 		return translation;
 	}
 	
+	private void cleanUpMoveAnimation(Node node, Entity actor, Position target) {
+		backgroundPane.getChildren().remove(node);
+		
+		if(actor instanceof PlayerCharacter) {
+			updatePlayerPosition(target);
+		} else {
+			updateSinglePosition(target);
+		}
+	}
+
 	private Transition makeDamageAnimation(Position target, int damage) {
 		int targetIndex = getIndexOf(target);
 		SpriteView targetSpriteView = ((SpriteView) mapGrid.getChildren().get(targetIndex));
@@ -203,16 +226,8 @@ public class GameScreenController {
 		
 		targetSpriteView.getChildren().add(dmgLabel);
 		
-		TranslateTransition translation = new TranslateTransition();
-		//translation.setDuration(Duration.millis(1000));
-		translation.setNode(dmgLabel);
-		translation.setByY(-32);
-		
-		FadeTransition fade = new FadeTransition();
-		//fade.setDuration(Duration.millis(1000));
-		fade.setNode(dmgLabel);
-		fade.setFromValue(1.0);
-		fade.setToValue(0.0);
+		TranslateTransition translation = makeTranslation(dmgLabel, -32, 0);
+		FadeTransition fade = makeFade(dmgLabel);
 		
 		ParallelTransition para = new ParallelTransition();
 		para.getChildren().addAll(translation, fade);
@@ -220,25 +235,51 @@ public class GameScreenController {
 		return para;
 	}
 
-	private Transition makeDeathAnimation(Position source) {
-		int sourceIndex = getIndexOf(source);
-		SpriteView sourceSpriteView  = ((SpriteView) mapGrid.getChildren().get(sourceIndex));
-		ImageView sourceSprite = sourceSpriteView.getLivingEntitySprite();
+	private Transition makeDeathAnimation(Entity actor, Position source) {
+		ImageView sourceSprite = new ImageView(actor.getSprite());
+		backgroundPane.getChildren().add(sourceSprite);
 		
+		sourceSprite.setLayoutY(0);
+		sourceSprite.setLayoutX(0);
+		sourceSprite.setTranslateY(mapGrid.getLayoutY() + mapGrid.getTranslateY() + source.getRow() * 32);
+		sourceSprite.setTranslateX(mapGrid.getLayoutX() + mapGrid.getTranslateX() + source.getCol() * 32);
+		
+		FadeTransition fade = makeFade(sourceSprite);
+		fade.setOnFinished((moveEvent) -> cleanUpDeathAnimation(sourceSprite));
+		
+		return fade;
+	}
+	
+	private void cleanUpDeathAnimation(Node node) {
+		backgroundPane.getChildren().remove(node);
+	}
+	
+	private TranslateTransition makeTranslation(Node node, double yOffset, double xOffset) {
+		TranslateTransition translate = new TranslateTransition();
+		
+		translate.setNode(node);
+		translate.setByY(yOffset);
+		translate.setByX(xOffset);
+		
+		return translate;
+	}
+	
+	private FadeTransition makeFade(Node node) {
 		FadeTransition fade = new FadeTransition();
-		fade.setNode(sourceSprite);
+		
+		fade.setNode(node);
 		fade.setFromValue(1.0);
 		fade.setToValue(0.0);
 		
 		return fade;
 	}
 	
-	private void updatePlayerPosition() {
+	private void updatePlayerPosition(Position target) {
 		PlayerCharacter player = game.getPlayer();
 		
 		int fowDistance = player.getSightDistance() + 1;
-		int playerRow = player.getPosition().getRow();
-		int playerCol = player.getPosition().getCol();
+		int playerRow = target.getRow();
+		int playerCol = target.getCol();
 		
 		for(int row = playerRow - fowDistance; row <= playerRow + fowDistance; row++) {
 			for(int col = playerCol - fowDistance; col <= playerCol + fowDistance; col++) {
@@ -275,6 +316,24 @@ public class GameScreenController {
 		
 		return new Position(row, col);
 	}
+	
+	/*private TranslateTransition makeMapGridCenteringAnimation() {
+		int playerRow = game.getPlayerPosition().getRow();
+		int playerCol = game.getPlayerPosition().getCol();
+		
+		//int rowOffset = (Main.DEFAULT_WINDOW_HEIGHT / 2) - ((playerRow + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
+		//int colOffset = (Main.DEFAULT_WINDOW_WIDTH / 2) - ((playerCol + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
+		
+		double rowOffset = (playerRow * SpriteView.STANDARD_SPRITE_DIMENSION) - mapGrid.getLayoutY();
+		double colOffset = (playerCol * SpriteView.STANDARD_SPRITE_DIMENSION) - mapGrid.getLayoutX();
+		
+		//mapGrid.setTranslateY(rowOffset);
+		//mapGrid.setTranslateX(colOffset);
+		
+		TranslateTransition translation = makeTranslation(mapGrid, rowOffset, colOffset);
+		
+		return translation;
+	}*/
 	
 	private void centerMapGrid() {
 		int playerRow = game.getPlayerPosition().getRow();
