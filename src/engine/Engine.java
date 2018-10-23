@@ -224,16 +224,24 @@ public class Engine {
 			Position source = livingEntities.get(i).getPosition();
 			Position target = player.getPosition();
 			Position nextStep = dungeon.getCurrentFloor().getPath(source, target);
-			
-			Tile sourceTile = getTileAt(source);
-			Tile nextTile = getTileAt(nextStep);
-			sourceTile.removeOccupant(livingEntities.get(i));
-			nextTile.addOccupant(livingEntities.get(i));
-			livingEntities.get(i).setPosition(nextStep);
-			
-			GameEvent moveRecord = new GameEvent(livingEntities.get(i), source, EventType.MOVES_TO, nextStep);
-			eventQueue.add(moveRecord);
+			if (nextStep.equals(target)) {
+				//put attack function here, at least for melee enemies
+				continue;
+			}
+			else if (!nextStep.equals(source) ) {
+				Tile sourceTile = getTileAt(source);
+				Tile nextTile = getTileAt(nextStep);
+				sourceTile.removeOccupant(livingEntities.get(i));
+				nextTile.addOccupant(livingEntities.get(i));
+				livingEntities.get(i).setPosition(nextStep);
+				
+				GameEvent moveRecord = new GameEvent(livingEntities.get(i), source, EventType.MOVES_TO, nextStep);
+				eventQueue.add(moveRecord);				
+			}
+			else {
+				//This is in case there is no path
+				continue;
+			}
 		}
 	}
-	
 }

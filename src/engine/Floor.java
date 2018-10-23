@@ -130,21 +130,28 @@ public class Floor {
 					}
 				}
 			}
-			lowestCostIndex = 0;
-			lowestCost = costs[openTiles.get(0).getRow()][openTiles.get(0).getCol()];
-			for (int k = 0; k < openTiles.size(); k++)
-			{
-				int r = openTiles.get(k).getRow();
-				int c = openTiles.get(k).getCol();
-				int compCost = costs[r][c];
-				if (compCost < lowestCost) {
-					lowestCost = compCost;
-					lowestCostIndex = k;
-				}
-			}	
+			if (!(openTiles.isEmpty())) {
+				lowestCostIndex = 0;
+				lowestCost = costs[openTiles.get(0).getRow()][openTiles.get(0).getCol()];
+				for (int k = 0; k < openTiles.size(); k++) {
+					int r = openTiles.get(k).getRow();
+					int c = openTiles.get(k).getCol();
+					int compCost = costs[r][c];
+					if (compCost < lowestCost) {
+						lowestCost = compCost;
+						lowestCostIndex = k;
+					}
+				}	
+			}
+			else {
+				return source;
+			}
 		}
 		
 		Position crumb = cameFrom[target.getRow()][target.getCol()];
+		if (crumb.equals(source)) {
+			
+		}
 		while (crumb != null && cameFrom[crumb.getRow()][crumb.getCol()] != null && !cameFrom[crumb.getRow()][crumb.getCol()].equals(source)) {
 			crumb = cameFrom[crumb.getRow()][crumb.getCol()];
 		}
@@ -352,7 +359,7 @@ public class Floor {
 	private void addEnemies() {
 		int randPos;
 		
-		for(int i = 0; i < 5; i++) {
+		for(int i = 0; i < 10; i++) {
 			randPos = rand.nextInt(openPositions.size());
 			
 			Skeleton skelly = new Skeleton();
