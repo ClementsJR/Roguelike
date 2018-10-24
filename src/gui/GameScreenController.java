@@ -129,14 +129,14 @@ public class GameScreenController {
 		SequentialTransition turnAnimations = new SequentialTransition();
 		turnAnimations.setOnFinished((event) -> {acceptInput = true;});
 		
-		centerMapGrid();
+		//centerMapGrid();
 		
 		while(!eventQueue.isEmpty()) {
 			GameEvent event = eventQueue.remove();
 
+			Entity actor = event.getActor();
 			Position source = event.getSource();
 			Position target = event.getTarget();
-			Entity actor = event.getActor();
 			
 			Transition transition;
 			
@@ -186,19 +186,17 @@ public class GameScreenController {
 		int yOffset = (target.getRow() - source.getRow()) * SpriteView.STANDARD_SPRITE_DIMENSION;
 		int xOffset = (target.getCol() - source.getCol()) * SpriteView.STANDARD_SPRITE_DIMENSION;
 		
-		TranslateTransition translation = makeTranslation(sourceSprite, yOffset, xOffset);
-		translation.setOnFinished((moveEvent) -> cleanUpMoveAnimation(sourceSprite, actor, target));
-		
-
-		/*if(actor instanceof PlayerCharacter) {
-			TranslateTransition mapTranslation = makeTranslation(mapGrid, -yOffset, -xOffset);
+		if(actor instanceof PlayerCharacter) {
+			TranslateTransition translation = makeTranslation(mapGrid, -yOffset, -xOffset);
+			translation.setOnFinished((moveEvent) -> updatePlayerPosition(target));
 			
-			ParallelTransition para = new ParallelTransition();
-			para.getChildren().addAll(translation, mapTranslation);
-			return para;
-		}*/
-		
-		return translation;
+			return translation;
+		} else {
+			TranslateTransition translation = makeTranslation(sourceSprite, yOffset, xOffset);
+			translation.setOnFinished((moveEvent) -> cleanUpMoveAnimation(sourceSprite, actor, target));
+			
+			return translation;
+		}
 	}
 	
 	private void cleanUpMoveAnimation(Node node, Entity actor, Position target) {
@@ -317,7 +315,7 @@ public class GameScreenController {
 		return new Position(row, col);
 	}
 	
-	/*private TranslateTransition makeMapGridCenteringAnimation() {
+	private TranslateTransition makeMapGridCenteringAnimation() {
 		int playerRow = game.getPlayerPosition().getRow();
 		int playerCol = game.getPlayerPosition().getCol();
 		
@@ -333,7 +331,7 @@ public class GameScreenController {
 		TranslateTransition translation = makeTranslation(mapGrid, rowOffset, colOffset);
 		
 		return translation;
-	}*/
+	}
 	
 	private void centerMapGrid() {
 		int playerRow = game.getPlayerPosition().getRow();
