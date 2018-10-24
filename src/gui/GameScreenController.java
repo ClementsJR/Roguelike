@@ -1,8 +1,7 @@
 package gui;
 
-import java.util.LinkedList;
-
 import engine.*;
+import java.util.LinkedList;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.SequentialTransition;
@@ -121,6 +120,17 @@ public class GameScreenController {
 		centerMapGrid();
 	}
 	
+	private void centerMapGrid() {
+		int playerRow = game.getPlayerPosition().getRow();
+		int playerCol = game.getPlayerPosition().getCol();
+		
+		int rowOffset = (Main.DEFAULT_WINDOW_HEIGHT / 2) - ((playerRow + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
+		int colOffset = (Main.DEFAULT_WINDOW_WIDTH / 2) - ((playerCol + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
+		
+		mapGrid.setTranslateY(rowOffset);
+		mapGrid.setTranslateX(colOffset);
+	}
+	
 	private void updateFloor() {
 		acceptInput = false;
 		
@@ -128,8 +138,6 @@ public class GameScreenController {
 		
 		SequentialTransition turnAnimations = new SequentialTransition();
 		turnAnimations.setOnFinished((event) -> {acceptInput = true;});
-		
-		//centerMapGrid();
 		
 		while(!eventQueue.isEmpty()) {
 			GameEvent event = eventQueue.remove();
@@ -142,7 +150,7 @@ public class GameScreenController {
 			
 			switch(event.getEventType()) {
 			case MOVES_TO:
-				updateSinglePosition(source);
+				updatePosition(source);
 				transition = makeMoveAnimation(actor, source, target);
 				
 				turnAnimations.getChildren().add(transition);
@@ -161,7 +169,7 @@ public class GameScreenController {
 				
 				break;
 			case DIES:
-				updateSinglePosition(source);
+				updatePosition(source);
 				transition = makeDeathAnimation(actor, source);
 				turnAnimations.getChildren().add(transition);
 				
@@ -205,7 +213,7 @@ public class GameScreenController {
 		if(actor instanceof PlayerCharacter) {
 			updatePlayerPosition(target);
 		} else {
-			updateSinglePosition(target);
+			updatePosition(target);
 		}
 	}
 
@@ -292,12 +300,8 @@ public class GameScreenController {
 		}
 	}
 	
-	private void updateNonPlayerPosition(Position source, Position target) {
-		updateSinglePosition(source);
-		updateSinglePosition(target);
-	}
-	
-	private void updateSinglePosition(Position position) {
+	private void updatePosition(Position position) {
+		
 		int spriteViewIndex = getIndexOf(position);
 		((SpriteView) mapGrid.getChildren().get(spriteViewIndex)).setTile(game.getTileAt(position));
 	}
@@ -313,34 +317,5 @@ public class GameScreenController {
 		int col = index % numCols;
 		
 		return new Position(row, col);
-	}
-	
-	private TranslateTransition makeMapGridCenteringAnimation() {
-		int playerRow = game.getPlayerPosition().getRow();
-		int playerCol = game.getPlayerPosition().getCol();
-		
-		//int rowOffset = (Main.DEFAULT_WINDOW_HEIGHT / 2) - ((playerRow + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
-		//int colOffset = (Main.DEFAULT_WINDOW_WIDTH / 2) - ((playerCol + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
-		
-		double rowOffset = (playerRow * SpriteView.STANDARD_SPRITE_DIMENSION) - mapGrid.getLayoutY();
-		double colOffset = (playerCol * SpriteView.STANDARD_SPRITE_DIMENSION) - mapGrid.getLayoutX();
-		
-		//mapGrid.setTranslateY(rowOffset);
-		//mapGrid.setTranslateX(colOffset);
-		
-		TranslateTransition translation = makeTranslation(mapGrid, rowOffset, colOffset);
-		
-		return translation;
-	}
-	
-	private void centerMapGrid() {
-		int playerRow = game.getPlayerPosition().getRow();
-		int playerCol = game.getPlayerPosition().getCol();
-		
-		int rowOffset = (Main.DEFAULT_WINDOW_HEIGHT / 2) - ((playerRow + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
-		int colOffset = (Main.DEFAULT_WINDOW_WIDTH / 2) - ((playerCol + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
-		
-		mapGrid.setTranslateY(rowOffset);
-		mapGrid.setTranslateX(colOffset);
 	}
 }
