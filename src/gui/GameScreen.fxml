@@ -4,11 +4,16 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.TilePane?>
 
 <Pane fx:id="backgroundPane" styleClass="gameBackgroundPane" stylesheets="@gameStyles.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameScreenController">
    <children>
-      <TilePane fx:id="mapGrid" alignment="CENTER" prefTileHeight="32.0" prefTileWidth="32.0" />
+      <Pane fx:id="gameWorld" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Pane fx:id="floorPane" prefHeight="200.0" prefWidth="200.0" />
+            <Pane fx:id="entityPane" prefHeight="200.0" prefWidth="200.0" />
+            <Pane fx:id="fogOfWarPane" prefHeight="200.0" prefWidth="200.0" />
+         </children>
+      </Pane>
       <Group>
          <children>
             <ImageView fx:id="loadingAnimation" pickOnBounds="false" preserveRatio="true">
@@ -18,5 +23,6 @@
             </ImageView>
          </children>
       </Group>
+      <ImageView fx:id="playerView" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </Pane>

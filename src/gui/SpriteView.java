@@ -9,7 +9,23 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 public class SpriteView extends Pane {
-	public static final int STANDARD_SPRITE_DIMENSION = 32;
+	private ImageView view;
+	private Entity entity;
+	
+	public SpriteView(Entity entity) {
+		this.entity = entity;
+		
+		Image sprite = entity.getSprite();
+		view = new ImageView(sprite);
+		
+		this.getChildren().add(view);
+	}
+	
+	public boolean isEntity(Entity otherEntity) {
+		return (entity == otherEntity);
+	}
+	
+	/*public static final int STANDARD_SPRITE_DIMENSION = 32;
 	
 	public static final String NOT_SEEN_OVERLAY = "/assets/img/not_seen_overlay_2.png";
 	public static final String WAS_SEEN_OVERLAY = "/assets/img/was_seen_overlay.png";
@@ -47,7 +63,7 @@ public class SpriteView extends Pane {
 	}
 	
 	private void handleClick(MouseEvent event) {
-		controller.tileClicked(this);
+		//controller.tileClicked(this);
 		event.consume();
 	}
 	
@@ -88,5 +104,5 @@ public class SpriteView extends Pane {
 		}
 	}
 	
-	public ImageView getLivingEntitySprite() { return livingEntitySprite; }
+	public ImageView getLivingEntitySprite() { return livingEntitySprite; }*/
 }

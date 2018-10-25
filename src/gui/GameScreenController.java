@@ -1,6 +1,8 @@
 package gui;
 
 import engine.*;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
@@ -10,10 +12,12 @@ import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
+import javafx.util.Duration;
 
 public class GameScreenController {
 	private Engine game;
@@ -23,14 +27,31 @@ public class GameScreenController {
 	private static final String ZERO_LABEL_STYLE_CLASS = "zeroLabel";
 	private static final String NONZERO_LABEL_STYLE_CLASS = "nonzeroLabel";
 	
+	private static final int STANDARD_SPRITE_DIMENSION = 32;
+	
+	private static final String NOT_SEEN_OVERLAY = "/assets/img/not_seen_overlay.png";
+	private static final String WAS_SEEN_OVERLAY = "/assets/img/was_seen_overlay.png";
+	
 	@FXML
 	Pane backgroundPane;
 	
 	@FXML
-	ImageView loadingAnimation;
+	Pane gameWorld;
 	
 	@FXML
-	TilePane mapGrid;
+	Pane floorPane;
+	
+	@FXML
+	Pane entityPane;
+	
+	@FXML
+	Pane fogOfWarPane;
+	
+	@FXML
+	ImageView playerView;
+	
+	@FXML
+	ImageView loadingAnimation;
 	
 	@FXML
 	public void initialize() {
@@ -42,11 +63,121 @@ public class GameScreenController {
 		backgroundPane.getScene().setOnKeyPressed((event) -> handleKeyPress(event));
 		
 		game = new Engine();
-		drawFloor();
+		drawNewFloor();
+		
 		endLoadingAnimation();
 	}
 	
-	public void tileClicked(SpriteView spriteView) {
+	private void drawNewFloor() {
+		drawFloor();
+		drawLivingEntities();
+		drawFOW();
+		drawPlayer();
+		centerGameMap();
+	}
+
+	private void drawFloor() {
+		floorPane.getChildren().clear();
+		
+		int numRows = Dungeon.DEFAULT_NUM_ROWS;
+		int numCols = Dungeon.DEFAULT_NUM_COLS;
+		
+		for(int row = 0; row < numRows; row++) {
+			for(int col = 0; col < numCols; col++) {
+				Tile tile = game.getTileAt(new Position(row, col));
+				Entity entity = tile.getBaseEntity();
+				Image sprite = entity.getSprite();
+				
+				ImageView spriteView = new ImageView(sprite);
+				
+				int yLayout = row * STANDARD_SPRITE_DIMENSION;
+				int xLayout = col * STANDARD_SPRITE_DIMENSION;
+				
+				spriteView.setLayoutY(yLayout);
+				spriteView.setLayoutX(xLayout);
+				
+				floorPane.getChildren().add(spriteView);
+			}
+		}
+	}
+	
+	private void drawLivingEntities() {
+		entityPane.getChildren().clear();
+		
+		ArrayList<LivingEntity> livingEntities = game.getLivingEntities();
+		
+		for(Entity entity : livingEntities) {
+			SpriteView spriteView = new SpriteView(entity);
+			
+			int row = entity.getPosition().getRow();
+			int col = entity.getPosition().getCol();
+			
+			int yLayout = row * STANDARD_SPRITE_DIMENSION;
+			int xLayout = col * STANDARD_SPRITE_DIMENSION;
+			
+			spriteView.setLayoutY(yLayout);
+			spriteView.setLayoutX(xLayout);
+			
+			entityPane.getChildren().add(spriteView);
+		}
+	}
+	
+	private void drawFOW() {
+		fogOfWarPane.getChildren().clear();
+		
+		PlayerCharacter player = game.getPlayer();
+
+		int numRows = Dungeon.DEFAULT_NUM_ROWS;
+		int numCols = Dungeon.DEFAULT_NUM_COLS;
+		
+		for(int row = 0; row < numRows; row++) {
+			for(int col = 0; col < numCols; col++) {
+				int fow = player.getFOWAt(new Position(row, col));
+				
+				if(fow == LivingEntity.NOT_SEEN || fow == LivingEntity.WAS_SEEN) {
+					String overlayPath = (fow == LivingEntity.NOT_SEEN) ? NOT_SEEN_OVERLAY : WAS_SEEN_OVERLAY;
+					
+					Image overlay = new Image(overlayPath);
+					ImageView overlayView = new ImageView(overlay);
+					
+					int yLayout = row * STANDARD_SPRITE_DIMENSION;
+					int xLayout = col * STANDARD_SPRITE_DIMENSION;
+					
+					overlayView.setLayoutY(yLayout);
+					overlayView.setLayoutX(xLayout);
+					
+					fogOfWarPane.getChildren().add(overlayView);
+				}
+			}
+		}
+	}
+	
+	private void drawPlayer() {
+		PlayerCharacter player = game.getPlayer();
+		Image sprite = player.getSprite();
+		playerView.setImage(sprite);
+		
+		int spriteDimension = 32;
+		
+		int yOffset = (Main.DEFAULT_WINDOW_HEIGHT / 2) - (spriteDimension);
+		int xOffset = (Main.DEFAULT_WINDOW_WIDTH / 2) - (spriteDimension);
+		
+		playerView.setLayoutY(yOffset);
+		playerView.setLayoutX(xOffset);
+	}
+	
+	private void centerGameMap() {
+		int playerRow = game.getPlayerPosition().getRow();
+		int playerCol = game.getPlayerPosition().getCol();
+		
+		int rowOffset = (Main.DEFAULT_WINDOW_HEIGHT / 2) - ((playerRow + 1) * STANDARD_SPRITE_DIMENSION);
+		int colOffset = (Main.DEFAULT_WINDOW_WIDTH / 2) - ((playerCol + 1) * STANDARD_SPRITE_DIMENSION);
+		
+		gameWorld.setLayoutY(rowOffset);
+		gameWorld.setLayoutX(colOffset);
+	}
+	
+ 	/*public void tileClicked(SpriteView spriteView) {
 		if(acceptInput == false) {
 			return;
 		}
@@ -57,16 +188,18 @@ public class GameScreenController {
 		
 		game.tileSelected(clicked);
 		updateFloor();
-	}
+	}*/
 	
 	private void startLoadingAnimation() {
-		mapGrid.setVisible(false);
+		playerView.setVisible(false);
+		gameWorld.setVisible(false);
 		loadingAnimation.setVisible(true);
 	}
 	
 	private void endLoadingAnimation() {
 		loadingAnimation.setVisible(false);
-		mapGrid.setVisible(true);
+		playerView.setVisible(true);
+		gameWorld.setVisible(true);
 	}
 	
 	private void handleKeyPress(KeyEvent event) {
@@ -96,41 +229,6 @@ public class GameScreenController {
         updateFloor();
 	}
 	
-	private void drawFloor() {
-		mapGrid.getChildren().clear();
-		
-		PlayerCharacter player = game.getPlayer();
-		
-		int totalRows = game.getNumRows();
-		int totalCols = game.getNumCols();
-		
-		mapGrid.setPrefColumns(totalCols);
-		
-		for(int row = 0; row < totalRows; row++) {
-			for(int col = 0; col < totalCols; col++) {
-				Position position = new Position(row, col);
-				
-				int fow = player.getFOWAt(position);
-				SpriteView spriteView = new SpriteView(game.getTileAt(position), this, fow);
-				
-				mapGrid.getChildren().add(spriteView);
-			}
-		}
-		
-		centerMapGrid();
-	}
-	
-	private void centerMapGrid() {
-		int playerRow = game.getPlayerPosition().getRow();
-		int playerCol = game.getPlayerPosition().getCol();
-		
-		int rowOffset = (Main.DEFAULT_WINDOW_HEIGHT / 2) - ((playerRow + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
-		int colOffset = (Main.DEFAULT_WINDOW_WIDTH / 2) - ((playerCol + 1) * SpriteView.STANDARD_SPRITE_DIMENSION);
-		
-		mapGrid.setTranslateY(rowOffset);
-		mapGrid.setTranslateX(colOffset);
-	}
-	
 	private void updateFloor() {
 		acceptInput = false;
 		
@@ -150,10 +248,20 @@ public class GameScreenController {
 			
 			switch(event.getEventType()) {
 			case MOVES_TO:
-				updatePosition(source);
-				transition = makeMoveAnimation(actor, source, target);
+				int fowDistance = game.getPlayer().getSightDistance();
+				int playerRow = game.getPlayerPosition().getRow();
+				int playerCol = game.getPlayerPosition().getCol();
+				int rowDifference = Math.abs(playerRow - source.getRow());
+				int colDifference = Math.abs(playerCol - source.getCol());
 				
-				turnAnimations.getChildren().add(transition);
+				if(rowDifference <= fowDistance && colDifference <= fowDistance) {
+					transition = makeMoveAnimation(actor, source, target);
+					turnAnimations.getChildren().add(transition);
+				} else {
+					transition = makeMoveAnimation(actor, source, target);
+					((TranslateTransition) transition).setDuration(new Duration(0));
+					turnAnimations.getChildren().add(transition);
+				}
 				
 				break;
 			case CHANGES_FLOOR:
@@ -169,8 +277,7 @@ public class GameScreenController {
 				
 				break;
 			case DIES:
-				updatePosition(source);
-				transition = makeDeathAnimation(actor, source);
+				transition = makeDeathAnimation(actor);
 				turnAnimations.getChildren().add(transition);
 				
 				break;
@@ -183,44 +290,31 @@ public class GameScreenController {
 	}
 	
 	private Transition makeMoveAnimation(Entity actor, Position source, Position target) {
-		ImageView sourceSprite = new ImageView(actor.getSprite());
-		backgroundPane.getChildren().add(sourceSprite);
-		
-		sourceSprite.setLayoutY(0);
-		sourceSprite.setLayoutX(0);
-		sourceSprite.setTranslateY(mapGrid.getLayoutY() + mapGrid.getTranslateY() + source.getRow() * 32);
-		sourceSprite.setTranslateX(mapGrid.getLayoutX() + mapGrid.getTranslateX() + source.getCol() * 32);
-		
-		int yOffset = (target.getRow() - source.getRow()) * SpriteView.STANDARD_SPRITE_DIMENSION;
-		int xOffset = (target.getCol() - source.getCol()) * SpriteView.STANDARD_SPRITE_DIMENSION;
+		int yOffset = (target.getRow() - source.getRow()) * STANDARD_SPRITE_DIMENSION;
+		int xOffset = (target.getCol() - source.getCol()) * STANDARD_SPRITE_DIMENSION;
 		
 		if(actor instanceof PlayerCharacter) {
-			TranslateTransition translation = makeTranslation(mapGrid, -yOffset, -xOffset);
-			translation.setOnFinished((moveEvent) -> updatePlayerPosition(target));
-			
+			TranslateTransition translation = makeTranslation(gameWorld, -yOffset, -xOffset);
+			translation.setOnFinished((event) -> updateFogOfWar());
 			return translation;
 		} else {
-			TranslateTransition translation = makeTranslation(sourceSprite, yOffset, xOffset);
-			translation.setOnFinished((moveEvent) -> cleanUpMoveAnimation(sourceSprite, actor, target));
-			
+			Node node = getSpriteViewFor(actor);
+			TranslateTransition translation = makeTranslation(node, yOffset, xOffset);
 			return translation;
 		}
 	}
 	
-	private void cleanUpMoveAnimation(Node node, Entity actor, Position target) {
-		backgroundPane.getChildren().remove(node);
-		
-		if(actor instanceof PlayerCharacter) {
-			updatePlayerPosition(target);
-		} else {
-			updatePosition(target);
+	private Node getSpriteViewFor(Entity entity)  {
+		for(Node view : entityPane.getChildren()) {
+			if( ((SpriteView) view).isEntity(entity) ) {
+				return view;
+			}
 		}
+		
+		return null;
 	}
 
 	private Transition makeDamageAnimation(Position target, int damage) {
-		int targetIndex = getIndexOf(target);
-		SpriteView targetSpriteView = ((SpriteView) mapGrid.getChildren().get(targetIndex));
-		
 		Label dmgLabel = new Label(Integer.toString(damage));
 		dmgLabel.getStyleClass().add(DAMAGE_LABEL_STYLE_CLASS);
 		
@@ -230,7 +324,13 @@ public class GameScreenController {
 			dmgLabel.getStyleClass().add(NONZERO_LABEL_STYLE_CLASS);
 		}
 		
-		targetSpriteView.getChildren().add(dmgLabel);
+		gameWorld.getChildren().add(dmgLabel);
+		
+		int yLayout = target.getRow() * STANDARD_SPRITE_DIMENSION;
+		int xLayout = target.getCol() * STANDARD_SPRITE_DIMENSION;
+		
+		dmgLabel.setLayoutY(yLayout);
+		dmgLabel.setLayoutX(xLayout);
 		
 		TranslateTransition translation = makeTranslation(dmgLabel, -32, 0);
 		FadeTransition fade = makeFade(dmgLabel);
@@ -241,23 +341,17 @@ public class GameScreenController {
 		return para;
 	}
 
-	private Transition makeDeathAnimation(Entity actor, Position source) {
-		ImageView sourceSprite = new ImageView(actor.getSprite());
-		backgroundPane.getChildren().add(sourceSprite);
+	private Transition makeDeathAnimation(Entity actor) {
+		Node node = getSpriteViewFor(actor);
 		
-		sourceSprite.setLayoutY(0);
-		sourceSprite.setLayoutX(0);
-		sourceSprite.setTranslateY(mapGrid.getLayoutY() + mapGrid.getTranslateY() + source.getRow() * 32);
-		sourceSprite.setTranslateX(mapGrid.getLayoutX() + mapGrid.getTranslateX() + source.getCol() * 32);
-		
-		FadeTransition fade = makeFade(sourceSprite);
-		fade.setOnFinished((moveEvent) -> cleanUpDeathAnimation(sourceSprite));
+		FadeTransition fade = makeFade(node);
+		fade.setOnFinished((moveEvent) -> cleanUpDeathAnimation(node));
 		
 		return fade;
 	}
 	
 	private void cleanUpDeathAnimation(Node node) {
-		backgroundPane.getChildren().remove(node);
+		entityPane.getChildren().remove(node);
 	}
 	
 	private TranslateTransition makeTranslation(Node node, double yOffset, double xOffset) {
@@ -280,42 +374,7 @@ public class GameScreenController {
 		return fade;
 	}
 	
-	private void updatePlayerPosition(Position target) {
-		PlayerCharacter player = game.getPlayer();
-		
-		int fowDistance = player.getSightDistance() + 1;
-		int playerRow = target.getRow();
-		int playerCol = target.getCol();
-		
-		for(int row = playerRow - fowDistance; row <= playerRow + fowDistance; row++) {
-			for(int col = playerCol - fowDistance; col <= playerCol + fowDistance; col++) {
-				if(row < 0 || col < 0 || row >= Dungeon.DEFAULT_NUM_ROWS || col >= Dungeon.DEFAULT_NUM_COLS) {
-					continue;
-				}
-				
-				Position position = new Position(row, col);
-				int positionSpriteViewIndex = getIndexOf(position);
-				((SpriteView) mapGrid.getChildren().get(positionSpriteViewIndex)).setTile(game.getTileAt(position), player.getFOWAt(position));
-			}
-		}
-	}
-	
-	private void updatePosition(Position position) {
-		
-		int spriteViewIndex = getIndexOf(position);
-		((SpriteView) mapGrid.getChildren().get(spriteViewIndex)).setTile(game.getTileAt(position));
-	}
-	
-	private int getIndexOf(Position position) {
-		return (position.getRow() * game.getNumRows()) + position.getCol();
-	}
-	
-	private Position getPositionOf(int index) {
-		int numCols = game.getNumCols();
-		
-		int row = index / numCols;
-		int col = index % numCols;
-		
-		return new Position(row, col);
+	private void updateFogOfWar() {
+		drawFOW();
 	}
 }

@@ -66,6 +66,10 @@ public class Engine {
 		}
 	}
 	
+	public ArrayList<LivingEntity> getLivingEntities() {
+		return dungeon.getCurrentFloor().getLivingEntities();
+	}
+	
 	private boolean isAdjacentMove(Position targetPosition) {
 		int rowDifference = player.getPosition().getRow() - targetPosition.getRow();
 		rowDifference = Math.abs(rowDifference);
