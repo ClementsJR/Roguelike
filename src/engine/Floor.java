@@ -125,6 +125,9 @@ public class Floor {
 						if (isPresentOpen == false && isPresentClosed == false) {
 							openTiles.add(new Position(row, col));
 							costs[row][col] = ((Math.abs(targetRow - row)) + (Math.abs(targetCol - col)) + movementCosts[centerRow][centerCol]);
+							if (tile.isWall())	{
+								costs[row][col] = costs[row][col] + 1;
+							}
 							cameFrom[row][col] = current;								
 						}
 					}
