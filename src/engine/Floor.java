@@ -107,7 +107,7 @@ public class Floor {
 						continue;
 					} else {
 						Tile tile = map[row][col];
-						if(tile.isBlocked() && !target.equals(new Position(row, col))) {
+						if(tile.isWall()) {
 							continue;
 						}
 						boolean isPresentOpen = false;
@@ -149,14 +149,18 @@ public class Floor {
 		}
 		
 		Position crumb = cameFrom[target.getRow()][target.getCol()];
-		if (crumb.equals(source)) {
+	//	if (crumb.equals(source)) {
 			
-		}
+	//	}
 		while (crumb != null && cameFrom[crumb.getRow()][crumb.getCol()] != null && !cameFrom[crumb.getRow()][crumb.getCol()].equals(source)) {
 			crumb = cameFrom[crumb.getRow()][crumb.getCol()];
 		}
 		nextStep = crumb;
-		return nextStep;
+		Tile tile = map[nextStep.getRow()][nextStep.getCol()];
+		if (tile.isOccupied())
+			return source;
+		else
+			return nextStep;
 	}
 	
 	private void instantiateMapBase() {

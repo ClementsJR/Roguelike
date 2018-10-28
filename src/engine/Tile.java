@@ -6,6 +6,7 @@ public class Tile {
 	private boolean blocked;
 	private Entity baseEntity;
 	private ArrayList<Entity> occupants;
+	private boolean occupied;
 	
 	public Tile() {
 		occupants = new ArrayList<Entity>();
@@ -23,12 +24,25 @@ public class Tile {
 		return baseEntity;
 	}
 	
+	public boolean isOccupied() {
+		return occupied;
+	}
+	
+	public boolean isWall() {
+		if (blocked == true && occupied == false)	{
+			return true;
+		}
+		else
+			return false;
+	}
+	
 	public void addOccupant(Entity newOccupant) {
 		if(!blocked) {
 			occupants.add(newOccupant);
 			
 			if(newOccupant.isImpassable()) {
 				blocked = true;
+				occupied = true;
 			}
 		}
 	}
@@ -38,6 +52,7 @@ public class Tile {
 		
 		if(removed) {
 			blocked = false;
+			occupied = false;
 		}
 	}
 	
