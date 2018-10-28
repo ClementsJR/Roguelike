@@ -64,6 +64,7 @@ public class GameScreenController {
 		
 		game = new Engine();
 		drawNewFloor();
+		drawPlayer();
 		
 		endLoadingAnimation();
 	}
@@ -72,7 +73,7 @@ public class GameScreenController {
 		drawFloor();
 		drawLivingEntities();
 		drawFOW();
-		drawPlayer();
+		//drawPlayer();
 		centerGameMap();
 	}
 
