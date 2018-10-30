@@ -2,6 +2,7 @@ package gui;
 
 import engine.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import javafx.animation.FadeTransition;
@@ -9,14 +10,18 @@ import javafx.animation.ParallelTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class GameScreenController {
@@ -280,7 +285,8 @@ public class GameScreenController {
 			case DIES:
 				transition = makeDeathAnimation(actor);
 				turnAnimations.getChildren().add(transition);
-				
+				if (actor instanceof PlayerCharacter)
+					makeGameOverScreen();
 				break;
 			default:
 				//do nothing yet.
@@ -288,6 +294,26 @@ public class GameScreenController {
 		}
 		
 		turnAnimations.play();
+	}
+	
+	public void makeGameOverScreen() {
+		 try {
+	        	FXMLLoader fxmlLoader = new FXMLLoader();
+	            fxmlLoader.setLocation(getClass().getResource("GameOverScreen.fxml"));
+	            Scene scene = new Scene(fxmlLoader.load(), Main.DEFAULT_WINDOW_WIDTH, Main.DEFAULT_WINDOW_HEIGHT);
+	            
+	            Stage stage = new Stage();
+	            stage.setTitle("Game Over");
+				stage.setResizable(false);
+	            stage.setScene(scene);
+	            stage.show();
+	            
+	        	//((Node)(event.getSource())).getScene().getWindow().hide();
+	            backgroundPane.getScene().getWindow().hide();
+	        }
+	        catch (IOException e) {
+	            e.printStackTrace();
+	        }
 	}
 	
 	private Transition makeMoveAnimation(Entity actor, Position source, Position target) {

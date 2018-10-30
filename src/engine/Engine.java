@@ -10,6 +10,7 @@ public class Engine {
 	private LinkedList<GameEvent> eventQueue;
 	private Dungeon dungeon;
 	private PlayerCharacter player;
+
 	
 	public Engine() {
 		eventQueue = new LinkedList<GameEvent>();
@@ -225,11 +226,31 @@ public class Engine {
 		
 		for(int i = 0; i < livingEntities.size(); i++)
 		{
-			Position source = livingEntities.get(i).getPosition();
+			Entity entity = livingEntities.get(i);
+			Position source = entity.getPosition();
 			Position target = player.getPosition();
 			Position nextStep = dungeon.getCurrentFloor().getPath(source, target);
-			if (nextStep.equals(target)) {
-				//put attack function here, at least for melee enemies
+			
+			int rowDifference = Math.abs(source.getRow() - target.getRow());
+			int colDifference = Math.abs(source.getCol() - target.getCol());
+			
+			if (rowDifference <= 1 && colDifference <= 1) {
+				GameEvent attackRecord = new GameEvent(entity, entity.getPosition(), EventType.ATTACKS, target);
+				eventQueue.add(attackRecord);
+				
+				int damage = ((LivingEntity)entity).getRandomAttackDamage();
+				damage = player.receiveDamage(damage);
+				attackRecord.getEventType().setEventValue(damage);
+				
+				System.out.println("damage");
+				
+				if (player.getCurrentHealth() <= 0) {
+					GameEvent deathRecord = new GameEvent(player, player.getPosition(), EventType.DIES);
+					eventQueue.add(deathRecord);
+					
+					
+					return;
+				}
 				continue;
 			}
 			else if (!nextStep.equals(source) ) {
