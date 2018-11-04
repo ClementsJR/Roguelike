@@ -14,4 +14,7 @@ public class Skeleton extends LivingEntity {
 		setIsEnemy(true);
 		setImage(SPRITE_URL);
 	}
+	
+	public void LevelUp() {}
+	
 }
