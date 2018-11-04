@@ -10,7 +10,6 @@ public class Engine {
 	private LinkedList<GameEvent> eventQueue;
 	private Dungeon dungeon;
 	private PlayerCharacter player;
-
 	
 	public Engine() {
 		eventQueue = new LinkedList<GameEvent>();
@@ -139,7 +138,7 @@ public class Engine {
 				if (((LivingEntity)entity).getCurrentHealth() <= 0) {
 					GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
 					eventQueue.add(deathRecord);
-					
+					player.GiveExperience();
 					targetTile.removeOccupant(entity);
 					dungeon.getCurrentFloor().getLivingEntities().remove(entity);
 				}
