@@ -48,15 +48,6 @@ public abstract class LivingEntity extends Entity {
 	public int getFOWAt(Position position) { return fogOfWarMap[position.getRow()][position.getCol()]; }
 	public int getRandomAttackDamage() { return damageRange.getRandomNum(); }
 	
-	public void setMaxHealth (int maxHealth) {
-		this.maxHealth = maxHealth;
-		currentHealth = maxHealth;
-	}
-	
-	public void setAttackRange (int minAttack, int maxAttack) {
-		damageRange = new Range(minAttack, maxAttack);
-	}
-	
 	public void setDamageRange(Range damageRange) {
 		this.damageRange = damageRange;
 	}
@@ -107,8 +98,6 @@ public abstract class LivingEntity extends Entity {
 			return 0;
 		}
 	}
-	
-	public abstract void LevelUp();
 		
 	public enum StatusEffect {
 		POISONED, PARALYZED;
