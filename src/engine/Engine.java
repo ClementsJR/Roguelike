@@ -10,6 +10,7 @@ public class Engine {
 	private LinkedList<GameEvent> eventQueue;
 	private Dungeon dungeon;
 	private PlayerCharacter player;
+	public int count = 0;
 	
 	public Engine() {
 		eventQueue = new LinkedList<GameEvent>();
@@ -61,7 +62,11 @@ public class Engine {
 			} else {
 				return;
 			}
-			
+			count++;
+			if (count >= 5)	{
+				player.PlayerRegen();
+				count = 0;
+			}
 			takeEnemyTurns();
 		}
 	}

@@ -15,6 +15,7 @@ public class Skeleton extends LivingEntity {
 		setImage(SPRITE_URL);
 	}
 	
-	public void LevelUp() {}
+	public void LevelUp() {
+	}
 	
 }

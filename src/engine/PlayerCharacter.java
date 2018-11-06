@@ -42,6 +42,11 @@ public class PlayerCharacter extends LivingEntity{
 		PLAYER_REGEN = (int)(Math.floor((1/6) * PLAYER_LEVEL) + Math.floor((1/10) * PLAYER_LEVEL) + 1);
 	}
 	
+	public void PlayerRegen() {
+		if (currentHealth < maxHealth)
+			currentHealth = currentHealth + PLAYER_REGEN;
+	}
+	
 	public void UpdateStatus() {
 		
 	}

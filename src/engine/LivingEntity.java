@@ -8,8 +8,8 @@ public abstract class LivingEntity extends Entity {
 	public static final int NOT_SEEN = -10;
 	public static final int WAS_SEEN = -5;
 	
-	private int maxHealth;
-	private int currentHealth;
+	public int maxHealth;
+	public int currentHealth;
 	private Range damageRange;
 	private int defense;
 
