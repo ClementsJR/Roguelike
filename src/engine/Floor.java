@@ -378,6 +378,16 @@ public class Floor {
 		}
 	}
 	
+	public void addArmor(Armor armor) {
+		int randPos=rand.nextInt(openPositions.size());
+		
+		Position spawnPosition=openPositions.remove(randPos);
+		
+		armor.setPosition(spawnPosition);
+		map[spawnPosition.getRow()][spawnPosition.getCol()].addOccupant(armor);
+
+	}
+	
 	public enum MapGenAlgorithm {
 		BSP, CELLULAR_AUTOMATA, TEST_ROOM;
 	}
