@@ -14,6 +14,9 @@ import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 
 public class MainMenuController {
+	public static final int DEFAULT_WINDOW_WIDTH = 1024;
+	public static final int DEFAULT_WINDOW_HEIGHT = 576;
+	
 	@FXML
 	Button newGameBtn;
 	//@FXML
@@ -47,7 +50,7 @@ public class MainMenuController {
         try {
         	FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("GameScreen.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), Main.DEFAULT_WINDOW_WIDTH, Main.DEFAULT_WINDOW_HEIGHT);
+            Scene scene = new Scene(fxmlLoader.load(), DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
             
             Stage stage = new Stage();
             stage.setTitle("Roguelike");

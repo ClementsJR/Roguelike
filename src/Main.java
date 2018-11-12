@@ -1,10 +1,12 @@
-package gui;
+
+
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.fxml.FXMLLoader;
+
 
 public class Main extends Application {
 	public static final int DEFAULT_WINDOW_WIDTH = 1024;
@@ -13,9 +15,9 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("MainMenu.fxml"));
+			BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("/gui/MainMenu.fxml"));
 			Scene scene = new Scene(root, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
-			scene.getStylesheets().add(getClass().getResource("mainMenuStyles.css").toExternalForm());
+			scene.getStylesheets().add(getClass().getResource("/gui/mainMenuStyles.css").toExternalForm());
 			
 			primaryStage.setScene(scene);
 			primaryStage.setResizable(false);
