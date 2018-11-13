@@ -61,6 +61,10 @@ public abstract class LivingEntity extends Entity {
 		this.damageRange = damageRange;
 	}
 	
+	public void setDefense(int defense) {
+		this.defense = defense;
+	}
+	
 	public void setIsEnemy(boolean isEnemy) {
 		this.isEnemy = isEnemy;
 	}

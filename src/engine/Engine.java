@@ -14,7 +14,7 @@ public class Engine {
 	public Engine() {
 		eventQueue = new LinkedList<GameEvent>();
 		dungeon = new Dungeon();
-		player = new PlayerCharacter();
+		player = new Warrior();
 		
 		player.setPosition(dungeon.getCurrentFloor().getStairsUpPosition());
 		movePlayerTo(player.getPosition());
