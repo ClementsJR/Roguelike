@@ -10,6 +10,7 @@ public class PlayerCharacter extends LivingEntity{
 	private static final Range INITIAL_ATTACK_RANGE = new Range(INITIAL_MIN_ATTACK, INITIAL_MAX_ATTACK);
 	private static final int INITIAL_DEFENSE = 0;
 	private int PLAYER_REGEN = (int)(Math.floor((1/6) * PLAYER_LEVEL) + Math.floor((1/10) * PLAYER_LEVEL) + 1);
+	public int count = 0;
 	
 	public int currentXP;
 	private int goalXP = (int)Math.pow(2, (3 + PLAYER_LEVEL));
@@ -48,7 +49,11 @@ public class PlayerCharacter extends LivingEntity{
 	}
 	
 	public void UpdateStatus() {
-		
+		count++;
+		if (count >= 5) {
+			PlayerRegen();
+			count = 0;
+		}
 	}
 	
 }
