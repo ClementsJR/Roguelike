@@ -25,6 +25,9 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class GameScreenController {
+	public static final int DEFAULT_WINDOW_WIDTH = 1024;
+	public static final int DEFAULT_WINDOW_HEIGHT = 576;
+	
 	private Engine game;
 	private boolean acceptInput;
 	
@@ -165,8 +168,8 @@ public class GameScreenController {
 		
 		int spriteDimension = 32;
 		
-		int yOffset = (Main.DEFAULT_WINDOW_HEIGHT / 2) - (spriteDimension);
-		int xOffset = (Main.DEFAULT_WINDOW_WIDTH / 2) - (spriteDimension);
+		int yOffset = (DEFAULT_WINDOW_HEIGHT / 2) - (spriteDimension);
+		int xOffset = (DEFAULT_WINDOW_WIDTH / 2) - (spriteDimension);
 		
 		playerView.setLayoutY(yOffset);
 		playerView.setLayoutX(xOffset);
@@ -176,8 +179,8 @@ public class GameScreenController {
 		int playerRow = game.getPlayerPosition().getRow();
 		int playerCol = game.getPlayerPosition().getCol();
 		
-		int rowOffset = (Main.DEFAULT_WINDOW_HEIGHT / 2) - ((playerRow + 1) * STANDARD_SPRITE_DIMENSION);
-		int colOffset = (Main.DEFAULT_WINDOW_WIDTH / 2) - ((playerCol + 1) * STANDARD_SPRITE_DIMENSION);
+		int rowOffset = (DEFAULT_WINDOW_HEIGHT / 2) - ((playerRow + 1) * STANDARD_SPRITE_DIMENSION);
+		int colOffset = (DEFAULT_WINDOW_WIDTH / 2) - ((playerCol + 1) * STANDARD_SPRITE_DIMENSION);
 		
 		gameWorld.setLayoutY(rowOffset);
 		gameWorld.setLayoutX(colOffset);
@@ -300,7 +303,7 @@ public class GameScreenController {
 		 try {
 	        	FXMLLoader fxmlLoader = new FXMLLoader();
 	            fxmlLoader.setLocation(getClass().getResource("GameOverScreen.fxml"));
-	            Scene scene = new Scene(fxmlLoader.load(), Main.DEFAULT_WINDOW_WIDTH, Main.DEFAULT_WINDOW_HEIGHT);
+	            Scene scene = new Scene(fxmlLoader.load(), DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 	            
 	            Stage stage = new Stage();
 	            stage.setTitle("Game Over");
