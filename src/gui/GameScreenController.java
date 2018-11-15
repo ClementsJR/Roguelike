@@ -355,9 +355,10 @@ public class GameScreenController {
 		}
 		
 		gameWorld.getChildren().add(dmgLabel);
+		//backgroundPane.getChildren().add(dmgLabel);
 		
-		int yLayout = target.getRow() * STANDARD_SPRITE_DIMENSION;
-		int xLayout = target.getCol() * STANDARD_SPRITE_DIMENSION;
+		int yLayout = /*(int)((gameWorld.getTranslateY())/2) +*/ target.getRow() * STANDARD_SPRITE_DIMENSION;
+		int xLayout = /*(int)((gameWorld.getTranslateX())/2) +*/ target.getCol() * STANDARD_SPRITE_DIMENSION;
 		
 		dmgLabel.setLayoutY(yLayout);
 		dmgLabel.setLayoutX(xLayout);

@@ -236,7 +236,7 @@ public class Engine {
 			
 			BehaviorState currentBehavior = livingEntities.get(i).getCurrentBehavior();
 			if (currentBehavior == BehaviorState.IDLE) {
-				if (((Math.abs(target.getRow() - source.getRow()) + (Math.abs(target.getCol() - source.getCol())))) <= 4) {
+				if ((Math.abs(target.getRow() - source.getRow())) <= 4 && (Math.abs(target.getCol() - source.getCol())) <= 4) {
 					livingEntities.get(i).setCurrentBehavior(BehaviorState.ENGAGED);
 				}
 				else {
