@@ -1,9 +1,9 @@
 package engine;
 
 public class Warrior extends PlayerCharacter{
-	public static final String SPRITE_URL = "/assets/img/warrior3.gif";
+	public static final String SPRITE_URL = "/assets/img/warrior.png";
 	
-	private static final int INITIAL_HEALTH = ((6 * PLAYER_LEVEL) + 20);
+	private static final int INITIAL_HEALTH = ((6 * PLAYER_LEVEL) + 2000);
 	private static final int INITIAL_MIN_ATTACK = (int)(Math.ceil((1/2) * PLAYER_LEVEL) + Math.floor((1/6) * PLAYER_LEVEL) + 3);
 	private static final int INITIAL_MAX_ATTACK = (int)(Math.floor((1/2) * PLAYER_LEVEL) + Math.floor((1/6) * PLAYER_LEVEL) + 5);
 	private static final Range INITIAL_ATTACK_RANGE = new Range(INITIAL_MIN_ATTACK, INITIAL_MAX_ATTACK);
@@ -33,8 +33,10 @@ public class Warrior extends PlayerCharacter{
 	}
 	
 	public void PlayerRegen() {
-		if (currentHealth < maxHealth)
+		if (currentHealth < maxHealth) {
+			System.out.println("regen");
 			currentHealth = currentHealth + PLAYER_REGEN;
+		}
 	}
 	
 	public void UpdateStatus() {

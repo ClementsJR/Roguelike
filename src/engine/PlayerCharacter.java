@@ -10,8 +10,8 @@ public abstract class PlayerCharacter extends LivingEntity{
 	private double hungerLevel;
 
 	public PlayerCharacter(int maxHealth, Range initAttackRange, int defense) {
+		super(maxHealth, initAttackRange, defense);
 		setIsEnemy(false);
-		
 	}
 	
 	public enum HungerStage {
