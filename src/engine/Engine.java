@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import engine.GameEvent.EventType;
+import engine.LivingEntity.BehaviorState;
 
 public class Engine {
 
@@ -233,39 +234,52 @@ public class Engine {
 			int rowDifference = Math.abs(source.getRow() - target.getRow());
 			int colDifference = Math.abs(source.getCol() - target.getCol());
 			
-			if (rowDifference <= 1 && colDifference <= 1) {
-				GameEvent attackRecord = new GameEvent(entity, entity.getPosition(), EventType.ATTACKS, target);
-				eventQueue.add(attackRecord);
-				
-				int damage = ((LivingEntity)entity).getRandomAttackDamage();
-				damage = player.receiveDamage(damage);
-				attackRecord.getEventType().setEventValue(damage);
-				
-				System.out.println("damage");
-				
-				if (player.getCurrentHealth() <= 0) {
-					GameEvent deathRecord = new GameEvent(player, player.getPosition(), EventType.DIES);
-					eventQueue.add(deathRecord);
-					
-					
-					return;
+			BehaviorState currentBehavior = livingEntities.get(i).getCurrentBehavior();
+			if (currentBehavior == BehaviorState.IDLE) {
+				if (((Math.abs(target.getRow() - source.getRow()) + (Math.abs(target.getCol() - source.getCol())))) <= 3) {
+					livingEntities.get(i).setCurrentBehavior(BehaviorState.ENGAGED);
 				}
-				continue;
+				else {
+					continue;
+				}
 			}
-			else if (!nextStep.equals(source) ) {
-				Tile sourceTile = getTileAt(source);
-				Tile nextTile = getTileAt(nextStep);
-				sourceTile.removeOccupant(livingEntities.get(i));
-				nextTile.addOccupant(livingEntities.get(i));
-				livingEntities.get(i).setPosition(nextStep);
-				
-				GameEvent moveRecord = new GameEvent(livingEntities.get(i), source, EventType.MOVES_TO, nextStep);
-				eventQueue.add(moveRecord);				
+			currentBehavior = livingEntities.get(i).getCurrentBehavior();
+			if (currentBehavior == BehaviorState.ENGAGED) {
+				if (rowDifference <= 1 && colDifference <= 1) {
+					GameEvent attackRecord = new GameEvent(entity, entity.getPosition(), EventType.ATTACKS, target);
+					eventQueue.add(attackRecord);
+					
+					int damage = ((LivingEntity)entity).getRandomAttackDamage();
+					damage = player.receiveDamage(damage);
+					attackRecord.getEventType().setEventValue(damage);
+					
+					System.out.println("damage");
+					
+					if (player.getCurrentHealth() <= 0) {
+						GameEvent deathRecord = new GameEvent(player, player.getPosition(), EventType.DIES);
+						eventQueue.add(deathRecord);
+						
+						
+						return;
+					}
+					continue;
+				}
+				else if (!nextStep.equals(source) ) {
+					Tile sourceTile = getTileAt(source);
+					Tile nextTile = getTileAt(nextStep);
+					sourceTile.removeOccupant(livingEntities.get(i));
+					nextTile.addOccupant(livingEntities.get(i));
+					livingEntities.get(i).setPosition(nextStep);
+					
+					GameEvent moveRecord = new GameEvent(livingEntities.get(i), source, EventType.MOVES_TO, nextStep);
+					eventQueue.add(moveRecord);				
+				}
+				else {
+					//This is in case there is no path
+					continue;
+				}
 			}
-			else {
-				//This is in case there is no path
-				continue;
-			}
+			
 		}
 	}
 }

@@ -114,6 +114,14 @@ public abstract class LivingEntity extends Entity {
 	
 	public abstract void LevelUp();
 		
+	public BehaviorState getCurrentBehavior() {
+		return currentBehavior;
+	}
+
+	public void setCurrentBehavior(BehaviorState currentBehavior) {
+		this.currentBehavior = currentBehavior;
+	}
+
 	public enum StatusEffect {
 		POISONED, PARALYZED;
 	}

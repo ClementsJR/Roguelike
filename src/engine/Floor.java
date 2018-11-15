@@ -3,6 +3,8 @@ package engine;
 import java.util.ArrayList;
 import java.util.Random;
 
+import engine.LivingEntity.BehaviorState;
+
 public class Floor {
 	private static final float CHANCE_TO_START_ALIVE = 0.40f;
 	private static final int NUM_CELL_AUTOMATA_ITERATIONS = 5;
@@ -374,6 +376,7 @@ public class Floor {
 			skelly.setPosition(spawnPosition);
 			
 			livingEntities.add(skelly);
+			skelly.setCurrentBehavior(BehaviorState.IDLE);
 			map[spawnPosition.getRow()][spawnPosition.getCol()].addOccupant(skelly);
 		}
 	}
