@@ -62,6 +62,9 @@ public class Engine {
 			} else if(isFoodTile(target)) {
 				pickUpFood(target);
 				movePlayerTo(clickedPosition);
+			} else if(isArmorTile(target)) {
+				movePlayerTo(clickedPosition);
+				pickUpArmor(target);
 			} else {
 				return;
 			}
@@ -109,6 +112,17 @@ public class Engine {
 		return isFood;
 	}
 	
+	private boolean isArmorTile(Tile target) {
+		boolean isArmor = false;
+		for (Entity entity : target.getOccupants()) {
+			if (entity instanceof Armor) {
+				isArmor = true;
+				break;
+			}
+		}
+		return isArmor;
+	}
+	
 	private boolean hasLivingEntity(Tile target) {
 		boolean hasLivingEntity = false;
 		
@@ -149,6 +163,16 @@ public class Engine {
 		}
 	}
 		
+	private void pickUpArmor(Tile target) {
+		for (Entity entity : target.getOccupants()) {
+			if (entity instanceof Armor) {
+				target.removeOccupant(entity);
+				player.GiveArmor((Armor)entity);
+				break;
+			}
+		}
+	}
+	
 	private void playerAttacks(Position target) {
 		GameEvent attackRecord = new GameEvent(player, player.getPosition(), EventType.ATTACKS, target);
 		eventQueue.add(attackRecord);
