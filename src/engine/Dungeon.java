@@ -35,7 +35,7 @@ public class Dungeon {
 		
 		boolean makeStairsUp = false;
 		boolean makeStairsDown = true;
-		generateNewFloor(seed, Floor.MapGenAlgorithm.CELLULAR_AUTOMATA, makeStairsUp, makeStairsDown);
+		generateNewFloor(seed, Floor.MapGenAlgorithm.BSP, makeStairsUp, makeStairsDown);
 		
 		currentFloorIndex = 0;
 		
