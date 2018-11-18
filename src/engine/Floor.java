@@ -17,6 +17,7 @@ public class Floor {
 	public boolean makeStairsDown;
 	private Position stairsUpPosition;
 	private Position stairsDownPosition;
+	private Position foodPosition;
 
 	private int numRows, numCols;
 	private Tile[][] map;
@@ -41,12 +42,14 @@ public class Floor {
 		
 		addStairs();
 		addEnemies();
+		addFood();
 	}
 	
 	public int getNumRows() { return numRows; }
 	public int getNumCols() { return numCols; }
 	public Position getStairsUpPosition() { return stairsUpPosition; }
 	public Position getStairsDownPosition() { return stairsDownPosition; }
+	public Position getFoodPosition() { return foodPosition; }
 	public ArrayList<LivingEntity> getLivingEntities() { return livingEntities; }
 	
 	public Tile getTileAt(Position target) {
@@ -348,6 +351,12 @@ public class Floor {
 				}
 			}
 		}
+	}
+	
+	private void addFood() {
+		int randPos = rand.nextInt(openPositions.size());
+		foodPosition = openPositions.remove(randPos);
+		map[foodPosition.getRow()][foodPosition.getCol()].addOccupant(new Food());
 	}
 	
 	private void addStairs() {

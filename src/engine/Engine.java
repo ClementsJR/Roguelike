@@ -52,13 +52,16 @@ public class Engine {
 		if(isAdjacentMove(clickedPosition)) {
 			Tile target = getTileAt(clickedPosition);
 			
-			if(isOpenTile(target) && !isStairTile(target)) {
+			if(isOpenTile(target) && !isStairTile(target) && !isFoodTile(target)) {
 				movePlayerTo(clickedPosition);
 			} else if(hasLivingEntity(target)) {
 				playerAttacks(clickedPosition);
 			} else if(isStairTile(target)) {
 				movePlayerTo(clickedPosition);
 				changeFloor(target);
+			} else if(isFoodTile(target)) {
+				pickUpFood(target);
+				movePlayerTo(clickedPosition);
 			} else {
 				return;
 			}
@@ -95,6 +98,17 @@ public class Engine {
 		return isStair;
 	}
 	
+	private boolean isFoodTile(Tile target) {
+		boolean isFood = false;
+		for (Entity entity : target.getOccupants()) {
+			if (entity instanceof Food) {
+				isFood = true;
+				break;
+			}
+		}
+		return isFood;
+	}
+	
 	private boolean hasLivingEntity(Tile target) {
 		boolean hasLivingEntity = false;
 		
@@ -121,6 +135,18 @@ public class Engine {
 		player.setPosition(target);
 		
 		updatePlayerFOW();
+	}
+	
+	private void pickUpFood(Tile target) {
+		if(player.hasFood == false) {
+			for (Entity entity : target.getOccupants()) {
+				if (entity instanceof Food) {
+					target.removeOccupant(entity);
+					player.GiveFood((Food)entity);
+					break;
+				}
+			}
+		}
 	}
 		
 	private void playerAttacks(Position target) {
