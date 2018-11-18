@@ -96,6 +96,7 @@ public class GameScreenController {
 		game = new Engine();
 		drawNewFloor();
 		drawPlayer();
+		updateHUD();
 		
 		endLoadingAnimation();
 	}
@@ -219,6 +220,10 @@ public class GameScreenController {
 		
 		playerView.setLayoutY(yOffset);
 		playerView.setLayoutX(xOffset);
+	}
+	
+	private void updateHUD() {
+		
 	}
 	
 	private void centerGameMap() {
