@@ -19,6 +19,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
@@ -62,6 +64,27 @@ public class GameScreenController {
 	ImageView loadingAnimation;
 	
 	@FXML
+	Pane hud;
+	
+	@FXML
+	Pane healthBar;
+	
+	@FXML
+	Pane xpBar;
+	
+	@FXML
+	Pane hungerBar;
+	
+	@FXML
+	Pane armorIcon;
+	
+	@FXML
+	Pane foodIcon;
+	
+	@FXML
+	HBox statusEffectDisplay;
+	
+	@FXML
 	public void initialize() {
 		acceptInput = true;
 		startLoadingAnimation();
@@ -77,9 +100,26 @@ public class GameScreenController {
 		endLoadingAnimation();
 	}
 	
+	private void startLoadingAnimation() {
+		hud.setVisible(false);
+		playerView.setVisible(false);
+		gameWorld.setVisible(false);
+		loadingAnimation.setVisible(true);
+	}
+	
+	private void endLoadingAnimation() {
+		loadingAnimation.setVisible(false);
+		hud.setVisible(true);
+		playerView.setVisible(true);
+		gameWorld.setVisible(true);
+	}
+	
 	private void drawNewFloor() {
+		//gameWorld.setLayoutY(0);
+		//gameWorld.setLayoutX(0);
+		
 		drawFloor();
-		drawLivingEntities();
+		drawTileOccupants();
 		drawFOW();
 		//drawPlayer();
 		centerGameMap();
@@ -110,24 +150,30 @@ public class GameScreenController {
 		}
 	}
 	
-	private void drawLivingEntities() {
+	private void drawTileOccupants() {
 		entityPane.getChildren().clear();
 		
-		ArrayList<LivingEntity> livingEntities = game.getLivingEntities();
-		
-		for(Entity entity : livingEntities) {
-			SpriteView spriteView = new SpriteView(entity);
-			
-			int row = entity.getPosition().getRow();
-			int col = entity.getPosition().getCol();
-			
-			int yLayout = row * STANDARD_SPRITE_DIMENSION;
-			int xLayout = col * STANDARD_SPRITE_DIMENSION;
-			
-			spriteView.setLayoutY(yLayout);
-			spriteView.setLayoutX(xLayout);
-			
-			entityPane.getChildren().add(spriteView);
+		for(int row = 0; row < Dungeon.DEFAULT_NUM_ROWS; row++) {
+			for(int col = 0; col < Dungeon.DEFAULT_NUM_COLS; col++) {
+				Tile t = game.getTileAt(new Position(row, col));
+				ArrayList<Entity> occupants = t.getOccupants();
+				
+				for(Entity e : occupants) {
+					if(e instanceof PlayerCharacter) {
+						continue;
+					}
+					
+					SpriteView spriteView = new SpriteView(e);
+					
+					int yLayout = row * STANDARD_SPRITE_DIMENSION;
+					int xLayout = col * STANDARD_SPRITE_DIMENSION;
+					
+					spriteView.setLayoutY(yLayout);
+					spriteView.setLayoutX(xLayout);
+					
+					entityPane.getChildren().add(spriteView);
+				}
+			}
 		}
 	}
 	
@@ -198,18 +244,6 @@ public class GameScreenController {
 		game.tileSelected(clicked);
 		updateFloor();
 	}*/
-	
-	private void startLoadingAnimation() {
-		playerView.setVisible(false);
-		gameWorld.setVisible(false);
-		loadingAnimation.setVisible(true);
-	}
-	
-	private void endLoadingAnimation() {
-		loadingAnimation.setVisible(false);
-		playerView.setVisible(true);
-		gameWorld.setVisible(true);
-	}
 	
 	private void handleKeyPress(KeyEvent event) {
 		if(acceptInput == false) {
@@ -356,9 +390,10 @@ public class GameScreenController {
 		
 		gameWorld.getChildren().add(dmgLabel);
 		//backgroundPane.getChildren().add(dmgLabel);
+		//hud.getChildren().add(dmgLabel);
 		
-		int yLayout = /*(int)((gameWorld.getTranslateY())/2) +*/ target.getRow() * STANDARD_SPRITE_DIMENSION;
-		int xLayout = /*(int)((gameWorld.getTranslateX())/2) +*/ target.getCol() * STANDARD_SPRITE_DIMENSION;
+		int yLayout = (int)((gameWorld.getTranslateY())/2) + target.getRow() * STANDARD_SPRITE_DIMENSION;
+		int xLayout = (int)((gameWorld.getTranslateX())/2) + target.getCol() * STANDARD_SPRITE_DIMENSION;
 		
 		dmgLabel.setLayoutY(yLayout);
 		dmgLabel.setLayoutX(xLayout);
