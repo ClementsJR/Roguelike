@@ -15,6 +15,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -23,6 +25,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -67,13 +71,13 @@ public class GameScreenController {
 	Pane hud;
 	
 	@FXML
-	Pane healthBar;
+	Canvas healthBar;
 	
 	@FXML
-	Pane xpBar;
+	Canvas xpBar;
 	
 	@FXML
-	Pane hungerBar;
+	Canvas hungerBar;
 	
 	@FXML
 	Pane armorIcon;
@@ -223,6 +227,37 @@ public class GameScreenController {
 	}
 	
 	private void updateHUD() {
+		updateHealthBar();
+		updateXPBar();
+		updateHungerBar();
+	}
+
+	private void updateHealthBar() {
+		PlayerCharacter player = game.getPlayer();
+		
+		double currentHealth = player.currentHealth;
+		double maxHealth = player.maxHealth;
+		
+		double healthPercent = currentHealth / maxHealth;
+		
+		GraphicsContext pen = healthBar.getGraphicsContext2D();
+		pen.clearRect(0, 0, healthBar.getWidth(), healthBar.getHeight());
+		
+		double height = healthBar.getHeight();
+		double width = healthBar.getWidth() * healthPercent;
+		
+		System.out.println("Height: " + height);
+		System.out.println("Width: " + width);
+		
+		pen.setFill(Color.rgb(200, 30, 30));
+		pen.fillRect(0, 0, width, height);
+	}
+	
+	private void updateXPBar() {
+		
+	}
+	
+	private void updateHungerBar() {
 		
 	}
 	
@@ -335,6 +370,7 @@ public class GameScreenController {
 			}
 		}
 		
+		updateHUD();
 		turnAnimations.play();
 	}
 	
@@ -397,8 +433,8 @@ public class GameScreenController {
 		//backgroundPane.getChildren().add(dmgLabel);
 		//hud.getChildren().add(dmgLabel);
 		
-		int yLayout = (int)((gameWorld.getTranslateY())/2) + target.getRow() * STANDARD_SPRITE_DIMENSION;
-		int xLayout = (int)((gameWorld.getTranslateX())/2) + target.getCol() * STANDARD_SPRITE_DIMENSION;
+		int yLayout = /*(int)((gameWorld.getTranslateY())/2) +*/ target.getRow() * STANDARD_SPRITE_DIMENSION;
+		int xLayout = /*(int)((gameWorld.getTranslateX())/2) +*/ target.getCol() * STANDARD_SPRITE_DIMENSION;
 		
 		dmgLabel.setLayoutY(yLayout);
 		dmgLabel.setLayoutX(xLayout);
