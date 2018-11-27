@@ -10,7 +10,7 @@ public abstract class LivingEntity extends Entity {
 	
 	public int maxHealth;
 	public int currentHealth;
-	private Range damageRange;
+	protected Range damageRange;
 	private int defense;
 
 	private int sightDistance;
