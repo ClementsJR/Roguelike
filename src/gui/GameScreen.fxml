@@ -9,7 +9,7 @@
 
 <Pane fx:id="backgroundPane" prefHeight="576.0" prefWidth="1024.0" styleClass="gameBackgroundPane" stylesheets="@gameStyles.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameScreenController">
    <children>
-      <Pane fx:id="gameWorld" prefHeight="200.0" prefWidth="200.0">
+      <Pane fx:id="gameWorld">
          <children>
             <Pane fx:id="floorPane" prefHeight="200.0" prefWidth="200.0" />
             <Pane fx:id="entityPane" prefHeight="200.0" prefWidth="200.0" />
@@ -75,21 +75,23 @@
                      </children></HBox>
                </children>
             </Pane>
-            <Pane fx:id="armorIcon" layoutX="976.0" layoutY="16.0">
+            <Pane layoutX="976.0" layoutY="16.0">
                <children>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../assets/img/ui_box.png" />
                      </image>
                   </ImageView>
+                  <ImageView fx:id="armorIcon" pickOnBounds="true" preserveRatio="true" />
                </children></Pane>
-            <Pane fx:id="foodIcon" layoutX="976.0" layoutY="64.0">
+            <Pane layoutX="976.0" layoutY="64.0" onMouseClicked="#foodIconClick">
                <children>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../assets/img/ui_box.png" />
                      </image>
                   </ImageView>
+                  <ImageView fx:id="foodIcon" pickOnBounds="true" preserveRatio="true" />
                </children></Pane>
          </children>
       </Pane>

@@ -167,7 +167,7 @@ public class Engine {
 		for (Entity entity : target.getOccupants()) {
 			if (entity instanceof Armor) {
 				target.removeOccupant(entity);
-				player.GiveArmor((Armor)entity);
+				player.GiveArmor(((Armor)entity).type);
 				break;
 			}
 		}
@@ -302,8 +302,6 @@ public class Engine {
 					int damage = ((LivingEntity)entity).getRandomAttackDamage();
 					damage = player.receiveDamage(damage);
 					attackRecord.getEventType().setEventValue(damage);
-					
-					System.out.println("damage");
 					
 					if (player.getCurrentHealth() <= 0) {
 						GameEvent deathRecord = new GameEvent(player, player.getPosition(), EventType.DIES);
