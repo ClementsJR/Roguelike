@@ -1,6 +1,10 @@
 package engine;
 
 import java.util.ArrayList;
+import java.util.Random;
+
+import engine.Armor.ArmorType;
+import engine.LivingEntity.StatusEffect;
 
 public abstract class LivingEntity extends Entity {
 	public static final int DEFAULT_SIGHT_DISTANCE = 3;
@@ -11,15 +15,17 @@ public abstract class LivingEntity extends Entity {
 	public int maxHealth;
 	public int currentHealth;
 	protected Range damageRange;
-	private int defense;
+	protected int defense;
 
 	private int sightDistance;
 	private int[][] fogOfWarMap;
 	
 	private boolean isEnemy;
 
-	private ArrayList<StatusEffect> activeStatusEffects;
-	private BehaviorState currentBehavior;
+	protected StatusEffect poisonEffect;
+	protected StatusEffect paralysisEffect;
+	protected StatusEffect burningEffect;
+	protected BehaviorState currentBehavior;
 	
 	public LivingEntity() {
 		setImpassable(true);
@@ -123,7 +129,15 @@ public abstract class LivingEntity extends Entity {
 	}
 
 	public enum StatusEffect {
-		POISONED, PARALYZED;
+		POISONED, PARALYZED, BURNED;
+		int duration;
+	}
+	
+	public void GiveStatusEffect(StatusEffect effect) {
+		
+		if(effect == StatusEffect.POISONED) { poisonEffect = effect; }
+		if(effect == StatusEffect.PARALYZED) { paralysisEffect = effect; }
+		if(effect == StatusEffect.BURNED) { burningEffect = effect; }
 	}
 	
 	public enum BehaviorState {

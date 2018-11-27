@@ -185,7 +185,8 @@ public class Engine {
 				int damage = player.getRandomAttackDamage();
 				damage = ((LivingEntity)entity).receiveDamage(damage);
 				attackRecord.getEventType().setEventValue(damage);
-				
+				if (player.DealsStatusEffect() == true)
+					((LivingEntity)entity).GiveStatusEffect(player.getStatusEffect());
 				if (((LivingEntity)entity).getCurrentHealth() <= 0) {
 					GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
 					eventQueue.add(deathRecord);
@@ -300,13 +301,16 @@ public class Engine {
 					eventQueue.add(attackRecord);
 					
 					int damage = ((LivingEntity)entity).getRandomAttackDamage();
+					if(entity instanceof Slime) {
+						if (((Slime)entity).DealsStatusEffect() == true)
+							player.GiveStatusEffect(((Slime)entity).getStatusEffect());
+					}
 					damage = player.receiveDamage(damage);
 					attackRecord.getEventType().setEventValue(damage);
 					
 					if (player.getCurrentHealth() <= 0) {
 						GameEvent deathRecord = new GameEvent(player, player.getPosition(), EventType.DIES);
 						eventQueue.add(deathRecord);
-						
 						
 						return;
 					}
