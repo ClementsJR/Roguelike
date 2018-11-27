@@ -130,7 +130,7 @@ public abstract class LivingEntity extends Entity {
 
 	public enum StatusEffect {
 		POISONED, PARALYZED, BURNED;
-		int duration;
+		int duration, damage;
 	}
 	
 	public void GiveStatusEffect(StatusEffect effect) {
@@ -148,4 +148,8 @@ public abstract class LivingEntity extends Entity {
 		
 	}
 	
+	public void UpdateStatus() {
+		if (burningEffect.duration > 0)
+			currentHealth -= burningEffect.damage;
+	}	
 }

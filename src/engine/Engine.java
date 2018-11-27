@@ -187,6 +187,8 @@ public class Engine {
 				attackRecord.getEventType().setEventValue(damage);
 				if (player.DealsStatusEffect() == true)
 					((LivingEntity)entity).GiveStatusEffect(player.getStatusEffect());
+				if (player instanceof Mage)
+					((LivingEntity)entity).GiveStatusEffect(player.burningEffect);
 				if (((LivingEntity)entity).getCurrentHealth() <= 0) {
 					GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
 					eventQueue.add(deathRecord);
@@ -277,7 +279,8 @@ public class Engine {
 		
 		for(int i = 0; i < livingEntities.size(); i++)
 		{
-			Entity entity = livingEntities.get(i);
+			LivingEntity entity = livingEntities.get(i);
+			entity.UpdateStatus();
 			Position source = entity.getPosition();
 			Position target = player.getPosition();
 			Position nextStep = dungeon.getCurrentFloor().getPath(source, target);
