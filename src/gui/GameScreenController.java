@@ -80,10 +80,10 @@ public class GameScreenController {
 	Canvas hungerBar;
 	
 	@FXML
-	Pane armorIcon;
+	ImageView armorIcon;
 	
 	@FXML
-	Pane foodIcon;
+	ImageView foodIcon;
 	
 	@FXML
 	HBox statusEffectDisplay;
@@ -122,12 +122,11 @@ public class GameScreenController {
 	private void drawNewFloor() {
 		//gameWorld.setLayoutY(0);
 		//gameWorld.setLayoutX(0);
-		
+
+		centerGameMap();
 		drawFloor();
 		drawTileOccupants();
 		drawFOW();
-		//drawPlayer();
-		centerGameMap();
 	}
 
 	private void drawFloor() {
@@ -230,6 +229,10 @@ public class GameScreenController {
 		updateHealthBar();
 		updateXPBar();
 		updateHungerBar();
+		updatePoisonedEffectIndicator();
+		updateParalysedEffectIndicator();
+		updateArmorIcon();
+		updateFoodIcon();
 	}
 
 	private void updateHealthBar() {
@@ -246,22 +249,67 @@ public class GameScreenController {
 		double height = healthBar.getHeight();
 		double width = healthBar.getWidth() * healthPercent;
 		
-		System.out.println("Height: " + height);
-		System.out.println("Width: " + width);
-		
 		pen.setFill(Color.rgb(200, 30, 30));
 		pen.fillRect(0, 0, width, height);
 	}
 	
 	private void updateXPBar() {
+		PlayerCharacter player = game.getPlayer();
 		
+		double currentXP = player.currentXP;
+		double goalXP = player.goalXP;
+		
+		double xpPercent = currentXP / goalXP;
+		
+		GraphicsContext pen = xpBar.getGraphicsContext2D();
+		pen.clearRect(0, 0, xpBar.getWidth(), xpBar.getHeight());
+		
+		double height = xpBar.getHeight();
+		double width = xpBar.getWidth() * xpPercent;
+		
+		pen.setFill(Color.rgb(200, 200, 30));
+		pen.fillRect(0, 0, width, height);
 	}
 	
 	private void updateHungerBar() {
+		PlayerCharacter player = game.getPlayer();
+		
+		double hungerLevel = player.hungerLevel;
+		
+		GraphicsContext pen = hungerBar.getGraphicsContext2D();
+		pen.clearRect(0, 0, hungerBar.getWidth(), hungerBar.getHeight());
+		
+		double height = hungerBar.getHeight();
+		double width = hungerBar.getWidth() * hungerLevel;
+		
+		pen.setFill(Color.rgb(30, 30, 200));
+		pen.fillRect(0, 0, width, height);
+	}
+	
+	private void updatePoisonedEffectIndicator() {
 		
 	}
 	
+	private void updateParalysedEffectIndicator() {
+		
+	}
+	
+	private void updateArmorIcon() {
+		
+	}
+	
+	private void updateFoodIcon() {
+		if(game.getPlayer().hasFood) {
+			Food f = game.getPlayer().playerFood;
+			foodIcon.setImage(f.getSprite());
+		} else {
+			foodIcon.setImage(new Image(WAS_SEEN_OVERLAY));
+		}
+	}
+	
 	private void centerGameMap() {
+		printLayoutTest();
+		
 		int playerRow = game.getPlayerPosition().getRow();
 		int playerCol = game.getPlayerPosition().getCol();
 		
@@ -270,6 +318,28 @@ public class GameScreenController {
 		
 		gameWorld.setLayoutY(rowOffset);
 		gameWorld.setLayoutX(colOffset);
+		
+		/*System.out.println("Player Row: " + playerRow);
+		System.out.println("Player Col: " + playerCol);
+		
+		System.out.println("rowOffset: " + rowOffset);
+		System.out.println("colOffset: " + colOffset);
+		
+		System.out.println();*/
+	}
+	
+	private void printLayoutTest() {
+		for(int row = 0; row < 1; row++) {
+			for(int col = 0; col < 1; col++) {
+				int rowOffset = (DEFAULT_WINDOW_HEIGHT / 2) - ((row + 1) * STANDARD_SPRITE_DIMENSION);
+				int colOffset = (DEFAULT_WINDOW_WIDTH / 2) - ((col + 1) * STANDARD_SPRITE_DIMENSION);
+				
+				System.out.print("(" + row + ","  + col + ")");
+				System.out.println("(" + rowOffset + ","  + colOffset + ")");
+				System.out.println("(" + backgroundPane.getLayoutY() + ","  + backgroundPane.getLayoutX() + ")");
+				
+			}
+		}
 	}
 	
  	/*public void tileClicked(SpriteView spriteView) {
@@ -348,9 +418,9 @@ public class GameScreenController {
 				
 				break;
 			case CHANGES_FLOOR:
-				startLoadingAnimation();
-				drawFloor();
-				endLoadingAnimation();
+				//startLoadingAnimation();
+				drawNewFloor();
+				//endLoadingAnimation();
 				
 				break;
 			case ATTACKS:
@@ -401,10 +471,12 @@ public class GameScreenController {
 		if(actor instanceof PlayerCharacter) {
 			TranslateTransition translation = makeTranslation(gameWorld, -yOffset, -xOffset);
 			translation.setOnFinished((event) -> updateFogOfWar());
+			translation.setDuration(new Duration(100));
 			return translation;
 		} else {
 			Node node = getSpriteViewFor(actor);
 			TranslateTransition translation = makeTranslation(node, yOffset, xOffset);
+			translation.setDuration(new Duration(200));
 			return translation;
 		}
 	}
@@ -447,6 +519,7 @@ public class GameScreenController {
 		
 		return para;
 	}
+	
 
 	private Transition makeDeathAnimation(Entity actor) {
 		Node node = getSpriteViewFor(actor);
@@ -483,5 +556,22 @@ public class GameScreenController {
 	
 	private void updateFogOfWar() {
 		drawFOW();
+	}
+	
+	@FXML
+	public void armorIconHover() {
+		
+	}
+	
+	@FXML
+	public void armorIconClick() {
+		
+	}
+	
+	@FXML
+	public void foodIconClick() {
+		game.getPlayer().EatFood();
+		updateFoodIcon();
+		updateHungerBar();
 	}
 }

@@ -12,20 +12,19 @@ public abstract class PlayerCharacter extends LivingEntity{
 	
 	public int currentXP;
 	public boolean hasFood = false;
-	private int goalXP = (int)Math.pow(2, (3 + PLAYER_LEVEL));
-	private Food playersFood;
+	public int goalXP = (int)Math.pow(2, (3 + PLAYER_LEVEL));
+	public Food playerFood;
 	private ArrayList <ArmorType> armorList;
 	private int armorSelect = 0;
 	private ArmorType equipedArmorType;
+	public double hungerLevel;
 	private StatusEffect dealtStatusEffect;
-
-	
-	private double hungerLevel;
 
 	public PlayerCharacter(int maxHealth, Range initAttackRange, int defense) {
 		super(maxHealth, initAttackRange, defense);
 		setIsEnemy(false);
 		armorList = new ArrayList <ArmorType>();
+		hungerLevel = 0.0;
 	}
 	
 	public enum HungerStage {
@@ -39,7 +38,7 @@ public abstract class PlayerCharacter extends LivingEntity{
 	}
 	
 	public void GiveFood(Food newFood) {
-		playersFood = newFood;
+		playerFood = newFood;
 		hasFood = true;
 	}
 	
@@ -73,7 +72,7 @@ public abstract class PlayerCharacter extends LivingEntity{
 		if (hasFood) {
 			currentHealth = maxHealth;
 			hungerLevel = 0;
-			playersFood = null;
+			playerFood = null;
 			hasFood = false;
 		}
 	}

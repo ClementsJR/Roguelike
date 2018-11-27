@@ -311,8 +311,6 @@ public class Engine {
 					damage = player.receiveDamage(damage);
 					attackRecord.getEventType().setEventValue(damage);
 					
-					System.out.println("damage");
-					
 					if (player.getCurrentHealth() <= 0) {
 						GameEvent deathRecord = new GameEvent(player, player.getPosition(), EventType.DIES);
 						eventQueue.add(deathRecord);
