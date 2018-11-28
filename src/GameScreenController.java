@@ -572,11 +572,16 @@ public class GameScreenController {
 		for(ArmorType t : inventory) {
 			Armor a = new Armor(t);
 			ImageView v = new ImageView(a.getSprite());
-			v.setOnMouseClicked((event) -> game.getPlayer().EquipArmor(t));
+			v.setOnMouseClicked((event) -> equipArmor(t));
 			armorList.getChildren().add(v);
 		}
 		
 		armorList.setVisible(true);
+	}
+	
+	private void equipArmor(ArmorType t) {
+		game.getPlayer().EquipArmor(t);
+		updateArmorIcon();
 	}
 	
 	@FXML

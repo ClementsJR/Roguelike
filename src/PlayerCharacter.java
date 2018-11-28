@@ -40,12 +40,14 @@ public abstract class PlayerCharacter extends LivingEntity{
 		hasFood = true;
 	}
 	
-	public void EquipArmor(ArmorType t) { equippedArmorType = t; }
+	public void EquipArmor(ArmorType t) {
+		equippedArmorType = t;
+	}
 	
 	public int receiveDamage(int damage) {
 		if(equippedArmorType == ArmorType.C2)
 			damage += damage * 0.2;
-		damage -= defense;
+		damage -= equippedArmorType.armorValue;
 		
 		if (damage > 0) {
 			currentHealth -= damage;
@@ -76,6 +78,7 @@ public abstract class PlayerCharacter extends LivingEntity{
 	}
 	
 	public void GiveArmor(ArmorType newArmor) {
+		System.out.println("yep");
 		armorList.add(newArmor);
 	}
 	

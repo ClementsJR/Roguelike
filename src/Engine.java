@@ -121,7 +121,7 @@ public class Engine {
 		if(isAdjacentMove(clickedPosition)) {
 			Tile target = getTileAt(clickedPosition);
 			
-			if(isOpenTile(target) && !isStairTile(target) && !isFoodTile(target)) {
+			if(isOpenTile(target) && !isStairTile(target) && !isFoodTile(target) && !isArmorTile(target)) {
 				movePlayerTo(clickedPosition);
 			} else if(hasLivingEntity(target)) {
 				warriorAttacks(clickedPosition);
