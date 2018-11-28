@@ -125,7 +125,10 @@ public abstract class LivingEntity extends Entity {
 	}
 
 	public enum StatusEffect {
-		POISONED, PARALYZED, BURNED;
+		POISONED, PARALYZED, BURNED {{
+			damage = 3;
+			duration = 3;
+		}};
 		int duration, damage;
 	}
 	
@@ -141,7 +144,10 @@ public abstract class LivingEntity extends Entity {
 	}
 	
 	public void UpdateStatus() {
-		if (burningEffect != null && burningEffect.duration > 0)
+		if (burningEffect != null && burningEffect.duration > 0) {
 			currentHealth -= burningEffect.damage;
+			burningEffect.duration--;
+			System.out.print("burnDamage");
+		}
 	}	
 }

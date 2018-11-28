@@ -6,8 +6,8 @@ public class Mage extends PlayerCharacter{
 	
 	private static final int INITIAL_HEALTH = (int)((3 * PLAYER_LEVEL) + Math.floor((3/5) * PLAYER_LEVEL) + 1200);
 	//private static final int INITIAL_MIN_ATTACK = (int)(Math.ceil((1/2) * PLAYER_LEVEL) + Math.floor((1/6) * PLAYER_LEVEL) + 3);
-	private static final int INITIAL_MAX_ATTACK = (int)(Math.floor((2/5) * PLAYER_LEVEL) + 3);
-	private static final Range INITIAL_ATTACK_RANGE = new Range(INITIAL_MAX_ATTACK, INITIAL_MAX_ATTACK);
+	//private static final int INITIAL_MAX_ATTACK = (int)(Math.floor((2/5) * PLAYER_LEVEL) + 3);
+	private static final Range INITIAL_ATTACK_RANGE = new Range(0, 0);
 	private static final int INITIAL_DEFENSE = 0;
 	private int PLAYER_REGEN = (int)(Math.floor((1/6) * PLAYER_LEVEL) + 1);
 	public int count = 0;
@@ -17,6 +17,10 @@ public class Mage extends PlayerCharacter{
 		super(INITIAL_HEALTH, INITIAL_ATTACK_RANGE, INITIAL_DEFENSE);
 		//setIsEnemy(false);
 		setImage(SPRITE_URL);
+		
+		burningEffect = StatusEffect.BURNED;
+		burningEffect.damage = 3;
+		burningEffect.duration = 3;
 	}
 	
 	public enum HungerStage {
@@ -28,8 +32,8 @@ public class Mage extends PlayerCharacter{
 		goalXP = (int)Math.pow(2, (3 + PLAYER_LEVEL));
 		currentXP = 0;
 		setMaxHealth((int)((3 * PLAYER_LEVEL) + Math.floor((3/5) * PLAYER_LEVEL) + 12));
-		int maxAttack = (int)(Math.floor((2/5) * PLAYER_LEVEL) + 3);
-		setAttackRange(maxAttack, maxAttack);
+		int attack = (int)(Math.floor((2/5) * PLAYER_LEVEL) + 3);
+		setAttackRange(0, 0);
 		PLAYER_REGEN = (int)(Math.floor((1/6) * PLAYER_LEVEL) + 1);
 	}
 	

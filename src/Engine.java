@@ -276,12 +276,15 @@ public class Engine {
 			if(entity instanceof PlayerCharacter)
 				continue;
 			if(entity instanceof LivingEntity) {
-				int damage = player.getRandomAttackDamage();
-				damage = ((LivingEntity)entity).receiveDamage(damage);
-				attackRecord.getEventType().setEventValue(damage);
+				//int damage = player.getRandomAttackDamage();
+				//damage = ((LivingEntity)entity).receiveDamage(damage);
+				//attackRecord.getEventType().setEventValue(damage);
+				
 				if (player.DealsStatusEffect() == true)
 					((LivingEntity)entity).GiveStatusEffect(player.getStatusEffect());
+				
 				((LivingEntity)entity).GiveStatusEffect(player.burningEffect);
+				
 				if (((LivingEntity)entity).getCurrentHealth() <= 0) {
 					GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
 					eventQueue.add(deathRecord);
@@ -419,6 +422,15 @@ public class Engine {
 		{
 			LivingEntity entity = livingEntities.get(i);
 			entity.UpdateStatus();
+			
+			if (((LivingEntity)entity).getCurrentHealth() <= 0) {
+				Tile targetTile = getTileAt(entity.getPosition());
+				GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
+				eventQueue.add(deathRecord);
+				player.GiveExperience();
+				targetTile.removeOccupant(entity);
+				dungeon.getCurrentFloor().getLivingEntities().remove(entity);
+			}
 			Position source = entity.getPosition();
 			Position target = player.getPosition();
 			Position nextStep = dungeon.getCurrentFloor().getPath(source, target);
