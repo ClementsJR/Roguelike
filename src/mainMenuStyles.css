@@ -1,0 +1,24 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.mmButton {
+	-fx-min-width: 300px;
+	-fx-min-height: 50px;
+	
+	-fx-background-color: #111;
+}
+
+.mmButton:hover {
+	-fx-background-color: #336;
+}
+
+#mmBorderPane {
+	-fx-background-image: url("/assets/img/Underdark_Entrance_Cropped.jpg");
+	/*TODO: Maybe get background art we're actually allowed to use.*/
+}
+
+#mmTitleLabel {
+}
+
+#mmVBox {
+	/* -fx-background-color: rgba(250, 250, 250, 0.25); */
+}
