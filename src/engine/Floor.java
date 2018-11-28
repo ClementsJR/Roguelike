@@ -18,14 +18,16 @@ public class Floor {
 	private Position stairsUpPosition;
 	private Position stairsDownPosition;
 	private Position foodPosition;
-
+	
 	private int numRows, numCols;
 	private Tile[][] map;
 	private ArrayList<LivingEntity> livingEntities;
 	private ArrayList<Position> openPositions;
+	private int level;
 	
-	public Floor(long seed, MapGenAlgorithm algorithm, boolean makeStairsUp, boolean makeStairsDown) {
+	public Floor(long seed, MapGenAlgorithm algorithm, boolean makeStairsUp, boolean makeStairsDown, int level) {
 		this.seed = seed;
+		this.level = level;
 		rand = new Random(seed);
 		
 		this.algorithm = algorithm;
@@ -376,17 +378,33 @@ public class Floor {
 	
 	private void addEnemies() {
 		int randPos;
-		
+		int randy;
+		int skellyChance = (20 + (this.level * 2));
+		Random randall = new Random();
 		for(int i = 0; i < 10; i++) {
 			randPos = rand.nextInt(openPositions.size());
 			
-			Skeleton skelly = new Skeleton();
-			Position spawnPosition = openPositions.remove(randPos);
-			skelly.setPosition(spawnPosition);
-			
-			livingEntities.add(skelly);
-			skelly.setCurrentBehavior(BehaviorState.IDLE);
-			map[spawnPosition.getRow()][spawnPosition.getCol()].addOccupant(skelly);
+			randy = randall.nextInt(100) + 1;
+			if (randy <= skellyChance)
+			{
+				Skeleton skelly = new Skeleton();
+				Position spawnPosition = openPositions.remove(randPos);
+				skelly.setPosition(spawnPosition);
+				
+				livingEntities.add(skelly);
+				skelly.setCurrentBehavior(BehaviorState.IDLE);
+				map[spawnPosition.getRow()][spawnPosition.getCol()].addOccupant(skelly);
+			}
+			else
+			{
+				Slime slimey = new Slime();
+				Position spawnPosition = openPositions.remove(randPos);
+				slimey.setPosition(spawnPosition);
+				
+				livingEntities.add(slimey);
+				slimey.setCurrentBehavior(BehaviorState.IDLE);
+				map[spawnPosition.getRow()][spawnPosition.getCol()].addOccupant(slimey);
+			}
 		}
 	}
 	

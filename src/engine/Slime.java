@@ -1,7 +1,7 @@
 package engine;
 
 public class Slime extends LivingEntity {
-	public static final String SPRITE_URL = "/assets/img/slime.gif";
+	public static final String SPRITE_URL = "/assets/img/spider1.png";
 	
 	public static int currentLevel = PlayerCharacter.PLAYER_LEVEL;
 	private static final int INITIAL_HEALTH = (int)(15 + (2 * currentLevel) + Math.floor((1/6) * currentLevel));

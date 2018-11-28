@@ -1,7 +1,7 @@
 package engine;
 
 public class Armor extends Entity {
-	private ArmorType type;
+	public ArmorType type;
 	private static final String STARTING_URL="/assets/img/armor_a_1.png";
 	private static final String B1_URL="/assets/img/armor_b_1.png";
 	private static final String B2_URL="/assets/img.armor_b_2.png";

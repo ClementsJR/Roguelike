@@ -167,7 +167,7 @@ public class Engine {
 		for (Entity entity : target.getOccupants()) {
 			if (entity instanceof Armor) {
 				target.removeOccupant(entity);
-				player.GiveArmor((Armor)entity);
+				player.GiveArmor(((Armor)entity).type);
 				break;
 			}
 		}

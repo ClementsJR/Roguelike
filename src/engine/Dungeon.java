@@ -35,9 +35,10 @@ public class Dungeon {
 		
 		boolean makeStairsUp = false;
 		boolean makeStairsDown = true;
-		generateNewFloor(seed, Floor.MapGenAlgorithm.BSP, makeStairsUp, makeStairsDown);
 		
 		currentFloorIndex = 0;
+		
+		generateNewFloor(seed, Floor.MapGenAlgorithm.BSP, makeStairsUp, makeStairsDown);
 		
 		b1Spawn=rand.nextInt(5);
 		b2Spawn=rand.nextInt(5)+5;
@@ -59,7 +60,7 @@ public class Dungeon {
 	}
 	
 	private void generateNewFloor(long seed, Floor.MapGenAlgorithm algorithm, boolean makeStairsUp, boolean makeStairsDown) {
-		Floor newFloor = new Floor(seed, algorithm, makeStairsUp, makeStairsDown);
+		Floor newFloor = new Floor(seed, algorithm, makeStairsUp, makeStairsDown, currentFloorIndex);
 		floors.add(newFloor);
 	}
 	
