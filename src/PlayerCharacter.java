@@ -99,8 +99,8 @@ public abstract class PlayerCharacter extends LivingEntity{
 		double chanceToHit = 0.15;
 		Random rand = new Random();
 		double randNum = rand.nextDouble();
-		double addedChance = currentHealth / maxHealth;
-		if (addedChance < 1)
+		double addedChance = 1 - (currentHealth / maxHealth);
+		if (addedChance <= 0.85)
 			chanceToHit += addedChance;
 		
 		if(equipedArmorType == ArmorType.C3) {

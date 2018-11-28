@@ -12,7 +12,7 @@ public class Engine {
 	public Engine() {
 		eventQueue = new LinkedList<GameEvent>();
 		dungeon = new Dungeon();
-		player = new Warrior();
+		player = new Mage();
 		
 		player.setPosition(dungeon.getCurrentFloor().getStairsUpPosition());
 		movePlayerTo(player.getPosition());
@@ -46,13 +46,78 @@ public class Engine {
 	}
 	
 	public void tileSelected(Position clickedPosition) {
+		if(player instanceof Warrior)
+			tileSelectedWarrior(clickedPosition);
+		
+		if(player instanceof Mage)
+			tileSelectedMage(clickedPosition);
+		
+		if(player instanceof Ranger)
+			tileSelectedRanger(clickedPosition);
+	}
+	
+	public void tileSelectedMage(Position clickedPosition) {
 		if(isAdjacentMove(clickedPosition)) {
 			Tile target = getTileAt(clickedPosition);
 			
 			if(isOpenTile(target) && !isStairTile(target) && !isFoodTile(target)) {
 				movePlayerTo(clickedPosition);
 			} else if(hasLivingEntity(target)) {
-				playerAttacks(clickedPosition);
+				mageAttacks(clickedPosition);
+			} else if(isStairTile(target)) {
+				movePlayerTo(clickedPosition);
+				changeFloor(target);
+			} else if(isFoodTile(target)) {
+				pickUpFood(target);
+				movePlayerTo(clickedPosition);
+			} else if(isArmorTile(target)) {
+				movePlayerTo(clickedPosition);
+				pickUpArmor(target);
+			} else {
+				return;
+			}
+			player.UpdateStatus();
+			takeEnemyTurns();
+		}
+		else
+			mageAttacks(clickedPosition);
+	}
+	
+	public void tileSelectedRanger(Position clickedPosition) {
+		if(isAdjacentMove(clickedPosition)) {
+			Tile target = getTileAt(clickedPosition);
+			
+			if(isOpenTile(target) && !isStairTile(target) && !isFoodTile(target)) {
+				movePlayerTo(clickedPosition);
+			} else if(hasLivingEntity(target)) {
+				rangerAttacks(clickedPosition);
+			} else if(isStairTile(target)) {
+				movePlayerTo(clickedPosition);
+				changeFloor(target);
+			} else if(isFoodTile(target)) {
+				pickUpFood(target);
+				movePlayerTo(clickedPosition);
+			} else if(isArmorTile(target)) {
+				movePlayerTo(clickedPosition);
+				pickUpArmor(target);
+			} else {
+				return;
+			}
+			player.UpdateStatus();
+			takeEnemyTurns();
+		}
+		else
+			rangerAttacks(clickedPosition);
+	}
+	
+	public void tileSelectedWarrior(Position clickedPosition) {
+		if(isAdjacentMove(clickedPosition)) {
+			Tile target = getTileAt(clickedPosition);
+			
+			if(isOpenTile(target) && !isStairTile(target) && !isFoodTile(target)) {
+				movePlayerTo(clickedPosition);
+			} else if(hasLivingEntity(target)) {
+				warriorAttacks(clickedPosition);
 			} else if(isStairTile(target)) {
 				movePlayerTo(clickedPosition);
 				changeFloor(target);
@@ -170,7 +235,7 @@ public class Engine {
 		}
 	}
 	
-	private void playerAttacks(Position target) {
+	private void warriorAttacks(Position target) {
 		GameEvent attackRecord = new GameEvent(player, player.getPosition(), EventType.ATTACKS, target);
 		eventQueue.add(attackRecord);
 		
@@ -184,8 +249,6 @@ public class Engine {
 				attackRecord.getEventType().setEventValue(damage);
 				if (player.DealsStatusEffect() == true)
 					((LivingEntity)entity).GiveStatusEffect(player.getStatusEffect());
-				if (player instanceof Mage)
-					((LivingEntity)entity).GiveStatusEffect(player.burningEffect);
 				if (((LivingEntity)entity).getCurrentHealth() <= 0) {
 					GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
 					eventQueue.add(deathRecord);
@@ -197,6 +260,84 @@ public class Engine {
 				break;
 			}
 		}
+	}
+	
+	private void mageAttacks(Position target) {
+		for(int rowOffset = -1; rowOffset <= 1; rowOffset++) {
+			for(int colOffset = -1; colOffset <= 1; colOffset++) {
+				
+		GameEvent attackRecord = new GameEvent(player, player.getPosition(), EventType.ATTACKS, target);
+		eventQueue.add(attackRecord);
+		
+		Tile targetTile = getTileAt(new Position(target.getRow() + rowOffset, target.getCol() + colOffset));
+		
+		for(int i = 0; i < targetTile.getOccupants().size(); i++) {
+			Entity entity = targetTile.getOccupants().get(i);
+			if(entity instanceof PlayerCharacter)
+				continue;
+			if(entity instanceof LivingEntity) {
+				int damage = player.getRandomAttackDamage();
+				damage = ((LivingEntity)entity).receiveDamage(damage);
+				attackRecord.getEventType().setEventValue(damage);
+				if (player.DealsStatusEffect() == true)
+					((LivingEntity)entity).GiveStatusEffect(player.getStatusEffect());
+				((LivingEntity)entity).GiveStatusEffect(player.burningEffect);
+				if (((LivingEntity)entity).getCurrentHealth() <= 0) {
+					GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
+					eventQueue.add(deathRecord);
+					player.GiveExperience();
+					targetTile.removeOccupant(entity);
+					dungeon.getCurrentFloor().getLivingEntities().remove(entity);
+				}
+				
+				break;
+			}
+		}
+			}
+		}
+	}
+	
+	private void rangerAttacks(Position target) {
+		Tile targetTile = getTileAt(target);
+		for (int i = 0; i < 2; i++) {
+			int rowOffset = target.getRow() - player.getPosition().getRow();
+			int colOffset = target.getCol() - player.getPosition().getCol();
+			
+			GameEvent attackRecord = new GameEvent(player, player.getPosition(), EventType.ATTACKS, target);
+			eventQueue.add(attackRecord);
+			
+			for(int x = 0; x < targetTile.getOccupants().size(); x++) {
+				Entity entity = targetTile.getOccupants().get(x);
+				
+				if(entity instanceof LivingEntity) {
+					int damage = player.getRandomAttackDamage();
+					damage = ((LivingEntity)entity).receiveDamage(damage);
+					attackRecord.getEventType().setEventValue(damage);
+					if (player.DealsStatusEffect() == true)
+						((LivingEntity)entity).GiveStatusEffect(player.getStatusEffect());
+					if (((LivingEntity)entity).getCurrentHealth() <= 0) {
+						GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
+						eventQueue.add(deathRecord);
+						player.GiveExperience();
+						targetTile.removeOccupant(entity);
+						dungeon.getCurrentFloor().getLivingEntities().remove(entity);
+					}
+					
+					break;
+				}
+			}
+			if (rowOffset < 0)
+				targetTile = getTileAt(new Position(target.getRow() - 1, target.getCol()));
+			
+			if (rowOffset > 0)
+				targetTile = getTileAt(new Position(target.getRow() + 1, target.getCol()));
+			
+			if (colOffset < 0)
+				targetTile = getTileAt(new Position(target.getRow(), target.getCol() - 1));
+			
+			if (colOffset > 0)
+				targetTile = getTileAt(new Position(target.getRow(), target.getCol() + 1));
+		}	
 	}
 	
 	private void changeFloor(Tile stairTile) {
