@@ -11,16 +11,16 @@
    <children>
       <Pane fx:id="gameWorld">
          <children>
-            <Pane fx:id="floorPane" prefHeight="200.0" prefWidth="200.0" />
-            <Pane fx:id="entityPane" prefHeight="200.0" prefWidth="200.0" />
-            <Pane fx:id="fogOfWarPane" prefHeight="200.0" prefWidth="200.0" />
+            <Pane fx:id="floorPane" prefHeight="576.0" prefWidth="1024.0" />
+            <Pane fx:id="entityPane" prefHeight="576.0" prefWidth="1024.0" visible="true" />
+            <Pane fx:id="fogOfWarPane" prefHeight="0.0" prefWidth="0.0" visible="true" />
          </children>
       </Pane>
       <Group>
          <children>
             <ImageView fx:id="loadingAnimation" pickOnBounds="false" preserveRatio="true">
                <image>
-                  <Image url="@/assets/img/Book.gif" />
+                  <Image url="@assets/img/Book.gif" />
                </image>
             </ImageView>
          </children>
@@ -32,7 +32,7 @@
                <children>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@/assets/img/ui_bar.png" />
+                        <Image url="@assets/img/ui_bar.png" />
                      </image>
                   </ImageView>
                   <Canvas fx:id="healthBar" height="18.0" layoutX="7.0" layoutY="7.0" width="386.0" />
@@ -42,7 +42,7 @@
                <children>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@/assets/img/ui_bar.png" />
+                        <Image url="@assets/img/ui_bar.png" />
                      </image>
                   </ImageView>
                   <Canvas height="18.0" layoutX="7.0" layoutY="7.0" width="386.0" fx:id="xpBar" />
@@ -52,7 +52,7 @@
                <children>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@/assets/img/ui_bar.png" />
+                        <Image url="@assets/img/ui_bar.png" />
                      </image>
                   </ImageView>
                   <Canvas fx:id="hungerBar" height="18.0" layoutX="7.0" layoutY="7.0" width="386.0" />
@@ -64,12 +64,12 @@
                      <children>
                         <ImageView pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@/assets/img/ui_box.png" />
+                              <Image url="@assets/img/ui_box.png" />
                            </image>
                         </ImageView>
                         <ImageView pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@/assets/img/ui_box.png" />
+                              <Image url="@assets/img/ui_box.png" />
                            </image>
                         </ImageView>
                      </children></HBox>
@@ -79,7 +79,7 @@
                <children>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@/assets/img/ui_box.png" />
+                        <Image url="@assets/img/ui_box.png" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="armorIcon" pickOnBounds="true" preserveRatio="true" />
@@ -88,7 +88,7 @@
                <children>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@/assets/img/ui_box.png" />
+                        <Image url="@assets/img/ui_box.png" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="foodIcon" pickOnBounds="true" preserveRatio="true" />

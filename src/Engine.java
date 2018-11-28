@@ -46,7 +46,9 @@ public class Engine {
 	}
 	
 	public void tileSelected(Position clickedPosition) {
+		System.out.println("hello");
 		if(isAdjacentMove(clickedPosition)) {
+			System.out.println("hello 2");
 			Tile target = getTileAt(clickedPosition);
 			
 			if(isOpenTile(target) && !isStairTile(target) && !isFoodTile(target)) {

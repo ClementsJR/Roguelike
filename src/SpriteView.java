@@ -1,8 +1,5 @@
 
 
-import java.util.ArrayList;
-
-import engine.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -10,9 +7,12 @@ import javafx.scene.layout.Pane;
 
 public class SpriteView extends Pane {
 	private ImageView view;
+	private GameScreenController controller;
 	private Entity entity;
 	
-	public SpriteView(Entity entity) {
+	public SpriteView(GameScreenController controller, Entity entity) {
+		this.setOnMouseClicked((event) -> handleClick(event));
+		this.controller = controller;
 		this.entity = entity;
 		
 		Image sprite = entity.getSprite();
@@ -23,6 +23,11 @@ public class SpriteView extends Pane {
 	
 	public boolean isEntity(Entity otherEntity) {
 		return (entity == otherEntity);
+	}
+	
+	private void handleClick(MouseEvent event) {
+		controller.tileClicked(this);
+		event.consume();
 	}
 	
 	/*public static final int STANDARD_SPRITE_DIMENSION = 32;
@@ -60,11 +65,6 @@ public class SpriteView extends Pane {
 		
 		setupImageViews();
 		drawImageViews();
-	}
-	
-	private void handleClick(MouseEvent event) {
-		//controller.tileClicked(this);
-		event.consume();
 	}
 	
 	private void setupImageViews() {
