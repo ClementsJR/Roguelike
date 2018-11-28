@@ -127,7 +127,6 @@ public abstract class LivingEntity extends Entity {
 	public enum StatusEffect {
 		POISONED, PARALYZED, BURNED {{
 			damage = 3;
-			duration = 3;
 		}};
 		int duration, damage;
 	}
