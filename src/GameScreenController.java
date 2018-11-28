@@ -43,6 +43,7 @@ public class GameScreenController {
 	
 	private static final String NOT_SEEN_OVERLAY = "/assets/img/not_seen_overlay.png";
 	private static final String WAS_SEEN_OVERLAY = "/assets/img/was_seen_overlay.png";
+	private static final String NO_FOOD_OVERLAY = "/assets/img/no_food_overlay.png";
 	
 	@FXML
 	Pane backgroundPane;
@@ -79,6 +80,9 @@ public class GameScreenController {
 	
 	@FXML
 	ImageView armorIcon;
+	
+	@FXML
+	HBox armorList;
 	
 	@FXML
 	ImageView foodIcon;
@@ -307,7 +311,12 @@ public class GameScreenController {
 	}
 	
 	private void updateArmorIcon() {
+		PlayerCharacter player = game.getPlayer();
 		
+		ArmorType armorType = player.equippedArmorType;
+		Armor currentArmor = new Armor(armorType);
+		
+		armorIcon.setImage(currentArmor.getSprite());
 	}
 	
 	private void updateFoodIcon() {
@@ -315,7 +324,7 @@ public class GameScreenController {
 			Food f = game.getPlayer().playerFood;
 			foodIcon.setImage(f.getSprite());
 		} else {
-			foodIcon.setImage(new Image(WAS_SEEN_OVERLAY));
+			foodIcon.setImage(new Image(NO_FOOD_OVERLAY));
 		}
 	}
 	
@@ -555,7 +564,26 @@ public class GameScreenController {
 	
 	@FXML
 	public void armorIconHover() {
+		ArrayList<ArmorType> inventory = game.getPlayer().armorList;
+		int offset = inventory.size() * 40;
 		
+		armorList.setTranslateX(-offset);
+		
+		for(ArmorType t : inventory) {
+			Armor a = new Armor(t);
+			ImageView v = new ImageView(a.getSprite());
+			v.setOnMouseClicked((event) -> game.getPlayer().EquipArmor(t));
+			armorList.getChildren().add(v);
+		}
+		
+		armorList.setVisible(true);
+	}
+	
+	@FXML
+	public void armorIconUnhover() {
+		armorList.setVisible(false);
+		
+		armorList.getChildren().clear();
 	}
 	
 	@FXML

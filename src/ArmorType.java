@@ -41,6 +41,7 @@ public enum ArmorType {
 	
 	String displayName;
 	int armorValue;
+	
 	public String getArmorName() {
 		return displayName;
 	}

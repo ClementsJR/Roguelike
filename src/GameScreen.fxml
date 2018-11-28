@@ -75,7 +75,7 @@
                      </children></HBox>
                </children>
             </Pane>
-            <Pane layoutX="976.0" layoutY="16.0">
+            <Pane layoutX="976.0" layoutY="16.0" onMouseEntered="#armorIconHover" onMouseExited="#armorIconUnhover">
                <children>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -83,6 +83,7 @@
                      </image>
                   </ImageView>
                   <ImageView fx:id="armorIcon" pickOnBounds="true" preserveRatio="true" />
+                  <HBox fx:id="armorList" visible="false" />
                </children></Pane>
             <Pane layoutX="976.0" layoutY="64.0" onMouseClicked="#foodIconClick">
                <children>

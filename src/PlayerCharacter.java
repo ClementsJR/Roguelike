@@ -11,9 +11,8 @@ public abstract class PlayerCharacter extends LivingEntity{
 	public boolean hasFood = false;
 	public int goalXP = (int)Math.pow(2, (3 + PLAYER_LEVEL));
 	public Food playerFood;
-	private ArrayList <ArmorType> armorList;
-	private int armorSelect = 0;
-	private ArmorType equipedArmorType;
+	public ArrayList <ArmorType> armorList;
+	public ArmorType equippedArmorType;
 	public double hungerLevel;
 	private StatusEffect dealtStatusEffect;
 
@@ -21,6 +20,8 @@ public abstract class PlayerCharacter extends LivingEntity{
 		super(maxHealth, initAttackRange, defense);
 		setIsEnemy(false);
 		armorList = new ArrayList <ArmorType>();
+		armorList.add(ArmorType.STARTING);
+		equippedArmorType = armorList.get(0);
 		hungerLevel = 0.0;
 	}
 	
@@ -39,10 +40,10 @@ public abstract class PlayerCharacter extends LivingEntity{
 		hasFood = true;
 	}
 	
-	public void EquipArmor() { equipedArmorType = armorList.get(armorSelect); }
+	public void EquipArmor(ArmorType t) { equippedArmorType = t; }
 	
 	public int receiveDamage(int damage) {
-		if(equipedArmorType == ArmorType.C2)
+		if(equippedArmorType == ArmorType.C2)
 			damage += damage * 0.2;
 		damage -= defense;
 		
@@ -57,9 +58,9 @@ public abstract class PlayerCharacter extends LivingEntity{
 	public int getRandomAttackDamage() {
 		int dmg = damageRange.getRandomNum();
 		
-		if(equipedArmorType == ArmorType.C2)
+		if(equippedArmorType == ArmorType.C2)
 			dmg += dmg * 0.4;
-		if(equipedArmorType == ArmorType.C3)
+		if(equippedArmorType == ArmorType.C3)
 			dmg -= 3;
 		
 		return dmg;
@@ -82,7 +83,7 @@ public abstract class PlayerCharacter extends LivingEntity{
 		Random rand = new Random();
 		double randNum = rand.nextDouble();
 		
-		if(equipedArmorType == ArmorType.C1) {
+		if(equippedArmorType == ArmorType.C1) {
 			if(randNum <= 0.15)
 				return;
 			
@@ -103,7 +104,7 @@ public abstract class PlayerCharacter extends LivingEntity{
 		if (addedChance <= 0.85)
 			chanceToHit += addedChance;
 		
-		if(equipedArmorType == ArmorType.C3) {
+		if(equippedArmorType == ArmorType.C3) {
 			if (randNum <= chanceToHit)
 				return true; 
 		}

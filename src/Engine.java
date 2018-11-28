@@ -309,45 +309,40 @@ public class Engine {
 	
 	private void rangerAttacks(Position target) {
 		Tile targetTile = getTileAt(target);
-		for (int i = 0; i < 2; i++) {
-			int rowOffset = target.getRow() - player.getPosition().getRow();
-			int colOffset = target.getCol() - player.getPosition().getCol();
+		
+		GameEvent attackRecord = new GameEvent(player, player.getPosition(), EventType.ATTACKS, target);
+		eventQueue.add(attackRecord);
+		
+		for(int x = 0; x < targetTile.getOccupants().size(); x++) {
+			Entity entity = targetTile.getOccupants().get(x);
 			
-			GameEvent attackRecord = new GameEvent(player, player.getPosition(), EventType.ATTACKS, target);
-			eventQueue.add(attackRecord);
-			
-			for(int x = 0; x < targetTile.getOccupants().size(); x++) {
-				Entity entity = targetTile.getOccupants().get(x);
-				
-				if(entity instanceof LivingEntity) {
-					int damage = player.getRandomAttackDamage();
-					damage = ((LivingEntity)entity).receiveDamage(damage);
-					attackRecord.getEventType().setEventValue(damage);
-					if (player.DealsStatusEffect() == true)
-						((LivingEntity)entity).GiveStatusEffect(player.getStatusEffect());
-					if (((LivingEntity)entity).getCurrentHealth() <= 0) {
-						GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
-						eventQueue.add(deathRecord);
-						player.GiveExperience();
-						targetTile.removeOccupant(entity);
-						dungeon.getCurrentFloor().getLivingEntities().remove(entity);
-					}
-					
-					break;
+			if(entity instanceof LivingEntity) {
+				int damage = player.getRandomAttackDamage();
+				damage = ((LivingEntity)entity).receiveDamage(damage);
+				attackRecord.getEventType().setEventValue(damage);
+				if (player.DealsStatusEffect() == true)
+					((LivingEntity)entity).GiveStatusEffect(player.getStatusEffect());
+				if (((LivingEntity)entity).getCurrentHealth() <= 0) {
+					GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
+					eventQueue.add(deathRecord);
+					player.GiveExperience();
+					targetTile.removeOccupant(entity);
+					dungeon.getCurrentFloor().getLivingEntities().remove(entity);
 				}
+				
+				break;
 			}
-			if (rowOffset < 0)
-				targetTile = getTileAt(new Position(target.getRow() - 1, target.getCol()));
-			
-			if (rowOffset > 0)
-				targetTile = getTileAt(new Position(target.getRow() + 1, target.getCol()));
-			
-			if (colOffset < 0)
-				targetTile = getTileAt(new Position(target.getRow(), target.getCol() - 1));
-			
-			if (colOffset > 0)
-				targetTile = getTileAt(new Position(target.getRow(), target.getCol() + 1));
-		}	
+		}
+		
+		int rowOffset = target.getRow() - player.getPosition().getRow();
+		if(rowOffset < 0) rowOffset = -1;
+		if(rowOffset > 0) rowOffset = 1;
+		
+		int colOffset = target.getCol() - player.getPosition().getCol();
+		if(colOffset < 0) colOffset = -1;
+		if(colOffset > 0) colOffset = 1;
+		
+		warriorAttacks(new Position(target.getRow() + rowOffset, target.getCol() + colOffset));
 	}
 	
 	private void changeFloor(Tile stairTile) {
