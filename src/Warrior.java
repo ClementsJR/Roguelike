@@ -1,5 +1,4 @@
 
-
 public class Warrior extends PlayerCharacter{
 	public static final String SPRITE_URL = "/assets/img/warrior.png";
 	
@@ -10,12 +9,14 @@ public class Warrior extends PlayerCharacter{
 	private static final int INITIAL_DEFENSE = 0;
 	private int PLAYER_REGEN = (int)(Math.floor((1/6) * PLAYER_LEVEL) + Math.floor((1/10) * PLAYER_LEVEL) + 1);
 	public int count = 0;
-
+	private HungerStage currentHungerStage;
 
 	public Warrior() {
 		super(INITIAL_HEALTH, INITIAL_ATTACK_RANGE, INITIAL_DEFENSE);
 		//setIsEnemy(false);
 		setImage(SPRITE_URL);
+		
+		currentHungerStage = HungerStage.FULL;
 	}
 	
 	public enum HungerStage {
@@ -47,7 +48,21 @@ public class Warrior extends PlayerCharacter{
 			count = 0;
 		}
 		
-		hungerLevel += 0.01;
+		hungerLevel += 0.002;
+		if (hungerLevel >= 0.0 && hungerLevel < 0.25)
+			currentHungerStage = HungerStage.FULL;
+			
+		if (hungerLevel >= 0.25 && hungerLevel < 0.5)
+			currentHungerStage = HungerStage.PECKISH;
+		
+		if (hungerLevel >= 0.5 && hungerLevel < 0.75)
+			currentHungerStage = HungerStage.HUNGRY;
+		
+		if (hungerLevel >= 0.75) {
+			currentHungerStage = HungerStage.STARVING;
+			if (currentHealth > 1)
+				currentHealth--;
+		}
 	}
 	
 }

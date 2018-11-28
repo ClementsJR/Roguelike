@@ -12,6 +12,7 @@ public class Mage extends PlayerCharacter{
 	private int PLAYER_REGEN = (int)(Math.floor((1/6) * PLAYER_LEVEL) + 1);
 	public int count = 0;
 	private StatusEffect dealtStatusEffect;
+	private HungerStage currentHungerStage;
 
 	public Mage() {
 		super(INITIAL_HEALTH, INITIAL_ATTACK_RANGE, INITIAL_DEFENSE);
@@ -19,8 +20,10 @@ public class Mage extends PlayerCharacter{
 		setImage(SPRITE_URL);
 		
 		burningEffect = StatusEffect.BURNED;
-		burningEffect.damage = 3;
+		burningEffect.damage = (int)(Math.floor((2/5) * PLAYER_LEVEL) + 3);
 		burningEffect.duration = 3;
+		
+		currentHungerStage = HungerStage.FULL;
 	}
 	
 	public enum HungerStage {
@@ -32,7 +35,6 @@ public class Mage extends PlayerCharacter{
 		goalXP = (int)Math.pow(2, (3 + PLAYER_LEVEL));
 		currentXP = 0;
 		setMaxHealth((int)((3 * PLAYER_LEVEL) + Math.floor((3/5) * PLAYER_LEVEL) + 12));
-		int attack = (int)(Math.floor((2/5) * PLAYER_LEVEL) + 3);
 		setAttackRange(0, 0);
 		PLAYER_REGEN = (int)(Math.floor((1/6) * PLAYER_LEVEL) + 1);
 	}
@@ -54,6 +56,22 @@ public class Mage extends PlayerCharacter{
 		if (count >= 5) {
 			PlayerRegen();
 			count = 0;
+		}
+		
+		hungerLevel += 0.01;
+		if (hungerLevel >= 0.0 && hungerLevel < 0.25)
+			currentHungerStage = HungerStage.FULL;
+			
+		if (hungerLevel >= 0.25 && hungerLevel < 0.5)
+			currentHungerStage = HungerStage.PECKISH;
+		
+		if (hungerLevel >= 0.5 && hungerLevel < 0.75)
+			currentHungerStage = HungerStage.HUNGRY;
+		
+		if (hungerLevel >= 0.75) {
+			currentHungerStage = HungerStage.STARVING;
+			if (currentHealth > 1)
+				currentHealth--;
 		}
 	}
 	

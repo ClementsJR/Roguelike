@@ -146,7 +146,13 @@ public abstract class LivingEntity extends Entity {
 		if (burningEffect != null && burningEffect.duration > 0) {
 			currentHealth -= burningEffect.damage;
 			burningEffect.duration--;
-			System.out.print("burnDamage");
+		}
+		if (poisonEffect != null && poisonEffect.duration > 0) {
+			currentHealth -= poisonEffect.damage;
+			poisonEffect.duration--;
+		}
+		if (paralysisEffect != null && paralysisEffect.duration > 0) {
+			paralysisEffect.duration--;
 		}
 	}	
 }
