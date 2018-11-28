@@ -3,7 +3,7 @@
 public class Ranger extends PlayerCharacter{
 	public static final String SPRITE_URL = "/assets/img/ranger4.gif";
 	
-	private static final int INITIAL_HEALTH = (int)((4 * PLAYER_LEVEL) + Math.floor((1/2) * PLAYER_LEVEL) + 15);
+	private static final int INITIAL_HEALTH = (int)((4 * PLAYER_LEVEL) + Math.floor((1/2) * PLAYER_LEVEL) + 150);
 	//private static final int INITIAL_MIN_ATTACK = (int)(Math.ceil((1/2) * PLAYER_LEVEL) + Math.floor((1/6) * PLAYER_LEVEL) + 3);
 	private static final int INITIAL_MAX_ATTACK = (int)(Math.floor((1/2) * PLAYER_LEVEL) + Math.floor((1/6) * PLAYER_LEVEL) + 3);
 	private static final Range INITIAL_ATTACK_RANGE = new Range(INITIAL_MAX_ATTACK, INITIAL_MAX_ATTACK);
@@ -16,6 +16,7 @@ public class Ranger extends PlayerCharacter{
 		super(INITIAL_HEALTH, INITIAL_ATTACK_RANGE, INITIAL_DEFENSE);
 		//setIsEnemy(false);
 		setImage(SPRITE_URL);
+		sightDistance = 4;
 	}
 	
 	public enum HungerStage {

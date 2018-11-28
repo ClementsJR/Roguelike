@@ -26,7 +26,7 @@ public class Warrior extends PlayerCharacter{
 		PLAYER_LEVEL++;
 		goalXP = (int)Math.pow(2, (3 + PLAYER_LEVEL));
 		currentXP = 0;
-		setMaxHealth((6 * PLAYER_LEVEL) + 20);
+		setMaxHealth((6 * PLAYER_LEVEL) + 200);
 		int minAttack = (int)(Math.ceil((1/2) * PLAYER_LEVEL) + Math.floor((1/6) * PLAYER_LEVEL) + 3);
 		int maxAttack = (int)(Math.floor((1/2) * PLAYER_LEVEL) + Math.floor((1/6) * PLAYER_LEVEL) + 5);
 		setAttackRange(minAttack, maxAttack);

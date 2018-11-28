@@ -13,7 +13,7 @@ public abstract class LivingEntity extends Entity {
 	protected Range damageRange;
 	protected int defense;
 
-	private int sightDistance;
+	protected int sightDistance;
 	private int[][] fogOfWarMap;
 	
 	private boolean isEnemy;

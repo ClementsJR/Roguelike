@@ -13,7 +13,7 @@
          <children>
             <Pane fx:id="floorPane" prefHeight="576.0" prefWidth="1024.0" />
             <Pane fx:id="entityPane" prefHeight="576.0" prefWidth="1024.0" visible="true" />
-            <Pane fx:id="fogOfWarPane" prefHeight="0.0" prefWidth="0.0" visible="true" />
+            <Pane fx:id="fogOfWarPane" prefHeight="0.0" prefWidth="0.0" visible="false" />
          </children>
       </Pane>
       <Group>
@@ -75,7 +75,7 @@
                      </children></HBox>
                </children>
             </Pane>
-            <Pane layoutX="976.0" layoutY="16.0">
+            <Pane layoutX="976.0" layoutY="16.0" onMouseEntered="#armorIconHover" onMouseExited="#armorIconUnhover">
                <children>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -83,6 +83,7 @@
                      </image>
                   </ImageView>
                   <ImageView fx:id="armorIcon" pickOnBounds="true" preserveRatio="true" />
+                  <HBox fx:id="armorList" visible="false" />
                </children></Pane>
             <Pane layoutX="976.0" layoutY="64.0" onMouseClicked="#foodIconClick">
                <children>
