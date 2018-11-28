@@ -92,10 +92,10 @@ public class GameScreenController {
 		startLoadingAnimation();
 	}
 	
-	public void setupGame() {
+	public void setupGame(Class playerClass) {
 		backgroundPane.getScene().setOnKeyPressed((event) -> handleKeyPress(event));
 		
-		game = new Engine();
+		game = new Engine(playerClass);
 		drawNewFloor();
 		drawPlayer();
 		updateHUD();
@@ -328,7 +328,6 @@ public class GameScreenController {
 				System.out.print("(" + row + ","  + col + ")");
 				System.out.println("(" + rowOffset + ","  + colOffset + ")");
 				System.out.println("(" + backgroundPane.getLayoutY() + ","  + backgroundPane.getLayoutX() + ")");
-				
 			}
 		}
 	}
