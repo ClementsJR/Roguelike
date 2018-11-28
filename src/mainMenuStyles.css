@@ -12,7 +12,7 @@
 }
 
 #mmBorderPane {
-	-fx-background-image: url("/assets/img/Underdark_Entrance_Cropped.jpg");
+	-fx-background-image: url("assets/img/Underdark_Entrance_Cropped.jpg");
 	/*TODO: Maybe get background art we're actually allowed to use.*/
 }
 

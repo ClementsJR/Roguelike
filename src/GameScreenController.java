@@ -1,3 +1,5 @@
+
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -116,13 +118,28 @@ public class GameScreenController {
 	}
 	
 	private void drawNewFloor() {
-		//gameWorld.setLayoutY(0);
-		//gameWorld.setLayoutX(0);
-
+		gameWorld.setLayoutY(0);
+		gameWorld.setLayoutX(0);
+		gameWorld.setTranslateY(0);
+		gameWorld.setTranslateX(0);
+		
 		centerGameMap();
 		drawFloor();
 		drawTileOccupants();
 		drawFOW();
+	}
+	
+	private void centerGameMap() {
+		printLayoutTest();
+		
+		int playerRow = game.getPlayerPosition().getRow();
+		int playerCol = game.getPlayerPosition().getCol();
+		
+		int rowOffset = (DEFAULT_WINDOW_HEIGHT / 2) - ((playerRow + 1) * STANDARD_SPRITE_DIMENSION);
+		int colOffset = (DEFAULT_WINDOW_WIDTH / 2) - ((playerCol + 1) * STANDARD_SPRITE_DIMENSION);
+		
+		gameWorld.setLayoutY(rowOffset);
+		gameWorld.setLayoutX(colOffset);
 	}
 
 	private void drawFloor() {
@@ -135,9 +152,8 @@ public class GameScreenController {
 			for(int col = 0; col < numCols; col++) {
 				Tile tile = game.getTileAt(new Position(row, col));
 				Entity entity = tile.getBaseEntity();
-				Image sprite = entity.getSprite();
 				
-				ImageView spriteView = new ImageView(sprite);
+				SpriteView spriteView = new SpriteView(this, entity);
 				
 				int yLayout = row * STANDARD_SPRITE_DIMENSION;
 				int xLayout = col * STANDARD_SPRITE_DIMENSION;
@@ -163,7 +179,7 @@ public class GameScreenController {
 						continue;
 					}
 					
-					SpriteView spriteView = new SpriteView(e);
+					SpriteView spriteView = new SpriteView(this, e);
 					
 					int yLayout = row * STANDARD_SPRITE_DIMENSION;
 					int xLayout = col * STANDARD_SPRITE_DIMENSION;
@@ -303,27 +319,6 @@ public class GameScreenController {
 		}
 	}
 	
-	private void centerGameMap() {
-		printLayoutTest();
-		
-		int playerRow = game.getPlayerPosition().getRow();
-		int playerCol = game.getPlayerPosition().getCol();
-		
-		int rowOffset = (DEFAULT_WINDOW_HEIGHT / 2) - ((playerRow + 1) * STANDARD_SPRITE_DIMENSION);
-		int colOffset = (DEFAULT_WINDOW_WIDTH / 2) - ((playerCol + 1) * STANDARD_SPRITE_DIMENSION);
-		
-		gameWorld.setLayoutY(rowOffset);
-		gameWorld.setLayoutX(colOffset);
-		
-		/*System.out.println("Player Row: " + playerRow);
-		System.out.println("Player Col: " + playerCol);
-		
-		System.out.println("rowOffset: " + rowOffset);
-		System.out.println("colOffset: " + colOffset);
-		
-		System.out.println();*/
-	}
-	
 	private void printLayoutTest() {
 		for(int row = 0; row < 1; row++) {
 			for(int col = 0; col < 1; col++) {
@@ -338,18 +333,18 @@ public class GameScreenController {
 		}
 	}
 	
- 	/*public void tileClicked(SpriteView spriteView) {
+ 	public void tileClicked(SpriteView spriteView) {
 		if(acceptInput == false) {
 			return;
 		}
 		
-		int index = mapGrid.getChildren().indexOf(spriteView);
+		int row = (int)(spriteView.getLayoutY() + spriteView.getTranslateY()) / 32;
+		int col = (int)(spriteView.getLayoutX() + spriteView.getTranslateX()) / 32;
 		
-		Position clicked = getPositionOf(index);
-		
-		game.tileSelected(clicked);
+		System.out.println("r:" + row + " c:" + col);
+		game.tileSelected(new Position(row, col));
 		updateFloor();
-	}*/
+	}
 	
 	private void handleKeyPress(KeyEvent event) {
 		if(acceptInput == false) {
@@ -484,6 +479,12 @@ public class GameScreenController {
 			}
 		}
 		
+		for(Node view : floorPane.getChildren()) {
+			if( ((SpriteView) view).isEntity(entity) ) {
+				return view;
+			}
+		}
+		
 		return null;
 	}
 
@@ -516,7 +517,6 @@ public class GameScreenController {
 		return para;
 	}
 	
-
 	private Transition makeDeathAnimation(Entity actor) {
 		Node node = getSpriteViewFor(actor);
 		
