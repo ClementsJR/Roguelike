@@ -4,7 +4,7 @@ import java.util.Random;
 public class Mage extends PlayerCharacter{
 	public static final String SPRITE_URL = "/assets/img/mage4.gif";
 	
-	private static final int INITIAL_HEALTH = (int)((3 * PLAYER_LEVEL) + Math.floor((3/5) * PLAYER_LEVEL) + 1200);
+	private static final int INITIAL_HEALTH = (int)((3 * PLAYER_LEVEL) + Math.floor((3/5) * PLAYER_LEVEL) + 12);
 	//private static final int INITIAL_MIN_ATTACK = (int)(Math.ceil((1/2) * PLAYER_LEVEL) + Math.floor((1/6) * PLAYER_LEVEL) + 3);
 	//private static final int INITIAL_MAX_ATTACK = (int)(Math.floor((2/5) * PLAYER_LEVEL) + 3);
 	private static final Range INITIAL_ATTACK_RANGE = new Range(0, 0);
