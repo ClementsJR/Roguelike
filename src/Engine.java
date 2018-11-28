@@ -9,10 +9,17 @@ public class Engine {
 	private Dungeon dungeon;
 	private PlayerCharacter player;
 	
-	public Engine() {
+	public Engine(Class playerClass) {
 		eventQueue = new LinkedList<GameEvent>();
 		dungeon = new Dungeon();
-		player = new Mage();
+		
+		if(playerClass == Warrior.class) {
+			player = new Warrior();
+		} else if(playerClass == Ranger.class) {
+			player = new Ranger();
+		} else {
+			player = new Mage();
+		}
 		
 		player.setPosition(dungeon.getCurrentFloor().getStairsUpPosition());
 		movePlayerTo(player.getPosition());

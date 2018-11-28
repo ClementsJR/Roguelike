@@ -49,7 +49,7 @@ public class MainMenuController {
 	public void newGame(MouseEvent event) {
         try {
         	FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("GameScreen.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("ClassSelectScreen.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
             
             Stage stage = new Stage();
@@ -59,9 +59,6 @@ public class MainMenuController {
             stage.show();
             
         	((Node)(event.getSource())).getScene().getWindow().hide();
-
-        	//((GameScreenController) fxmlLoader.getController()).setupGame();
-        	Platform.runLater(() -> ((GameScreenController) fxmlLoader.getController()).setupGame());
         }
         catch (IOException e) {
             e.printStackTrace();
