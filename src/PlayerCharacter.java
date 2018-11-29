@@ -13,9 +13,12 @@ public abstract class PlayerCharacter extends LivingEntity{
 	public ArrayList <ArmorType> armorList;
 	public ArmorType equippedArmorType;
 	public double hungerLevel;
-
-	public PlayerCharacter(int maxHealth, Range initAttackRange, int defense) {
+	public int playerRegen;
+	
+	public PlayerCharacter(int maxHealth, Range initAttackRange, int defense, int regen) {
 		super(maxHealth, initAttackRange, defense);
+		playerRegen = regen;
+		
 		setIsEnemy(false);
 		armorList = new ArrayList <ArmorType>();
 		armorList.add(ArmorType.STARTING);
@@ -101,9 +104,7 @@ public abstract class PlayerCharacter extends LivingEntity{
 		int duration = rand.nextInt(3) + 3;
 		int damage = 1;
 		
-		StatusEffect poison = StatusEffect.POISONED;
-		poison.duration = duration;
-		poison.damage = damage;
+		StatusEffect poison = new StatusEffect(StatusEffectType.POISONED, duration, damage);
 		
 		return poison;
 	}

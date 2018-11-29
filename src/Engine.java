@@ -61,6 +61,9 @@ public class Engine {
 		
 		if(player instanceof Ranger)
 			tileSelectedRanger(clickedPosition);
+		
+		player.UpdateStatus();
+		takeEnemyTurns();
 	}
 	
 	public void tileSelectedMage(Position clickedPosition) {
@@ -83,8 +86,6 @@ public class Engine {
 			} else {
 				return;
 			}
-			player.UpdateStatus();
-			takeEnemyTurns();
 		}
 		else
 			mageAttacks(clickedPosition);
@@ -110,8 +111,6 @@ public class Engine {
 			} else {
 				return;
 			}
-			player.UpdateStatus();
-			takeEnemyTurns();
 		} else if(hasLivingEntity(target)) {
 			rangerAttacks(clickedPosition);
 		}
@@ -137,8 +136,6 @@ public class Engine {
 			} else {
 				return;
 			}
-			player.UpdateStatus();
-			takeEnemyTurns();
 		}
 	}
 	
@@ -288,7 +285,7 @@ public class Engine {
 				//eventQueue.add(attackRecord);
 				Position p = new Position(target.getRow() + rowOffset, target.getCol() + colOffset);
 				
-				GameEvent fireRecord = new GameEvent(player, p, EventType.FIRE_BOMBED);
+				GameEvent fireRecord = new GameEvent(player, p, EventType.FIRE_BOMBED, p);
 				eventQueue.add(fireRecord);
 				
 				Tile targetTile = getTileAt(p);

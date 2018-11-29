@@ -7,20 +7,17 @@ public class Mage extends PlayerCharacter{
 	private static final int INITIAL_HEALTH = (int)((3 * 0) + Math.floor((3/5) * 0) + 12);
 	private static final Range INITIAL_ATTACK_RANGE = new Range(0, 0);
 	private static final int INITIAL_DEFENSE = 0;
+	private static final int INITIAL_REGEN = (int)(Math.floor((1/6) * 0) + 1);
+	
 	private HungerStage currentHungerStage;
-	private int PLAYER_REGEN = (int)(Math.floor((1/6) * playerLevel) + 1);
 	public int turnCounter = 0;
 
 	public Mage() {
-		super(INITIAL_HEALTH, INITIAL_ATTACK_RANGE, INITIAL_DEFENSE);
+		super(INITIAL_HEALTH, INITIAL_ATTACK_RANGE, INITIAL_DEFENSE, INITIAL_REGEN);
 		setIsEnemy(false);
 		setImage(SPRITE_URL);
 		
 		currentHungerStage = HungerStage.FULL;
-	}
-	
-	public enum HungerStage {
-		FULL, PECKISH, HUNGRY, STARVING;
 	}
 	
 	public void LevelUp() {
@@ -30,12 +27,12 @@ public class Mage extends PlayerCharacter{
 		setMaxHealth((int)((3 * playerLevel) + Math.floor((3/5) * playerLevel) + 12));
 		int attack = (int)(Math.floor((2/5) * playerLevel) + 3);
 		setAttackRange(0, 0);
-		PLAYER_REGEN = (int)(Math.floor((1/6) * playerLevel) + 1);
+		playerRegen = (int)(Math.floor((1/6) * playerLevel) + 1);
 	}
 	
 	public void PlayerRegen() {
 		if (currentHealth < maxHealth)
-			currentHealth = currentHealth + PLAYER_REGEN;
+			currentHealth = currentHealth + playerRegen;
 	}
 	
 	public boolean DealsStatusEffect() {
@@ -61,18 +58,22 @@ public class Mage extends PlayerCharacter{
 			int duration = rand.nextInt(3) + 3;
 			int damage = 1;
 			
-			StatusEffect poison = StatusEffect.POISONED;
-			poison.duration = duration;
-			poison.damage = damage;
+			if(currentHungerStage == HungerStage.FULL) {
+				damage++;
+			}
+			
+			StatusEffect poison = new StatusEffect(StatusEffectType.POISONED, duration, damage);
 			
 			return poison;
 		} else {
 			int duration = 3;
 			int damage = (int)Math.floor((2/5) * playerLevel) + 3;
 			
-			StatusEffect burning = StatusEffect.BURNED;
-			burning.duration = duration;
-			burning.damage = damage;
+			if(currentHungerStage == HungerStage.FULL) {
+				damage++;
+			}
+			
+			StatusEffect burning = new StatusEffect(StatusEffectType.BURNED, duration, damage);
 			
 			return burning;
 		}
@@ -80,12 +81,14 @@ public class Mage extends PlayerCharacter{
 	
 	public int UpdateStatus() {
 		turnCounter++;
-		if (turnCounter >= 5) {
+		
+		if (turnCounter >= 5 && (currentHungerStage != HungerStage.HUNGRY || currentHungerStage != HungerStage.STARVING)) {
 			PlayerRegen();
 			turnCounter = 0;
 		}
 		
-		hungerLevel += 0.01;
+		hungerLevel += 0.002;
+		
 		if (hungerLevel >= 0.0 && hungerLevel < 0.25)
 			currentHungerStage = HungerStage.FULL;
 			

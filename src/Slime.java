@@ -3,15 +3,21 @@
 import java.util.Random;
 
 public class Slime extends LivingEntity {
-	public static final String SPRITE_URL = "/assets/img/slime.gif";
+	public static final String PARA_SPRITE_URL = "/assets/img/Para_SL_idle.gif";
+	public static final String POI_SPRITE_URL = "/assets/img/Poi_SL_idle.gif";
 	
 	private int statusInflictChance;
-	private StatusEffect dealtStatusEffect;
+	private StatusEffectType dealtStatusEffect;
 	
-	public Slime(int level, StatusEffect dealtStatusEffect) {
+	public Slime(int level, StatusEffectType dealtStatusEffect) {
 		super(getInitialHealth(level), getInitialAttackRange(level), getInitialDefense(level));
 		setIsEnemy(true);
-		setImage(SPRITE_URL);
+		
+		if(dealtStatusEffect == StatusEffectType.PARALYZED) {
+			setImage(PARA_SPRITE_URL);
+		} else {
+			setImage(POI_SPRITE_URL);
+		}
 		
 		statusInflictChance = (int)((30 + (1 * level) + Math.floor((1/3) * level))/100);
 		this.dealtStatusEffect = dealtStatusEffect;
@@ -44,10 +50,7 @@ public class Slime extends LivingEntity {
 	public StatusEffect getStatusEffect() {
 		Random rand = new Random();
 		int statusDuration = rand.nextInt(3) + 3;
-		StatusEffect effect = dealtStatusEffect;
-		
-		effect.duration = statusDuration;
-		effect.damage = 1;
+		StatusEffect effect = new StatusEffect(dealtStatusEffect, statusDuration, 1);
 		
 		return effect;
 	}

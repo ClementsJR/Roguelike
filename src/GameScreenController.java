@@ -45,6 +45,10 @@ public class GameScreenController {
 	private static final String WAS_SEEN_OVERLAY = "/assets/img/was_seen_overlay.png";
 	private static final String NO_FOOD_OVERLAY = "/assets/img/no_food_overlay.png";
 	
+	private static final String FLAME_PARTICLE = "/assets/img/burning_particles.gif";
+	private static final String PARALYSIS_PARTICLE = "/assets/img/paralysis_icon.png";
+	private static final String POISONED_PARTICLE = "/assets/img/poison_icon.png";
+	
 	@FXML
 	Pane backgroundPane;
 	
@@ -427,6 +431,7 @@ public class GameScreenController {
 				turnAnimations.getChildren().add(transition);
 				if (actor instanceof PlayerCharacter)
 					makeGameOverScreen();
+				
 				break;
 			case PICKED_UP:
 				Node spriteView = getSpriteViewFor(actor);
@@ -434,6 +439,20 @@ public class GameScreenController {
 				
 				break;
 			case FIRE_BOMBED:
+				ImageView image = new ImageView(new Image(FLAME_PARTICLE));
+				
+				int yLayout = target.getRow() * STANDARD_SPRITE_DIMENSION;
+				int xLayout = target.getCol() * STANDARD_SPRITE_DIMENSION;
+				
+				image.setLayoutY(yLayout);
+				image.setLayoutX(xLayout);
+				
+				gameWorld.getChildren().add(image);
+				
+				transition = makeFade(image);
+				transition.setOnFinished((e) -> gameWorld.getChildren().remove(image));
+				turnAnimations.getChildren().add(transition);
+				
 				break;
 			default:
 				//do nothing yet.

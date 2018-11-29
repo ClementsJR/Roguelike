@@ -122,18 +122,11 @@ public abstract class LivingEntity extends Entity {
 		this.currentBehavior = currentBehavior;
 	}
 
-	public enum StatusEffect {
-		POISONED, PARALYZED, BURNED {{
-			damage = 3;
-		}};
-		int duration, damage;
-	}
-	
 	public void GiveStatusEffect(StatusEffect effect) {
 		
-		if(effect == StatusEffect.POISONED) { poisonEffect = effect; }
-		if(effect == StatusEffect.PARALYZED) { paralysisEffect = effect; }
-		if(effect == StatusEffect.BURNED) { burningEffect = effect; }
+		if(effect.type == StatusEffectType.POISONED) { poisonEffect = effect; }
+		if(effect.type == StatusEffectType.PARALYZED) { paralysisEffect = effect; }
+		if(effect.type == StatusEffectType.BURNED) { burningEffect = effect; }
 	}
 	
 	public enum FOWState {
