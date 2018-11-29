@@ -452,6 +452,7 @@ public class GameScreenController {
 				gameWorld.getChildren().add(image);
 				
 				transition = makeFade(image);
+				((FadeTransition) transition).setDuration(new Duration(50));
 				transition.setOnFinished((e) -> gameWorld.getChildren().remove(image));
 				turnAnimations.getChildren().add(transition);
 				
@@ -686,13 +687,31 @@ public class GameScreenController {
 			boolean isBurned = entity.burningEffect.duration > 0;
 			boolean isPoisoned = entity.poisonEffect.duration > 0;
 			
-			/*if(isBurned) {
-				ImageView view = new ImageView
+			if(isBurned) {
+				ImageView view = new ImageView(new Image(FLAME_PARTICLE));
+				gameWorld.getChildren().add(view);
+				view.setLayoutY(entity.getPosition().getRow() * 32);
+				view.setLayoutX(entity.getPosition().getRow() * 32);
+				
+				FadeTransition fade = makeFade(view);
+				fade.setDuration(new Duration(200));
+				fade.setOnFinished((event) -> gameWorld.getChildren().remove(view));
+				
+				fade.play();
 			}
 			
 			if(isPoisoned) {
+				ImageView view = new ImageView(new Image(POISONED_PARTICLE));
+				gameWorld.getChildren().add(view);
+				view.setLayoutY(entity.getPosition().getRow() * 32);
+				view.setLayoutX(entity.getPosition().getRow() * 32);
 				
-			}*/
+				FadeTransition fade = makeFade(view);
+				fade.setDuration(new Duration(200));
+				fade.setOnFinished((event) -> gameWorld.getChildren().remove(view));
+				
+				fade.play();
+			}
 		}
 	}
 }

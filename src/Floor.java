@@ -398,8 +398,7 @@ public class Floor {
 			}
 			else
 			{
-				StatusEffectType type;
-				
+				StatusEffectType type = StatusEffectType.POISONED;
 				
 				Slime slimey = new Slime(floorNumber, type);
 				Position spawnPosition = openPositions.remove(randPos);
