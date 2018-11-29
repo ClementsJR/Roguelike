@@ -20,14 +20,11 @@ public class Floor {
 	private Tile[][] map;
 	private ArrayList<LivingEntity> livingEntities;
 	private ArrayList<Position> openPositions;
-	private int level;
 	
-
 	private int floorNumber;
 	
 	public Floor(long seed, MapGenAlgorithm algorithm, boolean makeStairsUp, boolean makeStairsDown, int floorNumber) {
 		this.seed = seed;
-		this.level = level;
 		rand = new Random(seed);
 		
 		this.algorithm = algorithm;
@@ -379,7 +376,7 @@ public class Floor {
 	public void addEnemies() {
 		int randPos;
 		int randy;
-		int skellyChance = (20 + (this.level * 2));
+		int skellyChance = (20 + (floorNumber * 2));
 		Random randall = new Random();
 		for(int i = 0; i < 10; i++) {
 			randPos = rand.nextInt(openPositions.size());
@@ -398,7 +395,15 @@ public class Floor {
 			}
 			else
 			{
-				StatusEffectType type = StatusEffectType.POISONED;
+				StatusEffectType type = null;
+				int poisChance = (80 +(floorNumber *2));
+				randy = randall.nextInt(100) + 1;
+				
+				if (randy <= poisChance) {
+					type = StatusEffectType.POISONED;
+				} else {
+					type = StatusEffectType.PARALYZED;
+				}
 				
 				Slime slimey = new Slime(floorNumber, type);
 				Position spawnPosition = openPositions.remove(randPos);

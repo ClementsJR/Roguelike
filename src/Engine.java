@@ -478,6 +478,7 @@ public class Engine {
 					eventQueue.add(attackRecord);
 					
 					int damage = ((LivingEntity)entity).getRandomAttackDamage();
+					
 					if(entity instanceof Slime) {
 						if (((Slime)entity).DealsStatusEffect() == true)
 							player.GiveStatusEffect(((Slime)entity).getStatusEffect());
