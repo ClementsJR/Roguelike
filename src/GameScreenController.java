@@ -92,9 +92,11 @@ public class GameScreenController {
 	ImageView foodIcon;
 	
 	@FXML
-	HBox statusEffectDisplay;
+	ImageView paralyzedDisplay;
 	
 	@FXML
+	ImageView poisonedDisplay;
+	
 	public void initialize() {
 		acceptInput = true;
 		startLoadingAnimation();
@@ -459,6 +461,7 @@ public class GameScreenController {
 			}
 		}
 		
+		updateStatusEffects();
 		updateHUD();
 		turnAnimations.play();
 	}
@@ -652,5 +655,44 @@ public class GameScreenController {
 		game.getPlayer().EatFood();
 		updateFoodIcon();
 		updateHungerBar();
+	}
+	
+	private void updateStatusEffects() {
+		updatePlayerStatusEffects();
+		updateEnemyStatusEffects();
+	}
+	
+	private void updatePlayerStatusEffects() {
+		PlayerCharacter player = game.getPlayer();
+		
+		boolean isParalyzed = player.paralysisEffect.duration > 0;
+		boolean isPoisoned = player.poisonEffect.duration > 0;
+		
+		if(isParalyzed) {
+			paralyzedDisplay.setVisible(true);
+		} else {
+			paralyzedDisplay.setVisible(false);
+		}
+		
+		if(isPoisoned) {
+			poisonedDisplay.setVisible(true);
+		} else {
+			poisonedDisplay.setVisible(false);
+		}
+	}
+	
+	private void updateEnemyStatusEffects() {
+		for(LivingEntity entity : game.getLivingEntities()) {
+			boolean isBurned = entity.burningEffect.duration > 0;
+			boolean isPoisoned = entity.poisonEffect.duration > 0;
+			
+			/*if(isBurned) {
+				ImageView view = new ImageView
+			}
+			
+			if(isPoisoned) {
+				
+			}*/
+		}
 	}
 }

@@ -60,18 +60,36 @@
             </Pane>
             <Pane layoutX="16.0" layoutY="160.0">
                <children>
-                  <HBox fx:id="statusEffectDisplay" spacing="16.0">
+                  <HBox spacing="16.0">
                      <children>
-                        <ImageView pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@assets/img/ui_box.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@assets/img/ui_box.png" />
-                           </image>
-                        </ImageView>
+                        <Pane>
+                           <children>
+                              <ImageView pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@assets/img/ui_box.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="poisonedDisplay" pickOnBounds="true" preserveRatio="true" visible="false">
+                                 <image>
+                                    <Image url="@assets/img/poison_icon.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </Pane>
+                        <Pane>
+                           <children>
+                              <ImageView pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@assets/img/ui_box.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="paralyzedDisplay" pickOnBounds="true" preserveRatio="true" visible="false">
+                                 <image>
+                                    <Image url="@assets/img/paralysis_icon.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </Pane>
                      </children></HBox>
                </children>
             </Pane>

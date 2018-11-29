@@ -18,9 +18,9 @@ public abstract class LivingEntity extends Entity {
 	
 	private boolean isEnemy;
 
-	protected StatusEffect poisonEffect;
-	protected StatusEffect paralysisEffect;
-	protected StatusEffect burningEffect;
+	public StatusEffect poisonEffect;
+	public StatusEffect paralysisEffect;
+	public StatusEffect burningEffect;
 	protected BehaviorState currentBehavior;
 	
 	public LivingEntity() {
@@ -33,6 +33,10 @@ public abstract class LivingEntity extends Entity {
 		fogOfWarMap = new int[numRows][numCols];
 		
 		resetFOW();
+		
+		poisonEffect = new StatusEffect(StatusEffectType.POISONED, 0, 0);
+		paralysisEffect = new StatusEffect(StatusEffectType.PARALYZED, 0, 0);
+		burningEffect = new StatusEffect(StatusEffectType.BURNED, 0, 0);
 	}
 	
 	public LivingEntity(int maxHealth, Range damageRange, int defense) {
