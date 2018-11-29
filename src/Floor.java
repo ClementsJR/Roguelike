@@ -21,7 +21,9 @@ public class Floor {
 	private ArrayList<LivingEntity> livingEntities;
 	private ArrayList<Position> openPositions;
 	
-	public Floor(long seed, MapGenAlgorithm algorithm, boolean makeStairsUp, boolean makeStairsDown) {
+	private int floorNumber;
+	
+	public Floor(long seed, MapGenAlgorithm algorithm, boolean makeStairsUp, boolean makeStairsDown, int floorNumber) {
 		this.seed = seed;
 		rand = new Random(seed);
 		
@@ -29,6 +31,7 @@ public class Floor {
 		
 		this.makeStairsUp = makeStairsUp;
 		this.makeStairsDown = makeStairsDown;
+		this.floorNumber = floorNumber;
 		
 		instantiateMapBase();
 		generateMap();
@@ -38,7 +41,6 @@ public class Floor {
 		findOpenPositions();
 		
 		addStairs();
-		addEnemies();
 		addFood();
 	}
 	
@@ -371,13 +373,13 @@ public class Floor {
 		}
 	}
 	
-	private void addEnemies() {
+	public void addEnemies() {
 		int randPos;
 		
 		for(int i = 0; i < 10; i++) {
 			randPos = rand.nextInt(openPositions.size());
 			
-			Skeleton skelly = new Skeleton();
+			Skeleton skelly = new Skeleton(floorNumber);
 			Position spawnPosition = openPositions.remove(randPos);
 			skelly.setPosition(spawnPosition);
 			

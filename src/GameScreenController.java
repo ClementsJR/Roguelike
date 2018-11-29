@@ -134,8 +134,6 @@ public class GameScreenController {
 	}
 	
 	private void centerGameMap() {
-		printLayoutTest();
-		
 		int playerRow = game.getPlayerPosition().getRow();
 		int playerCol = game.getPlayerPosition().getCol();
 		
@@ -152,29 +150,37 @@ public class GameScreenController {
 		int numRows = Dungeon.DEFAULT_NUM_ROWS;
 		int numCols = Dungeon.DEFAULT_NUM_COLS;
 		
+		PlayerCharacter player = game.getPlayer();
+		
 		for(int row = 0; row < numRows; row++) {
 			for(int col = 0; col < numCols; col++) {
-				Tile tile = game.getTileAt(new Position(row, col));
-				Entity entity = tile.getBaseEntity();
-				
-				SpriteView spriteView = new SpriteView(this, entity);
+				int fow = player.getFOWAt(new Position(row, col));
 				
 				int yLayout = row * STANDARD_SPRITE_DIMENSION;
 				int xLayout = col * STANDARD_SPRITE_DIMENSION;
+
+				Tile tile = game.getTileAt(new Position(row, col));
+				Entity entity = tile.getBaseEntity();
 				
-				spriteView.setLayoutY(yLayout);
-				spriteView.setLayoutX(xLayout);
+				SpriteView tileView = new SpriteView(this, entity);
+				tileView.setLayoutY(yLayout);
+				tileView.setLayoutX(xLayout);
 				
-				floorPane.getChildren().add(spriteView);
+				floorPane.getChildren().add(tileView);
+				
+				if(fow == LivingEntity.NOT_SEEN) {
+					tileView.setVisible(false);
+				}
 			}
 		}
 	}
 	
 	private void drawTileOccupants() {
-		entityPane.getChildren().clear();
-		
 		for(int row = 0; row < Dungeon.DEFAULT_NUM_ROWS; row++) {
 			for(int col = 0; col < Dungeon.DEFAULT_NUM_COLS; col++) {
+				
+				int fow = game.getPlayer().getFOWAt(new Position(row, col));
+				
 				Tile t = game.getTileAt(new Position(row, col));
 				ArrayList<Entity> occupants = t.getOccupants();
 				
@@ -191,15 +197,17 @@ public class GameScreenController {
 					spriteView.setLayoutY(yLayout);
 					spriteView.setLayoutX(xLayout);
 					
-					entityPane.getChildren().add(spriteView);
+					floorPane.getChildren().add(spriteView);
+					
+					if(fow == LivingEntity.NOT_SEEN || fow == LivingEntity.WAS_SEEN) {
+						spriteView.setVisible(false);
+					}
 				}
 			}
 		}
 	}
 	
 	private void drawFOW() {
-		fogOfWarPane.getChildren().clear();
-		
 		PlayerCharacter player = game.getPlayer();
 
 		int numRows = Dungeon.DEFAULT_NUM_ROWS;
@@ -209,19 +217,18 @@ public class GameScreenController {
 			for(int col = 0; col < numCols; col++) {
 				int fow = player.getFOWAt(new Position(row, col));
 				
-				if(fow == LivingEntity.NOT_SEEN || fow == LivingEntity.WAS_SEEN) {
-					String overlayPath = (fow == LivingEntity.NOT_SEEN) ? NOT_SEEN_OVERLAY : WAS_SEEN_OVERLAY;
-					
-					Image overlay = new Image(overlayPath);
-					ImageView overlayView = new ImageView(overlay);
-					
-					int yLayout = row * STANDARD_SPRITE_DIMENSION;
-					int xLayout = col * STANDARD_SPRITE_DIMENSION;
-					
-					overlayView.setLayoutY(yLayout);
-					overlayView.setLayoutX(xLayout);
-					
-					fogOfWarPane.getChildren().add(overlayView);
+				ImageView overlayView = new ImageView(new Image(WAS_SEEN_OVERLAY));
+				
+				int yLayout = row * STANDARD_SPRITE_DIMENSION;
+				int xLayout = col * STANDARD_SPRITE_DIMENSION;
+				
+				overlayView.setLayoutY(yLayout);
+				overlayView.setLayoutX(xLayout);
+				
+				floorPane.getChildren().add(overlayView);
+				
+				if(fow == LivingEntity.NOT_SEEN || fow >= 0) {
+					overlayView.setVisible(false);
 				}
 			}
 		}
@@ -250,6 +257,7 @@ public class GameScreenController {
 		updateArmorIcon();
 		updateFoodIcon();
 	}
+	
 
 	private void updateHealthBar() {
 		PlayerCharacter player = game.getPlayer();
@@ -328,20 +336,7 @@ public class GameScreenController {
 		}
 	}
 	
-	private void printLayoutTest() {
-		for(int row = 0; row < 1; row++) {
-			for(int col = 0; col < 1; col++) {
-				int rowOffset = (DEFAULT_WINDOW_HEIGHT / 2) - ((row + 1) * STANDARD_SPRITE_DIMENSION);
-				int colOffset = (DEFAULT_WINDOW_WIDTH / 2) - ((col + 1) * STANDARD_SPRITE_DIMENSION);
-				
-				System.out.print("(" + row + ","  + col + ")");
-				System.out.println("(" + rowOffset + ","  + colOffset + ")");
-				System.out.println("(" + backgroundPane.getLayoutY() + ","  + backgroundPane.getLayoutX() + ")");
-			}
-		}
-	}
-	
- 	public void tileClicked(SpriteView spriteView) {
+	public void tileClicked(SpriteView spriteView) {
 		if(acceptInput == false) {
 			return;
 		}
@@ -349,7 +344,6 @@ public class GameScreenController {
 		int row = (int)(spriteView.getLayoutY() + spriteView.getTranslateY()) / 32;
 		int col = (int)(spriteView.getLayoutX() + spriteView.getTranslateX()) / 32;
 		
-		System.out.println("r:" + row + " c:" + col);
 		game.tileSelected(new Position(row, col));
 		updateFloor();
 	}
@@ -434,6 +428,13 @@ public class GameScreenController {
 				if (actor instanceof PlayerCharacter)
 					makeGameOverScreen();
 				break;
+			case PICKED_UP:
+				Node spriteView = getSpriteViewFor(actor);
+				floorPane.getChildren().remove(spriteView);
+				
+				break;
+			case FIRE_BOMBED:
+				break;
 			default:
 				//do nothing yet.
 			}
@@ -474,27 +475,33 @@ public class GameScreenController {
 			return translation;
 		} else {
 			Node node = getSpriteViewFor(actor);
+			
 			TranslateTransition translation = makeTranslation(node, yOffset, xOffset);
 			translation.setDuration(new Duration(200));
+			
+			int sourceFOW = game.getPlayer().getFOWAt(source);
+			int targetFOW = game.getPlayer().getFOWAt(target);
+			
+			if(sourceFOW < 0 && targetFOW >= 0) {
+				node.setVisible(true);
+			} else if(sourceFOW >= 0 && targetFOW < 0) {
+				translation.setOnFinished((event) -> node.setVisible(false));
+			}
+			
 			return translation;
 		}
 	}
 	
 	private Node getSpriteViewFor(Entity entity)  {
-		for(Node view : entityPane.getChildren()) {
-			if( ((SpriteView) view).isEntity(entity) ) {
-				return view;
-			}
-		}
-		
 		for(Node view : floorPane.getChildren()) {
-			if( ((SpriteView) view).isEntity(entity) ) {
+			if( (view instanceof SpriteView) && ((SpriteView) view).isEntity(entity) ) {
 				return view;
 			}
 		}
 		
 		return null;
 	}
+	
 
 	private Transition makeDamageAnimation(Position target, int damage) {
 		Label dmgLabel = new Label(Integer.toString(damage));
@@ -521,6 +528,8 @@ public class GameScreenController {
 		
 		ParallelTransition para = new ParallelTransition();
 		para.getChildren().addAll(translation, fade);
+		
+		para.setOnFinished((event) -> gameWorld.getChildren().remove(dmgLabel));
 		
 		return para;
 	}
@@ -559,7 +568,30 @@ public class GameScreenController {
 	}
 	
 	private void updateFogOfWar() {
-		drawFOW();
+		for(Node node : floorPane.getChildren()) {
+			int row = (int)(node.getLayoutY() + node.getTranslateY()) / 32;
+			int col = (int)(node.getLayoutX() + node.getTranslateX()) / 32;
+			
+			int fow = game.getPlayer().getFOWAt(new Position(row, col));
+			
+			if(fow >= 0) {
+				node.setVisible(true);
+				
+				if(node instanceof ImageView) {
+					node.setVisible(false);
+				}
+			} else if(fow == LivingEntity.WAS_SEEN) {
+				if(node instanceof ImageView) {
+					node.setVisible(true);
+				} else {
+					SpriteView sprite = (SpriteView)node;
+					
+					if(sprite.getEntity() instanceof LivingEntity) {
+						node.setVisible(false);
+					}
+				}
+			}
+		}
 	}
 	
 	@FXML

@@ -12,7 +12,7 @@
       <Pane fx:id="gameWorld">
          <children>
             <Pane fx:id="floorPane" prefHeight="576.0" prefWidth="1024.0" />
-            <Pane fx:id="entityPane" prefHeight="576.0" prefWidth="1024.0" visible="true" />
+            <Pane fx:id="entityPane" prefHeight="576.0" prefWidth="1024.0" visible="false" />
             <Pane fx:id="fogOfWarPane" prefHeight="0.0" prefWidth="0.0" visible="false" />
          </children>
       </Pane>

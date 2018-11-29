@@ -5,16 +5,14 @@ import java.util.Random;
 
 public abstract class PlayerCharacter extends LivingEntity{
 	
-	public static int PLAYER_LEVEL = 0;
-	
+	public int playerLevel = 0;
 	public int currentXP;
 	public boolean hasFood = false;
-	public int goalXP = (int)Math.pow(2, (3 + PLAYER_LEVEL));
+	public int goalXP = (int)Math.pow(2, (3 + playerLevel));
 	public Food playerFood;
 	public ArrayList <ArmorType> armorList;
 	public ArmorType equippedArmorType;
 	public double hungerLevel;
-	private StatusEffect dealtStatusEffect;
 
 	public PlayerCharacter(int maxHealth, Range initAttackRange, int defense) {
 		super(maxHealth, initAttackRange, defense);
@@ -30,7 +28,7 @@ public abstract class PlayerCharacter extends LivingEntity{
 	}
 	
 	public void GiveExperience() {
-		currentXP = currentXP + (int)(Math.pow(2, PLAYER_LEVEL));
+		currentXP = currentXP + (int)(Math.pow(2, playerLevel));
 		if (currentXP >= goalXP)
 			LevelUp();
 	}
@@ -82,23 +80,6 @@ public abstract class PlayerCharacter extends LivingEntity{
 		armorList.add(newArmor);
 	}
 	
-	public void GiveStatusEffect(StatusEffect effect) {
-		Random rand = new Random();
-		double randNum = rand.nextDouble();
-		
-		if(equippedArmorType == ArmorType.C1) {
-			if(randNum <= 0.15)
-				return;
-			
-			effect.duration--;
-		}
-		
-		
-		if(effect == StatusEffect.POISONED) { poisonEffect = effect; }
-		if(effect == StatusEffect.PARALYZED) { paralysisEffect = effect; }
-		if(effect == StatusEffect.BURNED) { burningEffect = effect; }
-	}
-	
 	public boolean DealsStatusEffect() {
 		double chanceToHit = 0.15;
 		Random rand = new Random();
@@ -116,14 +97,18 @@ public abstract class PlayerCharacter extends LivingEntity{
 	
 	public StatusEffect getStatusEffect() {
 		Random rand = new Random();
-		int statusDuration = rand.nextInt(3) + 3;
-		dealtStatusEffect.duration = statusDuration;
-		return dealtStatusEffect;
+		
+		int duration = rand.nextInt(3) + 3;
+		int damage = 1;
+		
+		StatusEffect poison = StatusEffect.POISONED;
+		poison.duration = duration;
+		poison.damage = damage;
+		
+		return poison;
 	}
 	
 	public abstract void LevelUp();
 	
 	public abstract void PlayerRegen();
-	
-	public abstract void UpdateStatus();
 }
