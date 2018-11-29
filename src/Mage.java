@@ -2,7 +2,7 @@
 import java.util.Random;
 
 public class Mage extends PlayerCharacter{
-	public static final String SPRITE_URL = "/assets/img/mage4.gif";
+	public static final String SPRITE_URL = "/assets/img/mage.png";
 	
 	private static final int INITIAL_HEALTH = (int)((3 * 0) + Math.floor((3/5) * 0) + 12);
 	private static final Range INITIAL_ATTACK_RANGE = new Range(0, 0);

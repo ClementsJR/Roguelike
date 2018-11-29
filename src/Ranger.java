@@ -1,7 +1,7 @@
 
 
 public class Ranger extends PlayerCharacter{
-	public static final String SPRITE_URL = "/assets/img/ranger4.gif";
+	public static final String SPRITE_URL = "/assets/img/ranger.png";
 	
 	private static final int INITIAL_HEALTH = (int)((4 * 0) + Math.floor((1/2) * 0) + 150);
 	private static final int INITIAL_ATTACK = (int)(Math.floor((1/2) * 0) + Math.floor((1/6) * 0) + 3);
