@@ -57,4 +57,8 @@
 /LivingEntity$StatusEffect$1.class
 /ClassSelectController.class
 /ClassSelectScreen.fxml
+<<<<<<< HEAD
 /ClassSelectScreen.css
+=======
+/Warrior$HungerStage$1.class
+>>>>>>> parent of f71bdc3... hunger working
