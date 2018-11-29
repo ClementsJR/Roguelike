@@ -394,7 +394,8 @@ public class Floor {
 			}
 			else
 			{
-				Slime slimey = new Slime();
+				
+				Slime slimey = new Slime(LivingEntity.StatusEffect.POISONED);
 				Position spawnPosition = openPositions.remove(randPos);
 				slimey.setPosition(spawnPosition);
 				
