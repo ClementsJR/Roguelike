@@ -114,8 +114,6 @@ public abstract class LivingEntity extends Entity {
 		}
 	}
 	
-	public abstract void LevelUp();
-		
 	public BehaviorState getCurrentBehavior() {
 		return currentBehavior;
 	}
@@ -142,11 +140,25 @@ public abstract class LivingEntity extends Entity {
 		
 	}
 	
-	public void UpdateStatus() {
+	public int UpdateStatus() {
+		int totalDamage = 0;
+		
+		if (poisonEffect != null && poisonEffect.duration > 0) {
+			currentHealth -= poisonEffect.damage;
+			totalDamage += poisonEffect.damage;
+			poisonEffect.duration--;
+		}
+		
+		if (paralysisEffect != null && paralysisEffect.duration > 0) {
+			paralysisEffect.duration--;
+		}
+		
 		if (burningEffect != null && burningEffect.duration > 0) {
 			currentHealth -= burningEffect.damage;
+			totalDamage += burningEffect.damage;
 			burningEffect.duration--;
-			System.out.print("burnDamage");
 		}
+		
+		return totalDamage;
 	}	
 }
