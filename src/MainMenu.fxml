@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane id="mmBorderPane" prefHeight="576.0" prefWidth="1024.0" stylesheets="@mainMenuStyles.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainMenuController">
+   <center>
+      <VBox id="mmVBox" alignment="CENTER" fillWidth="false" maxWidth="400.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" stylesheets="@mainMenuStyles.css" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="newGameBtn" accessibleText="Start New Game" mnemonicParsing="false" styleClass="mmButton" stylesheets="@mainMenuStyles.css" text="New Game" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font></Button>
+         </children>
+         <effect>
+            <DropShadow color="#646464" />
+         </effect>
+      </VBox>
+   </center>
+   <top>
+      <Label id="mmTitleLabel" stylesheets="@mainMenuStyles.css" text="Roguelike" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="48.0" />
+         </font>
+         <BorderPane.margin>
+            <Insets bottom="50.0" />
+         </BorderPane.margin>
+         <effect>
+            <DropShadow color="#0000d2" height="50.0" radius="24.5" spread="0.25" width="50.0" />
+         </effect></Label>
+   </top>
+   <padding>
+      <Insets bottom="100.0" left="100.0" right="100.0" top="50.0" />
+   </padding>
+</BorderPane>
