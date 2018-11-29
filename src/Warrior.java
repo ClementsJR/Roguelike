@@ -76,7 +76,7 @@ public class Warrior extends PlayerCharacter{
 				currentHealth--;
 		}
 
-		hungerLevel += 0.01;
+		hungerLevel += 0.002;
 		
 		int totalDamage = 0;
 		
