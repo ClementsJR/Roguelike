@@ -26,6 +26,10 @@ public class SpriteView extends Pane {
 		return (entity == otherEntity);
 	}
 	
+	public Entity getEntity() {
+		return entity;
+	}
+	
 	private void handleClick(MouseEvent event) {
 		controller.tileClicked(this);
 		event.consume();

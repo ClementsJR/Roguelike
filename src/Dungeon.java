@@ -35,9 +35,9 @@ public class Dungeon {
 		boolean makeStairsUp = false;
 		boolean makeStairsDown = true;
 		
-		currentFloorIndex = 0;
+		generateNewFloor(seed, Floor.MapGenAlgorithm.BSP, makeStairsUp, makeStairsDown, 0);
 		
-		generateNewFloor(seed, Floor.MapGenAlgorithm.BSP, makeStairsUp, makeStairsDown);
+		currentFloorIndex = 0;
 		
 		b1Spawn=rand.nextInt(5);
 		b2Spawn=rand.nextInt(5)+5;
@@ -56,10 +56,12 @@ public class Dungeon {
 		if(c1Spawn == 0) {
 			floors.get(currentFloorIndex).addArmor(new Armor(ArmorType.C1));
 		}
+		
+		floors.get(currentFloorIndex).addEnemies();
 	}
 	
-	private void generateNewFloor(long seed, Floor.MapGenAlgorithm algorithm, boolean makeStairsUp, boolean makeStairsDown) {
-		Floor newFloor = new Floor(seed, algorithm, makeStairsUp, makeStairsDown, currentFloorIndex);
+	private void generateNewFloor(long seed, Floor.MapGenAlgorithm algorithm, boolean makeStairsUp, boolean makeStairsDown, int floorNumber) {
+		Floor newFloor = new Floor(seed, algorithm, makeStairsUp, makeStairsDown, floorNumber);
 		floors.add(newFloor);
 	}
 	
@@ -86,7 +88,7 @@ public class Dungeon {
 			
 			boolean makeStairsUp = true;
 			boolean makeStairsDown = (currentFloorIndex != MAX_NUM_FLOORS);
-			generateNewFloor(seed, algorithm, makeStairsUp, makeStairsDown);
+			generateNewFloor(seed, algorithm, makeStairsUp, makeStairsDown, currentFloorIndex);
 			
 			if(b1Spawn == currentFloorIndex) {
 				floors.get(currentFloorIndex).addArmor(new Armor(ArmorType.B1));
@@ -122,6 +124,7 @@ public class Dungeon {
 				floors.get(currentFloorIndex).addArmor(new Armor(ArmorType.C3));	
 			}
 			
+			floors.get(currentFloorIndex).addEnemies();
 		}
 	}
 }

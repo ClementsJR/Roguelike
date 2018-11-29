@@ -22,7 +22,10 @@ public class Floor {
 	private ArrayList<Position> openPositions;
 	private int level;
 	
-	public Floor(long seed, MapGenAlgorithm algorithm, boolean makeStairsUp, boolean makeStairsDown, int level) {
+
+	private int floorNumber;
+	
+	public Floor(long seed, MapGenAlgorithm algorithm, boolean makeStairsUp, boolean makeStairsDown, int floorNumber) {
 		this.seed = seed;
 		this.level = level;
 		rand = new Random(seed);
@@ -31,6 +34,7 @@ public class Floor {
 		
 		this.makeStairsUp = makeStairsUp;
 		this.makeStairsDown = makeStairsDown;
+		this.floorNumber = floorNumber;
 		
 		instantiateMapBase();
 		generateMap();
@@ -40,7 +44,6 @@ public class Floor {
 		findOpenPositions();
 		
 		addStairs();
-		addEnemies();
 		addFood();
 	}
 	
@@ -373,7 +376,7 @@ public class Floor {
 		}
 	}
 	
-	private void addEnemies() {
+	public void addEnemies() {
 		int randPos;
 		int randy;
 		int skellyChance = (20 + (this.level * 2));
@@ -381,10 +384,11 @@ public class Floor {
 		for(int i = 0; i < 10; i++) {
 			randPos = rand.nextInt(openPositions.size());
 			
+
 			randy = randall.nextInt(100) + 1;
 			if (randy <= skellyChance)
 			{
-				Skeleton skelly = new Skeleton();
+				Skeleton skelly = new Skeleton(floorNumber);
 				Position spawnPosition = openPositions.remove(randPos);
 				skelly.setPosition(spawnPosition);
 				
@@ -394,8 +398,10 @@ public class Floor {
 			}
 			else
 			{
+				StatusEffectType type;
 				
-				Slime slimey = new Slime(LivingEntity.StatusEffect.POISONED);
+				
+				Slime slimey = new Slime(floorNumber, type);
 				Position spawnPosition = openPositions.remove(randPos);
 				slimey.setPosition(spawnPosition);
 				

@@ -61,6 +61,9 @@ public class Engine {
 		
 		if(player instanceof Ranger)
 			tileSelectedRanger(clickedPosition);
+		
+		player.UpdateStatus();
+		takeEnemyTurns();
 	}
 	
 	public void tileSelectedMage(Position clickedPosition) {
@@ -75,25 +78,23 @@ public class Engine {
 				movePlayerTo(clickedPosition);
 				changeFloor(target);
 			} else if(isFoodTile(target)) {
-				pickUpFood(target);
 				movePlayerTo(clickedPosition);
+				pickUpFood(clickedPosition);
 			} else if(isArmorTile(target)) {
 				movePlayerTo(clickedPosition);
-				pickUpArmor(target);
+				pickUpArmor(clickedPosition);
 			} else {
 				return;
 			}
-			player.UpdateStatus();
-			takeEnemyTurns();
 		}
 		else
 			mageAttacks(clickedPosition);
 	}
 	
 	public void tileSelectedRanger(Position clickedPosition) {
+		Tile target = getTileAt(clickedPosition);
+		
 		if(isAdjacentMove(clickedPosition)) {
-			Tile target = getTileAt(clickedPosition);
-			
 			if(isOpenTile(target) && !isStairTile(target) && !isFoodTile(target)) {
 				movePlayerTo(clickedPosition);
 			} else if(hasLivingEntity(target)) {
@@ -102,19 +103,17 @@ public class Engine {
 				movePlayerTo(clickedPosition);
 				changeFloor(target);
 			} else if(isFoodTile(target)) {
-				pickUpFood(target);
 				movePlayerTo(clickedPosition);
+				pickUpFood(clickedPosition);
 			} else if(isArmorTile(target)) {
 				movePlayerTo(clickedPosition);
-				pickUpArmor(target);
+				pickUpArmor(clickedPosition);
 			} else {
 				return;
 			}
-			player.UpdateStatus();
-			takeEnemyTurns();
-		}
-		else
+		} else if(hasLivingEntity(target)) {
 			rangerAttacks(clickedPosition);
+		}
 	}
 	
 	public void tileSelectedWarrior(Position clickedPosition) {
@@ -129,16 +128,14 @@ public class Engine {
 				movePlayerTo(clickedPosition);
 				changeFloor(target);
 			} else if(isFoodTile(target)) {
-				pickUpFood(target);
 				movePlayerTo(clickedPosition);
+				pickUpFood(clickedPosition);
 			} else if(isArmorTile(target)) {
 				movePlayerTo(clickedPosition);
-				pickUpArmor(target);
+				pickUpArmor(clickedPosition);
 			} else {
 				return;
 			}
-			player.UpdateStatus();
-			takeEnemyTurns();
 		}
 	}
 	
@@ -220,23 +217,35 @@ public class Engine {
 		updatePlayerFOW();
 	}
 	
-	private void pickUpFood(Tile target) {
+	private void pickUpFood(Position targetPosition) {
+		Tile target = getTileAt(targetPosition);
+		
 		if(player.hasFood == false) {
 			for (Entity entity : target.getOccupants()) {
 				if (entity instanceof Food) {
 					target.removeOccupant(entity);
 					player.GiveFood((Food)entity);
+					
+					GameEvent pickupRecord = new GameEvent(entity, targetPosition, EventType.PICKED_UP);
+					eventQueue.add(pickupRecord);
+					
 					break;
 				}
 			}
 		}
 	}
 		
-	private void pickUpArmor(Tile target) {
+	private void pickUpArmor(Position targetPosition) {
+		Tile target = getTileAt(targetPosition);
+		
 		for (Entity entity : target.getOccupants()) {
 			if (entity instanceof Armor) {
 				target.removeOccupant(entity);
 				player.GiveArmor(((Armor)entity).type);
+				
+				GameEvent pickupRecord = new GameEvent(entity, targetPosition, EventType.PICKED_UP);
+				eventQueue.add(pickupRecord);
+				
 				break;
 			}
 		}
@@ -272,37 +281,34 @@ public class Engine {
 	private void mageAttacks(Position target) {
 		for(int rowOffset = -1; rowOffset <= 1; rowOffset++) {
 			for(int colOffset = -1; colOffset <= 1; colOffset++) {
+				//GameEvent attackRecord = new GameEvent(player, player.getPosition(), EventType.ATTACKS, target);
+				//eventQueue.add(attackRecord);
+				Position p = new Position(target.getRow() + rowOffset, target.getCol() + colOffset);
 				
-		GameEvent attackRecord = new GameEvent(player, player.getPosition(), EventType.ATTACKS, target);
-		eventQueue.add(attackRecord);
-		
-		Tile targetTile = getTileAt(new Position(target.getRow() + rowOffset, target.getCol() + colOffset));
-		
-		for(int i = 0; i < targetTile.getOccupants().size(); i++) {
-			Entity entity = targetTile.getOccupants().get(i);
-			if(entity instanceof PlayerCharacter)
-				continue;
-			if(entity instanceof LivingEntity) {
-				//int damage = player.getRandomAttackDamage();
-				//damage = ((LivingEntity)entity).receiveDamage(damage);
-				//attackRecord.getEventType().setEventValue(damage);
+				GameEvent fireRecord = new GameEvent(player, p, EventType.FIRE_BOMBED, p);
+				eventQueue.add(fireRecord);
 				
-				if (player.DealsStatusEffect() == true)
-					((LivingEntity)entity).GiveStatusEffect(player.getStatusEffect());
+				Tile targetTile = getTileAt(p);
 				
-				((LivingEntity)entity).GiveStatusEffect(player.burningEffect);
-				
-				if (((LivingEntity)entity).getCurrentHealth() <= 0) {
-					GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
-					eventQueue.add(deathRecord);
-					player.GiveExperience();
-					targetTile.removeOccupant(entity);
-					dungeon.getCurrentFloor().getLivingEntities().remove(entity);
+				for(int i = 0; i < targetTile.getOccupants().size(); i++) {
+					Entity entity = targetTile.getOccupants().get(i);
+					if(entity instanceof PlayerCharacter)
+						continue;
+					if(entity instanceof LivingEntity) {
+						if (player.DealsStatusEffect() == true)
+							((LivingEntity)entity).GiveStatusEffect(player.getStatusEffect());
+						
+						if (((LivingEntity)entity).getCurrentHealth() <= 0) {
+							GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
+							eventQueue.add(deathRecord);
+							player.GiveExperience();
+							targetTile.removeOccupant(entity);
+							dungeon.getCurrentFloor().getLivingEntities().remove(entity);
+						}
+						
+						break;
+					}
 				}
-				
-				break;
-			}
-		}
 			}
 		}
 	}
@@ -334,6 +340,7 @@ public class Engine {
 			}
 		}
 		
+		//for(int row = 1; row < )
 		int rowOffset = target.getRow() - player.getPosition().getRow();
 		if(rowOffset < 0) rowOffset = -1;
 		if(rowOffset > 0) rowOffset = 1;
@@ -342,7 +349,11 @@ public class Engine {
 		if(colOffset < 0) colOffset = -1;
 		if(colOffset > 0) colOffset = 1;
 		
-		warriorAttacks(new Position(target.getRow() + rowOffset, target.getCol() + colOffset));
+		Position nextPosition = new Position(target.getRow() + rowOffset, target.getCol() + colOffset);
+		
+		if(hasLivingEntity(getTileAt(nextPosition))) {
+			warriorAttacks(nextPosition);
+		}
 	}
 	
 	private void changeFloor(Tile stairTile) {
@@ -423,16 +434,26 @@ public class Engine {
 		for(int i = 0; i < livingEntities.size(); i++)
 		{
 			LivingEntity entity = livingEntities.get(i);
-			entity.UpdateStatus();
+			int totalDamage = entity.UpdateStatus();
+			
+			if(totalDamage > 0) {
+				GameEvent damageRecord = new GameEvent(entity, entity.getPosition(), EventType.ATTACKS, entity.getPosition());
+				eventQueue.add(damageRecord);
+				damageRecord.getEventType().value = totalDamage;
+			}
 			
 			if (((LivingEntity)entity).getCurrentHealth() <= 0) {
 				Tile targetTile = getTileAt(entity.getPosition());
 				GameEvent deathRecord = new GameEvent(entity, entity.getPosition(), EventType.DIES);
 				eventQueue.add(deathRecord);
+				
 				player.GiveExperience();
 				targetTile.removeOccupant(entity);
 				dungeon.getCurrentFloor().getLivingEntities().remove(entity);
+				
+				continue;
 			}
+			
 			Position source = entity.getPosition();
 			Position target = player.getPosition();
 			Position nextStep = dungeon.getCurrentFloor().getPath(source, target);
@@ -442,13 +463,14 @@ public class Engine {
 			
 			BehaviorState currentBehavior = livingEntities.get(i).getCurrentBehavior();
 			if (currentBehavior == BehaviorState.IDLE) {
-				if ((Math.abs(target.getRow() - source.getRow())) <= 4 && (Math.abs(target.getCol() - source.getCol())) <= 4) {
+				if ((Math.abs(target.getRow() - source.getRow())) <= 3 && (Math.abs(target.getCol() - source.getCol())) <= 3) {
 					livingEntities.get(i).setCurrentBehavior(BehaviorState.ENGAGED);
 				}
 				else {
 					continue;
 				}
 			}
+			
 			currentBehavior = livingEntities.get(i).getCurrentBehavior();
 			if (currentBehavior == BehaviorState.ENGAGED) {
 				if (rowDifference <= 1 && colDifference <= 1) {
@@ -460,6 +482,7 @@ public class Engine {
 						if (((Slime)entity).DealsStatusEffect() == true)
 							player.GiveStatusEffect(((Slime)entity).getStatusEffect());
 					}
+					
 					damage = player.receiveDamage(damage);
 					attackRecord.getEventType().setEventValue(damage);
 					
@@ -469,9 +492,9 @@ public class Engine {
 						
 						return;
 					}
+					
 					continue;
-				}
-				else if (!nextStep.equals(source) ) {
+				} else if (!nextStep.equals(source) ) {
 					Tile sourceTile = getTileAt(source);
 					Tile nextTile = getTileAt(nextStep);
 					sourceTile.removeOccupant(livingEntities.get(i));
@@ -480,8 +503,7 @@ public class Engine {
 					
 					GameEvent moveRecord = new GameEvent(livingEntities.get(i), source, EventType.MOVES_TO, nextStep);
 					eventQueue.add(moveRecord);				
-				}
-				else {
+				} else {
 					//This is in case there is no path
 					continue;
 				}
