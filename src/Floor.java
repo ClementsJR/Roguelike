@@ -398,9 +398,18 @@ public class Floor {
 			}
 			else
 			{
-				StatusEffectType type;
+				StatusEffectType type = null;
+				int poisChance = (80 +(this.level *2));
+				randy = randall.nextInt(100) + 1;
 				
-				
+				if (randy <= poisChance)
+				{
+					type = StatusEffectType.POISONED;
+				}
+				else
+				{
+					type = StatusEffectType.PARALYZED;
+				}
 				Slime slimey = new Slime(floorNumber, type);
 				Position spawnPosition = openPositions.remove(randPos);
 				slimey.setPosition(spawnPosition);
